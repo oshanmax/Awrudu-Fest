@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<script>
+// Browser back button → AwruduFest main site
+(function(){
+  // Push current page to history so back goes to index
+  if(window.history && window.history.pushState){
+    window.history.pushState({awrudu:true}, '', window.location.href);
+    window.addEventListener('popstate', function(e){
+      window.location.href = '/index.html';
+    });
+  }
+})();
+</script>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>කණමුට්ටි ගැසීම | AwruduFest 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap');
+  :root {
+    --gold: #FFD700;
+    --deep-gold: #B8860B;
+    --red: #CC2200;
+    --bg: #0d1a0a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); font-family: 'Noto Sans Sinhala', sans-serif; overflow: hidden; height: 100vh; width: 100vw; }
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; }
+  #particle-canvas { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+  #game-canvas { display: block; cursor: crosshair; touch-action: none; }
+
+  .back-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    background: rgba(0,0,0,0.6); border: 2px solid var(--gold);
+    color: var(--gold); padding: 8px 16px; border-radius: 30px;
+    font-family: 'Noto Sans Sinhala', sans-serif; font-size: 13px;
+    cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: var(--gold); color: #000; }
+
+  #ui {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; flex-direction: column; align-items: center; padding-top: 12px;
+    pointer-events: none;
+  }
+  .game-title {
+    font-family: 'Yatra One', cursive;
+    font-size: clamp(20px, 4vw, 36px);
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(255,215,0,0.6), 2px 2px 0 #000;
+    letter-spacing: 2px;
+  }
+  .hud {
+    display: flex; gap: 20px; margin-top: 6px;
+    background: rgba(0,0,0,0.6); border: 2px solid var(--gold);
+    border-radius: 30px; padding: 5px 20px; pointer-events: all;
+  }
+  .hud-item { display: flex; flex-direction: column; align-items: center; }
+  .hud-label { font-size: 11px; color: #aaa; }
+  .hud-val { font-size: 18px; font-weight: 900; color: var(--gold); }
+
+  /* Blindfold slider (simulate blindfolded) */
+  .blindfold-bar {
+    width: min(320px, 85vw); height: 14px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,215,0,0.4);
+    border-radius: 8px; overflow: hidden; margin-top: 4px;
+    position: relative;
+  }
+  .blindfold-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #CC2200, #FFD700, #2E7D32);
+    transition: width 0.1s;
+  }
+
+  .overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+    text-align: center; padding: 20px;
+  }
+  .overlay.hidden { display: none; }
+  .overlay-title {
+    font-family: 'Yatra One', cursive;
+    font-size: clamp(26px, 6vw, 52px);
+    color: var(--gold); text-shadow: 0 0 30px rgba(255,215,0,0.8);
+    margin-bottom: 12px;
+  }
+  .overlay-sub { font-size: clamp(14px, 2.5vw, 18px); color: #ccc; margin-bottom: 24px; line-height: 1.7; }
+  .overlay-btn {
+    background: linear-gradient(135deg, var(--gold), var(--deep-gold));
+    border: none; color: #000;
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 17px; font-weight: 700;
+    padding: 13px 42px; border-radius: 50px; cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255,215,0,0.4); margin: 6px;
+  }
+  .overlay-btn:hover { transform: translateY(-2px); }
+  .overlay-btn.sec { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+  .emoji-big { font-size: 60px; margin-bottom: 16px; }
+
+  #aim-guide {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 30;
+    font-size: 13px; color: rgba(255,215,0,0.7);
+    text-align: center; pointer-events: none;
+    text-shadow: 1px 1px 3px #000;
+  }
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Mobile Responsive (Canvas Games) ── */
+@media(max-width:600px){
+  canvas { touch-action: none; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+<canvas id="bg-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
+<a href="/index.html" class="back-btn">← AwruduFest</a>
+
+<div id="ui">
+  <div class="game-title">🎯 කණමුට්ටි ගැසීම</div>
+  <div class="hud">
+    <div class="hud-item"><div class="hud-label">ලකුණු</div><div class="hud-val" id="score">0</div></div>
+    <div class="hud-item"><div class="hud-label">ලබා ගත්</div><div class="hud-val" id="hits">0</div></div>
+    <div class="hud-item"><div class="hud-label">ඉතිරි</div><div class="hud-val" id="remaining">5</div></div>
+    <div class="hud-item"><div class="hud-label">කාලය</div><div class="hud-val" id="timer">60</div></div>
+  </div>
+  <div class="blindfold-bar"><div class="blindfold-fill" id="confusion-bar" style="width:0%"></div></div>
+</div>
+
+<canvas id="game-canvas"></canvas>
+<div id="aim-guide">🖱️ Click/Tap කර කුඩය ගහන්න! (ඇස් වසාගෙනලු! 😄)</div>
+
+<!-- Start -->
+<div class="overlay" id="start-screen">
+  <div class="emoji-big">🎯</div>
+  <div class="overlay-title">කණමුට්ටි ගැසීම</div>
+  <div class="overlay-sub">
+    ඇස් බැඳ ලෝකලි කළු කුඩය ගසා කඩාගන්න!<br>
+    <strong style="color:var(--gold)">60 තත්පරය</strong> ඇතුළත හැකිතාක් කඩන්න 🏺
+  </div>
+  <button class="overlay-btn" onclick="startGame()">🎮 ක්‍රීඩාව ආරම්භ</button>
+</div>
+
+<!-- Final -->
+<div class="overlay hidden" id="final-screen">
+  <div class="emoji-big" id="final-emoji">🏆</div>
+  <div class="overlay-title" id="final-title">ජය!</div>
+  <div class="overlay-sub" id="final-sub"></div>
+  <button class="overlay-btn" onclick="restartGame()">🔄 නැවත ක්‍රීඩා</button>
+  <button class="overlay-btn sec" onclick="window.location.href='/index.html'">← ආපසු</button>
+</div>
+
+<script>
+// ===== BG =====
+const bgC = document.getElementById('bg-canvas');
+const bgCtx = bgC.getContext('2d');
+let bgW, bgH;
+const leaves = [];
+function resizeBg() { bgW = bgC.width = window.innerWidth; bgH = bgC.height = window.innerHeight; }
+resizeBg();
+window.addEventListener('resize', () => { resizeBg(); resizeGame(); });
+for (let i = 0; i < 25; i++) leaves.push({
+  x: Math.random(), y: Math.random(), r: Math.random() * 2 + 1,
+  vx: (Math.random() - 0.5) * 0.3, vy: Math.random() * 0.2 + 0.05,
+  rot: Math.random() * Math.PI * 2, rSpeed: (Math.random() - 0.5) * 0.02,
+  color: ['#2E7D32','#388E3C','#1B5E20','#FFD700'][Math.floor(Math.random()*4)]
+});
+function drawBg() {
+  bgCtx.fillStyle = '#0d1a0a';
+  bgCtx.fillRect(0,0,bgW,bgH);
+  const g = bgCtx.createRadialGradient(bgW/2,bgH*0.3,0,bgW/2,bgH*0.3,bgH*0.7);
+  g.addColorStop(0,'rgba(30,60,10,0.5)');
+  g.addColorStop(1,'transparent');
+  bgCtx.fillStyle = g; bgCtx.fillRect(0,0,bgW,bgH);
+  leaves.forEach(l => {
+    l.x += l.vx * 0.003; l.y += l.vy * 0.003; l.rot += l.rSpeed;
+    if (l.y > 1) l.y = -0.05;
+    if (l.x < -0.1) l.x = 1.1; if (l.x > 1.1) l.x = -0.1;
+    bgCtx.save();
+    bgCtx.translate(l.x*bgW, l.y*bgH);
+    bgCtx.rotate(l.rot);
+    bgCtx.fillStyle = l.color;
+    bgCtx.globalAlpha = 0.4;
+    bgCtx.beginPath();
+    bgCtx.ellipse(0,0,l.r*3,l.r*1.5,0,0,Math.PI*2);
+    bgCtx.fill();
+    bgCtx.restore();
+  });
+  bgCtx.globalAlpha = 1;
+}
+
+// ===== PARTICLES =====
+const pC = document.getElementById('particle-canvas');
+const pCtx = pC.getContext('2d');
+pC.width = window.innerWidth; pC.height = window.innerHeight;
+window.addEventListener('resize', () => { pC.width = window.innerWidth; pC.height = window.innerHeight; });
+const particles = [];
+function spawnParticles(x, y, colors, count=25, spread=8) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * spread + 1;
+    particles.push({
+      x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+      r: Math.random()*5+2, color: colors[Math.floor(Math.random()*colors.length)],
+      life: 1, decay: Math.random()*0.025+0.015, spin: Math.random()*0.2-0.1
+    });
+  }
+}
+function updateParticles() {
+  pCtx.clearRect(0,0,pC.width,pC.height);
+  for (let i = particles.length-1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.25; p.life -= p.decay;
+    if (p.life <= 0) { particles.splice(i,1); continue; }
+    pCtx.globalAlpha = p.life;
+    pCtx.fillStyle = p.color;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2);
+    pCtx.fill();
+  }
+  pCtx.globalAlpha = 1;
+}
+
+// ===== GAME =====
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resizeGame() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeGame();
+
+// Game state
+let score = 0, hits = 0, misses = 0, timeLeft = 60;
+let gameActive = false;
+let pots = [];
+let pendulum = { angle: 0, speed: 0.015, dir: 1 };
+let stickPos = { x: 0, active: false, flash: 0 };
+let confusionLevel = 0; // 0-1, increases over time → makes screen rotate/blur
+let lastTime = 0;
+let timerInterval = null;
+let shakeX = 0, shakeY = 0;
+let swingTrail = [];
+
+// Pot class
+function createPot(level) {
+  const variants = [
+    { color: '#8B4513', accent: '#D2691E', points: 10, hp: 1, size: 1.0 },
+    { color: '#5D4037', accent: '#8D6E63', points: 20, hp: 2, size: 0.85 },
+    { color: '#880E4F', accent: '#F48FB1', points: 30, hp: 3, size: 0.75 },
+    { color: '#1A237E', accent: '#7986CB', points: 50, hp: 2, size: 0.65 },
+  ];
+  const type = variants[Math.min(level, variants.length-1)];
+  const margin = 80;
+  return {
+    x: margin + Math.random() * (W - margin*2),
+    y: H * 0.25 + Math.random() * (H * 0.4),
+    ...type,
+    hpLeft: type.hp,
+    scale: 1,
+    crack: 0,
+    broken: false,
+    brokenTimer: 0,
+    shimmer: Math.random() * Math.PI * 2,
+    swingAmt: 0 // reaction to hits
+  };
+}
+
+function spawnPots(level) {
+  pots = [];
+  const count = Math.min(2 + Math.floor(score / 40), 5);
+  const cols = count;
+  for (let i = 0; i < count; i++) {
+    const pot = createPot(Math.min(Math.floor(score/50), 3));
+    // Spread pots evenly across bottom half of screen
+    const margin = W * 0.15;
+    pot.x = margin + (W - margin*2) * (i + 0.5) / cols;
+    pot.y = H * 0.55 + (Math.random() - 0.5) * H * 0.15;
+    pots.push(pot);
+  }
+}
+
+function drawPot(pot) {
+  if (pot.broken && pot.brokenTimer <= 0) return;
+  ctx.save();
+  const sw = (Math.sin(pot.shimmer) * 0.02 + 1) * pot.scale;
+  ctx.translate(pot.x, pot.y);
+  const swingAngle = Math.sin(Date.now()*0.003) * pot.swingAmt;
+  ctx.rotate(swingAngle);
+  ctx.scale(sw * pot.size, sw * pot.size);
+
+  if (pot.broken) {
+    ctx.globalAlpha = pot.brokenTimer / 0.5;
+    // Draw shards
+    ctx.rotate(pot.brokenTimer * 8);
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      const dist = (0.5 - pot.brokenTimer) * 80;
+      ctx.save();
+      ctx.translate(Math.cos(a)*dist, Math.sin(a)*dist);
+      ctx.rotate(a);
+      ctx.fillStyle = pot.color;
+      ctx.beginPath();
+      ctx.moveTo(0, -15);
+      ctx.lineTo(10, 10);
+      ctx.lineTo(-10, 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+    return;
+  }
+
+  // Pot body
+  ctx.fillStyle = pot.color;
+  ctx.beginPath();
+  ctx.ellipse(0, 20, 28, 22, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Pot top (narrower)
+  ctx.beginPath();
+  ctx.ellipse(0, -5, 16, 10, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Rim
+  ctx.fillStyle = pot.accent;
+  ctx.beginPath();
+  ctx.ellipse(0, -5, 16, 5, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Shine
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(-8, 5, 6, 12, -0.3, 0, Math.PI*2);
+  ctx.fill();
+
+  // Cracks
+  if (pot.crack > 0) {
+    ctx.strokeStyle = `rgba(0,0,0,${pot.crack})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-10, -5);
+    ctx.lineTo(-5, 10);
+    ctx.lineTo(5, 25);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(3, 15);
+    ctx.stroke();
+  }
+
+  // HP dots
+  for (let i = 0; i < pot.hp; i++) {
+    ctx.fillStyle = i < pot.hpLeft ? '#FF4444' : 'rgba(255,255,255,0.2)';
+    ctx.beginPath();
+    ctx.arc(-8 + i*8, -28, 4, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Points badge
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.beginPath();
+  ctx.roundRect(-18, -45, 36, 18, 4);
+  ctx.fill();
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('+' + pot.points, 0, -36);
+
+  ctx.restore();
+  pot.shimmer += 0.03;
+  if (pot.swingAmt > 0) pot.swingAmt *= 0.9;
+}
+
+function drawPendulum() {
+  const pivotX = W / 2;
+  const pivotY = 20;
+  const armLen = H * 0.55;
+
+  // Pendulum swings ← → (wider arc)
+  pendulum.angle += pendulum.speed * pendulum.dir;
+  if (Math.abs(pendulum.angle) > 1.1) pendulum.dir *= -1;
+
+  const stickX = pivotX + Math.sin(pendulum.angle) * armLen;
+  const stickY = pivotY + Math.cos(pendulum.angle) * armLen * 0.75;
+  stickPos.x = stickX;
+  stickPos.y = stickY;
+
+  // Trail
+  swingTrail.push({x: stickX, y: stickY, life: 1});
+  if (swingTrail.length > 15) swingTrail.shift();
+
+  // Draw trail
+  for (let i = 0; i < swingTrail.length; i++) {
+    const t = swingTrail[i];
+    t.life -= 0.07;
+    ctx.globalAlpha = Math.max(0, t.life * 0.3);
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, 8 * t.life, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // String
+  ctx.strokeStyle = 'rgba(139,105,20,0.8)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(pivotX, pivotY);
+  ctx.lineTo(stickX, stickY);
+  ctx.stroke();
+
+  // Pivot
+  ctx.fillStyle = '#8B6914';
+  ctx.beginPath();
+  ctx.arc(pivotX, pivotY, 8, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.arc(pivotX, pivotY, 5, 0, Math.PI*2);
+  ctx.fill();
+
+  // Stick (bat)
+  ctx.save();
+  ctx.translate(stickX, stickY);
+  ctx.rotate(pendulum.angle);
+  ctx.fillStyle = '#5D4037';
+  ctx.fillRect(-6, -15, 12, 50);
+  ctx.fillStyle = '#8D6E63';
+  ctx.fillRect(-6, -15, 12, 15);
+  // Grip
+  ctx.fillStyle = '#FF8F00';
+  ctx.fillRect(-7, 25, 14, 5);
+  ctx.restore();
+
+  // Click indicator near stick tip
+  ctx.save();
+  ctx.globalAlpha = 0.45 + Math.sin(Date.now()*0.006)*0.3;
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.arc(stickX, stickY, 55, 0, Math.PI*2);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // Flash on hit
+  if (stickPos.flash > 0) {
+    stickPos.flash -= 0.1;
+    ctx.globalAlpha = stickPos.flash;
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(stickX, stickY, 30 * stickPos.flash, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawConfusionEffect() {
+  if (confusionLevel < 0.1) return;
+  // Vignette
+  const g = ctx.createRadialGradient(W/2, H/2, H*0.2, W/2, H/2, H*0.8);
+  g.addColorStop(0, 'transparent');
+  g.addColorStop(1, `rgba(0,0,0,${confusionLevel * 0.4})`);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// Click/tap to hit
+function handleHit(cx, cy) {
+  if (!gameActive) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = cx - rect.left;
+  const y = cy - rect.top;
+
+  // Add confusion (simulate blindfolded effect)
+  confusionLevel = Math.min(0.7, confusionLevel + 0.025);
+  document.getElementById('confusion-bar').style.width = (confusionLevel * 100) + '%';
+
+  // Check pots
+  let hitPot = false;
+  pots.forEach(pot => {
+    if (pot.broken) return;
+    const dist = Math.hypot(x - pot.x, y - pot.y);
+    const hitRadius = Math.max(52, 52 * pot.size); // bigger, easier to hit
+    if (dist < hitRadius) {
+      hitPot = true;
+      pot.hpLeft--;
+      pot.crack = 0.4 + (1 - pot.hpLeft/pot.hp) * 0.6;
+      pot.swingAmt = 0.3;
+      pot.scale = 1.2;
+      setTimeout(() => pot.scale = 1, 100);
+      spawnParticles(pot.x, pot.y, [pot.color, pot.accent, '#FFD700'], 20, 6);
+      stickPos.flash = 1;
+      shakeX = 5; shakeY = 4;
+      if (pot.hpLeft <= 0) {
+        pot.broken = true;
+        pot.brokenTimer = 0.5;
+        score += pot.points;
+        hits++;
+        spawnParticles(pot.x, pot.y, [pot.color, '#FF6B00', '#FFD700', '#fff'], 50, 12);
+        document.getElementById('score').textContent = score;
+        document.getElementById('hits').textContent = hits;
+
+        // Respawn after delay
+        setTimeout(() => {
+          const idx = pots.indexOf(pot);
+          if (idx !== -1) pots[idx] = createPot(Math.min(Math.floor(score/50),3));
+        }, 1200);
+      }
+    }
+  });
+
+  if (!hitPot) {
+    misses++;
+    confusionLevel = Math.min(0.7, confusionLevel + 0.05);
+    // Miss effect
+    spawnParticles(x, y, ['rgba(255,255,255,0.4)'], 5, 4);
+  }
+}
+
+canvas.addEventListener('click', e => handleHit(e.clientX, e.clientY));
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  handleHit(t.clientX, t.clientY);
+}, { passive: false });
+
+function startGame() {
+  document.getElementById('start-screen').classList.add('hidden');
+  score = 0; hits = 0; misses = 0; timeLeft = 60; confusionLevel = 0;
+  pots = []; // clear pots on restart
+  gameActive = true;
+  spawnPots(0);
+  document.getElementById('score').textContent = '0';
+  document.getElementById('hits').textContent = '0';
+  document.getElementById('remaining').textContent = timeLeft;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timer').textContent = timeLeft;
+    document.getElementById('remaining').textContent = timeLeft;
+    // Confusion decreases slightly
+    confusionLevel = Math.max(0, confusionLevel - 0.01);
+    document.getElementById('confusion-bar').style.width = (confusionLevel * 100) + '%';
+    if (timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function endGame() {
+  clearInterval(timerInterval);
+  gameActive = false;
+  const emoji = score >= 200 ? '🏆' : score >= 100 ? '🎉' : '😊';
+  const msg = score >= 200 ? 'ශූර ශ්‍රේෂ්ඨ!' : score >= 100 ? 'ඉතා හොඳ!' : 'ආරම්භකයා!';
+  document.getElementById('final-emoji').textContent = emoji;
+  document.getElementById('final-title').textContent = msg;
+  document.getElementById('final-sub').innerHTML = `
+    ලකුණු: <strong style="color:var(--gold);font-size:24px">${score}</strong><br>
+    කඩා ගත් කුඩා: <strong style="color:#fff">${hits}</strong> | මිස්: <strong style="color:#FF4444">${misses}</strong>
+  `;
+  setTimeout(() => document.getElementById('final-screen').classList.remove('hidden'), 600);
+  // Celebration
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => spawnParticles(
+      Math.random()*window.innerWidth,
+      Math.random()*window.innerHeight*0.5,
+      ['#FFD700','#CC2200','#2E7D32','#fff'], 30, 10
+    ), i * 150);
+  }
+}
+
+function restartGame() {
+  document.getElementById('final-screen').classList.add('hidden');
+  startGame();
+}
+
+// ===== MAIN LOOP =====
+function loop(ts) {
+  requestAnimationFrame(loop);
+  const dt = Math.min((ts - lastTime) / 1000, 0.05);
+  lastTime = ts;
+  drawBg();
+  updateParticles();
+
+  // Shake decay
+  if (shakeX > 0.1) { shakeX *= 0.7; shakeY *= 0.7; }
+
+  ctx.save();
+  ctx.translate(
+    Math.random()*shakeX*2-shakeX,
+    Math.random()*shakeY*2-shakeY
+  );
+  ctx.clearRect(-20,-20,W+40,H+40);
+
+  // Ground line
+  ctx.strokeStyle = 'rgba(255,215,0,0.15)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([10,10]);
+  ctx.beginPath();
+  ctx.moveTo(0, H*0.72);
+  ctx.lineTo(W, H*0.72);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  drawPendulum();
+  pots.forEach(pot => {
+    if (pot.broken) { pot.brokenTimer = Math.max(0, pot.brokenTimer - dt); }
+    drawPot(pot);
+  });
+  drawConfusionEffect();
+
+  ctx.restore();
+}
+requestAnimationFrame(ts => { lastTime = ts; loop(ts); });
+</script>
+</body>
+</html>

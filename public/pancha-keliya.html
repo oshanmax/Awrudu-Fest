@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>කැටපොලෙන් විදීම | AwruduFest 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap');
+  :root { --gold: #FFD700; --deep-gold: #B8860B; --sky1: #1a2a4a; --sky2: #0d1628; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--sky2); font-family: 'Noto Sans Sinhala', sans-serif; overflow: hidden; height:100vh; width:100vw; }
+  #bg-canvas, #particle-canvas { position:fixed; inset:0; z-index:0; }
+  #particle-canvas { z-index:50; pointer-events:none; }
+  #game-canvas { display:block; position:relative; z-index:10; cursor:crosshair; touch-action:none; }
+  .back-btn { position:fixed; top:16px; left:16px; z-index:100; background:rgba(0,0,0,0.6); border:2px solid var(--gold); color:var(--gold); padding:8px 16px; border-radius:30px; font-family:'Noto Sans Sinhala',sans-serif; font-size:13px; cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:6px; transition:all 0.2s; }
+  .back-btn:hover { background:var(--gold); color:#000; }
+  #ui { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; flex-direction:column; align-items:center; padding-top:12px; pointer-events:none; }
+  .game-title { font-family:'Yatra One',cursive; font-size:clamp(20px,4vw,36px); color:var(--gold); text-shadow:0 0 20px rgba(255,215,0,0.6),2px 2px 0 #000; letter-spacing:2px; }
+  .hud { display:flex; gap:16px; margin-top:6px; background:rgba(0,0,0,0.6); border:2px solid var(--gold); border-radius:30px; padding:5px 20px; pointer-events:all; }
+  .hud-item { display:flex; flex-direction:column; align-items:center; }
+  .hud-label { font-size:11px; color:#aaa; }
+  .hud-val { font-size:18px; font-weight:900; color:var(--gold); }
+  .arrows-row { display:flex; gap:6px; margin-top:5px; }
+  .arrow-icon { font-size:20px; transition:all 0.2s; }
+  .arrow-icon.used { opacity:0.2; transform:scale(0.8); }
+  .overlay { position:fixed; inset:0; z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.88); backdrop-filter:blur(10px); text-align:center; padding:20px; }
+  .overlay.hidden { display:none; }
+  .overlay-title { font-family:'Yatra One',cursive; font-size:clamp(26px,6vw,52px); color:var(--gold); text-shadow:0 0 30px rgba(255,215,0,0.8); margin-bottom:12px; }
+  .overlay-sub { font-size:clamp(14px,2.5vw,18px); color:#ccc; margin-bottom:24px; line-height:1.7; }
+  .overlay-btn { background:linear-gradient(135deg,var(--gold),var(--deep-gold)); border:none; color:#000; font-family:'Noto Sans Sinhala',sans-serif; font-size:17px; font-weight:700; padding:13px 42px; border-radius:50px; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 20px rgba(255,215,0,0.4); margin:6px; }
+  .overlay-btn:hover { transform:translateY(-2px); }
+  .overlay-btn.sec { background:transparent; border:2px solid var(--gold); color:var(--gold); }
+  .emoji-big { font-size:60px; margin-bottom:16px; }
+  #aim-line { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:30; font-size:13px; color:rgba(255,215,0,0.7); text-align:center; pointer-events:none; text-shadow:1px 1px 3px #000; }
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Mobile Responsive (Canvas Games) ── */
+@media(max-width:600px){
+  canvas { touch-action: none; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+<canvas id="bg-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
+<a href="/index.html" class="back-btn">← AwruduFest</a>
+<div id="ui">
+  <div class="game-title">🪁 කැටපොලෙන් විදීම</div>
+  <div class="hud">
+    <div class="hud-item"><div class="hud-label">ලකුණු</div><div class="hud-val" id="score">0</div></div>
+    <div class="hud-item"><div class="hud-label">වටය</div><div class="hud-val" id="round">1</div></div>
+    <div class="hud-item"><div class="hud-label">සම්බන්ධ</div><div class="hud-val" id="streak">0🔥</div></div>
+  </div>
+  <div class="arrows-row" id="arrows-row"></div>
+</div>
+<canvas id="game-canvas"></canvas>
+<div id="aim-line">🖱️ Drag & Release කර අලු ගත් කාලේ ලෑස්ති කරන්න! | 📱 Touch & Pull</div>
+
+<!-- Start -->
+<div class="overlay" id="start-screen">
+  <div class="emoji-big">🪁</div>
+  <div class="overlay-title">කැටපොලෙන් විදීම</div>
+  <div class="overlay-sub">Sling shot වලින් ඉලක්ක පහරදෙන්න!<br><strong style="color:var(--gold)">5 ඊතල</strong> ඇතුළත හැකිතාක් ලකුණු ගන්න 🏹</div>
+  <button class="overlay-btn" onclick="startGame()">🎮 ආරම්භ කරන්න</button>
+</div>
+<!-- Final -->
+<div class="overlay hidden" id="final-screen">
+  <div class="emoji-big" id="final-emoji">🏆</div>
+  <div class="overlay-title" id="final-title">ජය!</div>
+  <div class="overlay-sub" id="final-sub"></div>
+  <button class="overlay-btn" onclick="restartGame()">🔄 නැවත</button>
+  <button class="overlay-btn sec" onclick="window.location.href='/index.html'">← ආපසු</button>
+</div>
+
+<script>
+// BG
+const bgC=document.getElementById('bg-canvas'), bgCtx=bgC.getContext('2d');
+let bgW,bgH;
+const stars=[];
+function resizeBg(){bgW=bgC.width=window.innerWidth;bgH=bgC.height=window.innerHeight;}
+resizeBg();
+window.addEventListener('resize',()=>{resizeBg();resizeGame();});
+for(let i=0;i<120;i++) stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.3,twinkle:Math.random()*Math.PI*2,speed:Math.random()*0.02+0.005});
+function drawBg(){
+  bgCtx.fillStyle='#0a1020';bgCtx.fillRect(0,0,bgW,bgH);
+  const g=bgCtx.createLinearGradient(0,0,0,bgH);
+  g.addColorStop(0,'#0d1628');g.addColorStop(0.6,'#1a2a1a');g.addColorStop(1,'#0d1a00');
+  bgCtx.fillStyle=g;bgCtx.fillRect(0,0,bgW,bgH);
+  stars.forEach(s=>{
+    s.twinkle+=s.speed;
+    const alpha=0.3+Math.sin(s.twinkle)*0.3;
+    bgCtx.fillStyle=`rgba(255,220,150,${alpha})`;
+    bgCtx.beginPath();bgCtx.arc(s.x*bgW,s.y*bgH*0.7,s.r,0,Math.PI*2);bgCtx.fill();
+  });
+  // Moon
+  bgCtx.fillStyle='rgba(255,240,180,0.9)';
+  bgCtx.beginPath();bgCtx.arc(bgW*0.85,bgH*0.12,22,0,Math.PI*2);bgCtx.fill();
+  bgCtx.fillStyle='rgba(200,190,150,0.95)';
+  bgCtx.beginPath();bgCtx.arc(bgW*0.85+8,bgH*0.12-8,18,0,Math.PI*2);bgCtx.fill();
+  // Hills
+  bgCtx.fillStyle='rgba(10,30,10,0.8)';
+  bgCtx.beginPath();bgCtx.moveTo(0,bgH);
+  for(let x=0;x<=bgW;x+=10) bgCtx.lineTo(x,bgH*0.75+Math.sin(x*0.01)*30+Math.sin(x*0.003)*50);
+  bgCtx.lineTo(bgW,bgH);bgCtx.closePath();bgCtx.fill();
+}
+
+// Particles
+const pC=document.getElementById('particle-canvas'),pCtx=pC.getContext('2d');
+pC.width=window.innerWidth;pC.height=window.innerHeight;
+window.addEventListener('resize',()=>{pC.width=window.innerWidth;pC.height=window.innerHeight;});
+const parts=[];
+function spawnParts(x,y,colors,n=20,spd=8){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,s=Math.random()*spd+1;
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:Math.random()*5+2,color:colors[Math.floor(Math.random()*colors.length)],life:1,decay:Math.random()*0.025+0.015});
+  }
+}
+function updateParts(){
+  pCtx.clearRect(0,0,pC.width,pC.height);
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.25;p.life-=p.decay;
+    if(p.life<=0){parts.splice(i,1);continue;}
+    pCtx.globalAlpha=p.life;pCtx.fillStyle=p.color;
+    pCtx.beginPath();pCtx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);pCtx.fill();
+  }
+  pCtx.globalAlpha=1;
+}
+
+// Game
+const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d');
+let W,H;
+function resizeGame(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resizeGame();
+
+let score=0,roundNum=1,streak=0,arrowsLeft=5;
+let gameActive=false,lastTime=0;
+let targets=[],projectiles=[],effects=[];
+
+// Catapult Shooting
+const sling={
+  baseX:0,baseY:0,
+  pullX:0,pullY:0,
+  dragging:false,
+  maxPull:80
+};
+
+function initSling(){
+  sling.baseX=W*0.15;
+  sling.baseY=H*0.75;
+  sling.pullX=sling.baseX;
+  sling.pullY=sling.baseY;
+}
+initSling();
+
+// Target types
+const targetTypes=[
+  {emoji:'🏺',r:28,points:10,speed:0.5,color:'#8B4513'},
+  {emoji:'🎯',r:22,points:25,speed:1.2,color:'#CC2200'},
+  {emoji:'⭐',r:18,points:50,speed:2,color:'#FFD700'},
+  {emoji:'🎪',r:35,points:5,speed:0.3,color:'#9C27B0'},
+];
+
+function spawnTarget(){
+  const type=targetTypes[Math.floor(Math.random()*targetTypes.length)];
+  const fromRight=Math.random()>0.5;
+  targets.push({
+    ...type,
+    x:fromRight?W+50:-50,
+    y:H*0.2+Math.random()*H*0.45,
+    vx:fromRight?-type.speed*(0.8+Math.random()*0.4):type.speed*(0.8+Math.random()*0.4),
+    vy:(Math.random()-0.5)*0.8,
+    hit:false,hitTimer:0,
+    bobAmt:Math.random()*20,bobSpeed:Math.random()*0.03+0.01,bobPhase:Math.random()*Math.PI*2,
+    scale:1,
+  });
+}
+
+function spawnWave(){
+  targets=[];
+  const count=Math.min(2+roundNum,6);
+  for(let i=0;i<count;i++) setTimeout(()=>spawnTarget(),i*500);
+}
+
+function drawCatapultSling(){
+  const fx=sling.baseX-18,fy=sling.baseY-20;
+  // Fork body
+  ctx.strokeStyle='#5D4037';ctx.lineWidth=8;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(fx+18,fy+60);ctx.lineTo(fx+18,fy+20);
+  ctx.lineTo(fx+6,fy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(fx+18,fy+20);ctx.lineTo(fx+30,fy);ctx.stroke();
+
+  // Rubber bands (to pull point)
+  const px=sling.pullX,py=sling.pullY;
+  ctx.strokeStyle='#B71C1C';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(fx+6,fy);ctx.lineTo(px,py);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(fx+30,fy);ctx.lineTo(px,py);ctx.stroke();
+
+  // Projectile at pull point (if dragging)
+  if(sling.dragging||arrowsLeft>0){
+    ctx.font='22px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🪨',px,py);
+  }
+
+  // Aim guide (trajectory preview)
+  if(sling.dragging){
+    const dx=sling.baseX-px,dy=sling.baseY-py;
+    const power=Math.min(Math.hypot(dx,dy)/sling.maxPull,1);
+    const vx=dx*0.18*power*2,vy=dy*0.18*power*2;
+    ctx.save();
+    ctx.globalAlpha=0.35;
+    ctx.strokeStyle='#FFD700';ctx.lineWidth=2;ctx.setLineDash([8,6]);
+    ctx.beginPath();
+    let tx=px,ty=py,tvx=vx,tvy=vy;
+    ctx.moveTo(tx,ty);
+    for(let i=0;i<30;i++){
+      tx+=tvx;ty+=tvy;tvy+=0.4;
+      ctx.lineTo(tx,ty);
+      if(tx<0||tx>W||ty>H) break;
+    }
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.restore();
+
+    // Power meter
+    const meterX=sling.baseX+30,meterY=sling.baseY-30;
+    ctx.globalAlpha=0.8;
+    ctx.fillStyle='rgba(0,0,0,0.5)';
+    ctx.beginPath();ctx.roundRect(meterX,meterY,60,12,6);ctx.fill();
+    const fillColor=power<0.5?'#2E7D32':power<0.8?'#FFD700':'#CC2200';
+    ctx.fillStyle=fillColor;
+    ctx.beginPath();ctx.roundRect(meterX,meterY,60*power,12,6);ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#fff';ctx.font='11px sans-serif';ctx.textAlign='left';
+    ctx.fillText('ශක්තිය',meterX,meterY-4);
+  }
+}
+
+function drawTargets(dt){
+  targets.forEach(t=>{
+    t.bobPhase+=t.bobSpeed;
+    t.x+=t.vx;
+    t.y+=t.vy+Math.sin(t.bobPhase)*0.3;
+
+    if(t.hit){
+      t.hitTimer-=dt;
+      if(t.hitTimer<=0) t.hit=false;
+      ctx.save();
+      ctx.globalAlpha=t.hitTimer/0.3;
+      ctx.fillStyle='rgba(255,215,0,0.4)';
+      ctx.beginPath();ctx.arc(t.x,t.y,t.r*2,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.translate(t.x,t.y);
+    ctx.scale(t.scale,t.scale);
+    if(t.scale>1) t.scale=Math.max(1,t.scale-0.05);
+    ctx.font=(t.r*2)+'px serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(t.emoji,0,0);
+
+    // Points badge
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.beginPath();ctx.roundRect(-15,-t.r-18,30,14,4);ctx.fill();
+    ctx.fillStyle='#FFD700';ctx.font='bold 10px sans-serif';
+    ctx.fillText('+'+t.points,0,-t.r-11);
+    ctx.restore();
+  });
+  // Remove off-screen
+  targets=targets.filter(t=>t.x>-100&&t.x<W+100);
+}
+
+function drawProjectiles(dt){
+  for(let i=projectiles.length-1;i>=0;i--){
+    const p=projectiles[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.4;p.rot+=0.2;
+    // Trail
+    p.trail=p.trail||[];
+    p.trail.push({x:p.x,y:p.y});
+    if(p.trail.length>8) p.trail.shift();
+    p.trail.forEach((t,idx)=>{
+      ctx.globalAlpha=(idx/p.trail.length)*0.4;
+      ctx.fillStyle='#FFD700';
+      ctx.beginPath();ctx.arc(t.x,t.y,3,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.font='20px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🪨',0,0);
+    ctx.restore();
+
+    // Hit detection
+    let hit=false;
+    targets.forEach(t=>{
+      if(hit) return;
+      const dist=Math.hypot(p.x-t.x,p.y-t.y);
+      if(dist<t.r+10){
+        hit=true;
+        score+=t.points*(streak>2?2:1);
+        streak++;
+        t.hit=true;t.hitTimer=0.3;t.scale=1.4;
+        spawnParts(t.x,t.y,['#FFD700','#FF6B00','#fff',t.color],40,10);
+        const idx=targets.indexOf(t);
+        if(idx!==-1) setTimeout(()=>{targets.splice(targets.indexOf(t),1);spawnTarget();},400);
+        document.getElementById('score').textContent=score;
+        document.getElementById('streak').textContent=streak+'🔥';
+        effects.push({x:t.x,y:t.y-30,text:'+'+t.points*(streak>2?'×2':''),life:1,color:'#FFD700'});
+        if(arrowsLeft<=0 && targets.filter(x=>!x.hit).length===0) endRound();
+      }
+    });
+
+    // Ground hit
+    if(p.y>H*0.9){
+      hit=true;streak=0;
+      document.getElementById('streak').textContent='0🔥';
+      spawnParts(p.x,H*0.85,['rgba(150,100,50,0.8)'],10,4);
+    }
+    if(hit||p.x>W+50||p.x<-50) projectiles.splice(i,1);
+  }
+}
+
+function drawEffects(dt){
+  for(let i=effects.length-1;i>=0;i--){
+    const e=effects[i];e.y-=1;e.life-=dt*2;
+    if(e.life<=0){effects.splice(i,1);continue;}
+    ctx.globalAlpha=e.life;
+    ctx.fillStyle=e.color;
+    ctx.font='bold 20px sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(e.text,e.x,e.y);
+  }
+  ctx.globalAlpha=1;
+}
+
+function updateArrowsUI(){
+  const row=document.getElementById('arrows-row');
+  row.innerHTML='';
+  for(let i=0;i<5;i++){
+    const el=document.createElement('div');
+    el.className='arrow-icon'+(i>=arrowsLeft?' used':'');
+    el.textContent='🪨';
+    row.appendChild(el);
+  }
+}
+
+function shoot(){
+  if(!gameActive||arrowsLeft<=0||!sling.dragging) return;
+  const dx=sling.baseX-sling.pullX,dy=sling.baseY-sling.pullY;
+  const power=Math.min(Math.hypot(dx,dy)/sling.maxPull,1);
+  if(power<0.1) return;
+  const vx=dx*0.18*power*2,vy=dy*0.18*power*2;
+  projectiles.push({x:sling.pullX,y:sling.pullY,vx,vy,rot:0,trail:[]});
+  arrowsLeft--;
+  updateArrowsUI();
+  sling.pullX=sling.baseX;sling.pullY=sling.baseY;
+  sling.dragging=false;
+  document.getElementById('round').textContent=roundNum;
+  if(arrowsLeft<=0){
+    setTimeout(()=>{
+      if(projectiles.length===0) endRound();
+      else {
+        const checkInt=setInterval(()=>{
+          if(projectiles.length===0){clearInterval(checkInt);endRound();}
+        },100);
+      }
+    },500);
+  }
+}
+
+// Input
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  if(e.touches){return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};}
+  return{x:e.clientX-r.left,y:e.clientY-r.top};
+}
+function onDown(e){
+  if(!gameActive) return;
+  const {x,y}=getPos(e);
+  const dist=Math.hypot(x-sling.baseX,y-sling.baseY);
+  if(dist<60){sling.dragging=true;sling.pullX=x;sling.pullY=y;}
+}
+function onMove(e){
+  if(!sling.dragging) return;
+  e.preventDefault();
+  const {x,y}=getPos(e);
+  const dx=x-sling.baseX,dy=y-sling.baseY;
+  const dist=Math.hypot(dx,dy);
+  if(dist>sling.maxPull){
+    const a=Math.atan2(dy,dx);
+    sling.pullX=sling.baseX+Math.cos(a)*sling.maxPull;
+    sling.pullY=sling.baseY+Math.sin(a)*sling.maxPull;
+  } else {sling.pullX=x;sling.pullY=y;}
+}
+function onUp(){if(sling.dragging){shoot();sling.dragging=false;}}
+canvas.addEventListener('mousedown',onDown);
+canvas.addEventListener('mousemove',onMove);
+canvas.addEventListener('mouseup',onUp);
+canvas.addEventListener('touchstart',onDown,{passive:false});
+canvas.addEventListener('touchmove',onMove,{passive:false});
+canvas.addEventListener('touchend',onUp);
+
+function endRound(){
+  if(roundNum>=3) return endGame();
+  roundNum++;
+  arrowsLeft=5;streak=0;
+  updateArrowsUI();
+  spawnWave();
+}
+
+function endGame(){
+  gameActive=false;
+  document.getElementById('final-emoji').textContent=score>=300?'🏆':score>=150?'🎉':'🏹';
+  document.getElementById('final-title').textContent=score>=300?'මහා ශූරයා!':score>=150?'හොඳ ගන්නා!':'ආරම්භකයා!';
+  document.getElementById('final-sub').innerHTML=`ලකුණු: <strong style="color:var(--gold);font-size:24px">${score}</strong><br>3 වටයෙන් පසු!`;
+  setTimeout(()=>{
+    document.getElementById('final-screen').classList.remove('hidden');
+    for(let i=0;i<8;i++) setTimeout(()=>spawnParts(Math.random()*window.innerWidth,Math.random()*window.innerHeight*0.5,['#FFD700','#CC2200','#2E7D32'],30,10),i*150);
+  },600);
+}
+
+function startGame(){
+  document.getElementById('start-screen').classList.add('hidden');
+  score=0;roundNum=1;streak=0;arrowsLeft=5;gameActive=true;
+  targets=[];projectiles=[];effects=[];
+  document.getElementById('score').textContent='0';
+  document.getElementById('round').textContent='1';
+  document.getElementById('streak').textContent='0🔥';
+  updateArrowsUI();
+  spawnWave();
+}
+function restartGame(){
+  document.getElementById('final-screen').classList.add('hidden');
+  startGame();
+}
+
+// Loop
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min((ts-lastTime)/1000,0.05);lastTime=ts;
+  drawBg();
+  updateParts();
+  ctx.clearRect(0,0,W,H);
+  drawTargets(dt);
+  drawCatapultSling();
+  drawProjectiles(dt);
+  drawEffects(dt);
+}
+requestAnimationFrame(ts=>{lastTime=ts;loop(ts);});
+
+// Browser back button → AwruduFest main site
+window.addEventListener('popstate', function(e){
+  window.location.href = '/index.html';
+});
+// Push a state so back button works
+if(window.history && window.history.pushState){
+  window.history.pushState({page:'game'}, '', window.location.href);
+}
+
+</script>
+</body>
+</html>

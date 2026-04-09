@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<script>
+// Browser back button → AwruduFest main site
+(function(){
+  // Push current page to history so back goes to index
+  if(window.history && window.history.pushState){
+    window.history.pushState({awrudu:true}, '', window.location.href);
+    window.addEventListener('popstate', function(e){
+      window.location.href = '/index.html';
+    });
+  }
+})();
+</script>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>කඹ ඇදීම | AwruduFest 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap');
+
+  :root {
+    --gold: #FFD700;
+    --deep-gold: #B8860B;
+    --red: #CC2200;
+    --blue: #003399;
+    --green: #2E7D32;
+    --bg: #1a0a00;
+    --rope: #8B6914;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Background */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* Back button */
+  .back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: var(--gold); color: #000; }
+
+  /* Main game container */
+  #game-wrap {
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Title */
+  .game-title {
+    font-family: 'Yatra One', cursive;
+    font-size: clamp(22px, 4vw, 40px);
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(255,215,0,0.6), 2px 2px 0 #000;
+    text-align: center;
+    margin-top: 16px;
+    letter-spacing: 2px;
+  }
+
+  /* Score board */
+  .scoreboard {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--gold);
+    border-radius: 40px;
+    padding: 6px 24px;
+  }
+  .team-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .team-score .name { color: #fff; }
+  .team-score .pts { color: var(--gold); font-size: 20px; }
+  .divider { color: var(--gold); font-size: 20px; }
+  .round-info { color: #aaa; font-size: 13px; text-align: center; margin-top: 2px; }
+
+  /* Canvas */
+  #game-canvas {
+    display: block;
+    max-width: 100%;
+    cursor: pointer;
+  }
+
+  /* Power meter */
+  .power-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    width: min(500px, 90vw);
+  }
+  .power-label {
+    font-size: 13px;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+  .power-bar-bg {
+    width: 100%;
+    height: 18px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    border: 2px solid rgba(255,215,0,0.3);
+    overflow: hidden;
+    position: relative;
+  }
+  .power-bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.05s;
+    background: linear-gradient(90deg, #2E7D32, #FFD700, #CC2200);
+  }
+  .power-center-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: #fff;
+    transform: translateX(-50%);
+  }
+
+  /* Tap button */
+  .tap-btn {
+    background: linear-gradient(135deg, var(--red), #880000);
+    border: 3px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 900;
+    padding: 14px 50px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: 0 6px 20px rgba(204,34,0,0.5), 0 0 30px rgba(255,215,0,0.2);
+    letter-spacing: 1px;
+    margin-top: 10px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .tap-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(204,34,0,0.5);
+  }
+  .tap-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* Overlay screens */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    text-align: center;
+    padding: 20px;
+  }
+  .overlay.hidden { display: none; }
+
+  .overlay-title {
+    font-family: 'Yatra One', cursive;
+    font-size: clamp(28px, 6vw, 56px);
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(255,215,0,0.8);
+    margin-bottom: 16px;
+  }
+  .overlay-sub {
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: #ccc;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+  .overlay-btn {
+    background: linear-gradient(135deg, var(--gold), var(--deep-gold));
+    border: none;
+    color: #000;
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 14px 44px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255,215,0,0.4);
+    margin: 8px;
+  }
+  .overlay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,215,0,0.5); }
+  .overlay-btn.secondary {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+  }
+
+  .emoji-big { font-size: 64px; margin-bottom: 16px; }
+
+  /* Particle canvas */
+  #particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    pointer-events: none;
+  }
+
+  /* Instructions */
+  .instructions {
+    font-size: 13px;
+    color: rgba(255,215,0,0.6);
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Mobile Responsive (Canvas Games) ── */
+@media(max-width:600px){
+  canvas { touch-action: none; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+
+<canvas id="bg-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
+
+<a href="/index.html" class="back-btn">← AwruduFest</a>
+
+<div id="game-wrap">
+  <div class="game-title">🪢 කඹ ඇදීම</div>
+  <div class="scoreboard">
+    <div class="team-score">
+      <span class="name" id="p1name">ඔබ</span>
+      <span class="pts" id="p1score">0</span>
+    </div>
+    <span class="divider">:</span>
+    <div class="team-score">
+      <span class="pts" id="p2score">0</span>
+      <span class="name" id="p2name">AI</span>
+    </div>
+  </div>
+  <div class="round-info" id="round-info">වටය 1 / 3</div>
+
+  <canvas id="game-canvas"></canvas>
+
+  <div class="power-section">
+    <div class="power-label">ශක්ති මිනුම</div>
+    <div class="power-bar-bg">
+      <div class="power-bar-fill" id="power-bar" style="width:50%"></div>
+      <div class="power-center-line"></div>
+    </div>
+  </div>
+
+  <button class="tap-btn" id="tap-btn" onclick="tap()">👊 ඇදීම!</button>
+  <div class="instructions">ඉක්මනින් ස්පර්ශ/ක්ලික් කරන්න!</div>
+</div>
+
+<!-- Start screen -->
+<div class="overlay" id="start-screen">
+  <div class="emoji-big">🪢</div>
+  <div class="overlay-title">කඹ ඇදීම</div>
+  <div class="overlay-sub">
+    AI ට වඩා ඉක්මනින් button tap කරන්න!<br>
+    <strong style="color:var(--gold)">3 වටයෙන් 2ක්</strong> දිනන්නා ජය ගනී 🏆
+  </div>
+  <button class="overlay-btn" onclick="startGame()">🎮 ක්‍රීඩාව ආරම්භ කරන්න</button>
+</div>
+
+<!-- Round result -->
+<div class="overlay hidden" id="round-screen">
+  <div class="emoji-big" id="round-emoji">🏆</div>
+  <div class="overlay-title" id="round-title">ජය!</div>
+  <div class="overlay-sub" id="round-sub"></div>
+  <button class="overlay-btn" onclick="nextRound()" id="round-btn">ඊළඟ වටය →</button>
+</div>
+
+<!-- Final screen -->
+<div class="overlay hidden" id="final-screen">
+  <div class="emoji-big" id="final-emoji">🏆</div>
+  <div class="overlay-title" id="final-title">ජය!</div>
+  <div class="overlay-sub" id="final-sub"></div>
+  <button class="overlay-btn" onclick="restartGame()">🔄 නැවත ක්‍රීඩා කරන්න</button>
+  <button class="overlay-btn secondary" onclick="window.location.href='/index.html'">← නැවත යන්න</button>
+</div>
+
+<script>
+// ===================== BACKGROUND =====================
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let bgW, bgH;
+const bgStars = [];
+
+function resizeBg() {
+  bgW = bgCanvas.width = window.innerWidth;
+  bgH = bgCanvas.height = window.innerHeight;
+}
+resizeBg();
+window.addEventListener('resize', () => { resizeBg(); resizeGame(); });
+
+for (let i = 0; i < 80; i++) {
+  bgStars.push({
+    x: Math.random(), y: Math.random(),
+    r: Math.random() * 1.5 + 0.3,
+    alpha: Math.random() * 0.5 + 0.2,
+    speed: Math.random() * 0.001 + 0.0003
+  });
+}
+
+function drawBg() {
+  bgCtx.fillStyle = '#1a0a00';
+  bgCtx.fillRect(0, 0, bgW, bgH);
+  // Gradient top
+  const g = bgCtx.createRadialGradient(bgW/2, 0, 0, bgW/2, 0, bgH*0.6);
+  g.addColorStop(0, 'rgba(80,20,0,0.4)');
+  g.addColorStop(1, 'transparent');
+  bgCtx.fillStyle = g;
+  bgCtx.fillRect(0, 0, bgW, bgH);
+
+  bgStars.forEach(s => {
+    s.y -= s.speed;
+    if (s.y < 0) s.y = 1;
+    bgCtx.beginPath();
+    bgCtx.arc(s.x * bgW, s.y * bgH, s.r, 0, Math.PI*2);
+    bgCtx.fillStyle = `rgba(255,215,0,${s.alpha})`;
+    bgCtx.fill();
+  });
+}
+
+// ===================== PARTICLES =====================
+const pCanvas = document.getElementById('particle-canvas');
+const pCtx = pCanvas.getContext('2d');
+pCanvas.width = window.innerWidth;
+pCanvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  pCanvas.width = window.innerWidth;
+  pCanvas.height = window.innerHeight;
+});
+
+const particles = [];
+function spawnParticles(x, y, color, count=20) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 8 + 2;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: Math.random() * 6 + 2,
+      color,
+      life: 1,
+      decay: Math.random() * 0.03 + 0.02
+    });
+  }
+}
+
+function updateParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.3;
+    p.life -= p.decay;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    pCtx.globalAlpha = p.life;
+    pCtx.fillStyle = p.color;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2);
+    pCtx.fill();
+  }
+  pCtx.globalAlpha = 1;
+}
+
+// ===================== GAME =====================
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+// Game state
+let gameActive = false;
+let ropePos = 0.5; // 0 = player wins, 1 = AI wins, 0.5 = center
+let roundTimer = 0;
+let roundDuration = 10; // seconds
+let roundActive = false;
+let playerScore = 0;
+let aiScore = 0;
+let currentRound = 1;
+const totalRounds = 3;
+let lastTime = 0;
+let aiTapInterval = null;
+let tapCooldown = false;
+let shakeAmt = 0;
+
+// Characters
+const playerTeam = ['👨‍🌾', '👩', '🧑'];
+const aiTeam = ['🤖', '👾', '🎮'];
+let playerBounce = [0, 0, 0];
+let aiBounce = [0, 0, 0];
+
+function resizeGame() {
+  const maxW = Math.min(window.innerWidth - 20, 600);
+  const maxH = Math.min(window.innerHeight * 0.45, 220);
+  W = canvas.width = maxW;
+  H = canvas.height = maxH;
+}
+resizeGame();
+
+function drawRope() {
+  const centerX = W / 2;
+  const ropeY = H / 2;
+  const ropeLen = W * 0.7;
+  const startX = centerX - ropeLen / 2;
+  const endX = centerX + ropeLen / 2;
+
+  // Rope marker position
+  const markerX = startX + ropeLen * ropePos;
+
+  // Draw rope segments
+  const segments = 30;
+  ctx.strokeStyle = '#8B6914';
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const x = startX + (endX - startX) * t;
+    const sag = Math.sin(Math.PI * t) * 10;
+    const noise = Math.sin(t * 20 + Date.now() * 0.005) * 2;
+    if (i === 0) ctx.moveTo(x, ropeY + sag + noise);
+    else ctx.lineTo(x, ropeY + sag + noise);
+  }
+  ctx.stroke();
+
+  // Rope texture strands
+  ctx.strokeStyle = 'rgba(255,200,100,0.3)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const x = startX + (endX - startX) * t;
+    const sag = Math.sin(Math.PI * t) * 10;
+    const wave = Math.sin(t * 15 + Date.now() * 0.008) * 3;
+    if (i === 0) ctx.moveTo(x, ropeY + sag + wave);
+    else ctx.lineTo(x, ropeY + sag + wave);
+  }
+  ctx.stroke();
+
+  // Zone markers
+  // Player zone (left)
+  const leftZone = startX + ropeLen * 0.25;
+  ctx.strokeStyle = 'rgba(0,51,153,0.6)';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.moveTo(leftZone, ropeY - 30);
+  ctx.lineTo(leftZone, ropeY + 30);
+  ctx.stroke();
+
+  // AI zone (right)
+  const rightZone = startX + ropeLen * 0.75;
+  ctx.strokeStyle = 'rgba(204,34,0,0.6)';
+  ctx.beginPath();
+  ctx.moveTo(rightZone, ropeY - 30);
+  ctx.lineTo(rightZone, ropeY + 30);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Center marker
+  ctx.strokeStyle = 'rgba(255,215,0,0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(centerX, ropeY - 35);
+  ctx.lineTo(centerX, ropeY + 35);
+  ctx.stroke();
+  // Center diamond
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.moveTo(centerX, ropeY - 40);
+  ctx.lineTo(centerX + 8, ropeY - 30);
+  ctx.lineTo(centerX, ropeY - 20);
+  ctx.lineTo(centerX - 8, ropeY - 30);
+  ctx.closePath();
+  ctx.fill();
+
+  // Flag on rope marker
+  ctx.fillStyle = '#FF0000';
+  ctx.beginPath();
+  ctx.arc(markerX, ropeY, 10, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🚩', markerX, ropeY);
+}
+
+function drawTeams() {
+  const centerX = W / 2;
+  const teamSize = 3;
+  const spacing = 36;
+  const baseY = H * 0.75;
+
+  // Animate bounce on tap
+  for (let i = 0; i < teamSize; i++) {
+    if (playerBounce[i] > 0) playerBounce[i] -= 0.15;
+    if (aiBounce[i] > 0) aiBounce[i] -= 0.15;
+  }
+
+  ctx.font = '28px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Player team (left, leaning right)
+  for (let i = 0; i < teamSize; i++) {
+    const x = centerX * 0.35 - (teamSize - 1 - i) * spacing;
+    const bounceY = -Math.abs(Math.sin(playerBounce[i] * Math.PI)) * 12;
+    ctx.save();
+    ctx.translate(x, baseY + bounceY);
+    ctx.scale(ropePos < 0.5 ? 1.1 : 1, 1);
+    ctx.fillText(playerTeam[i], 0, 0);
+    ctx.restore();
+  }
+
+  // AI team (right, leaning left)
+  for (let i = 0; i < teamSize; i++) {
+    const x = centerX * 1.65 + i * spacing;
+    const bounceY = -Math.abs(Math.sin(aiBounce[i] * Math.PI)) * 12;
+    ctx.save();
+    ctx.translate(x, baseY + bounceY);
+    ctx.scale(ropePos > 0.5 ? 1.1 : 1, 1);
+    ctx.fillText(aiTeam[i], 0, 0);
+    ctx.restore();
+  }
+
+  // Team labels
+  ctx.font = `bold 13px 'Noto Sans Sinhala', sans-serif`;
+  ctx.fillStyle = '#4488FF';
+  ctx.textAlign = 'left';
+  ctx.fillText('ඔබේ කණ්ඩායම', 10, H - 12);
+  ctx.fillStyle = '#FF4444';
+  ctx.textAlign = 'right';
+  ctx.fillText('AI කණ්ඩායම', W - 10, H - 12);
+}
+
+function drawTimer() {
+  if (!roundActive) return;
+  const progress = roundTimer / roundDuration;
+  const timerBarW = W * 0.6;
+  const timerX = (W - timerBarW) / 2;
+  const timerY = 12;
+
+  // BG
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath();
+  ctx.roundRect(timerX, timerY, timerBarW, 12, 6);
+  ctx.fill();
+
+  // Fill
+  const fillColor = progress > 0.6 ? '#2E7D32' : progress > 0.3 ? '#FFD700' : '#CC2200';
+  ctx.fillStyle = fillColor;
+  ctx.beginPath();
+  ctx.roundRect(timerX, timerY, timerBarW * progress, 12, 6);
+  ctx.fill();
+
+  // Time text
+  const remaining = Math.ceil(roundTimer);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(remaining + 's', W / 2, timerY + 26);
+}
+
+function drawPowerIndicator() {
+  const bar = document.getElementById('power-bar');
+  // ropePos: 0 = player side fully, 1 = AI side fully
+  // bar width reflects who's winning
+  const playerPower = (1 - ropePos) * 100;
+  bar.style.width = playerPower + '%';
+
+  // Color hint
+  if (playerPower > 60) bar.style.background = 'linear-gradient(90deg, #2E7D32, #66BB6A)';
+  else if (playerPower > 40) bar.style.background = 'linear-gradient(90deg, #2E7D32, #FFD700, #CC2200)';
+  else bar.style.background = 'linear-gradient(90deg, #CC2200, #FF5722)';
+}
+
+// ===================== AI LOGIC =====================
+let aiStrength = 0.018; // per tap equivalent
+let aiTapRate = 600; // ms
+
+function startAI() {
+  stopAI();
+  // Adjust AI based on round
+  aiStrength = 0.015 + currentRound * 0.005;
+  aiTapRate = Math.max(300, 600 - currentRound * 80);
+
+  aiTapInterval = setInterval(() => {
+    if (!roundActive) return;
+    ropePos = Math.min(1, ropePos + aiStrength);
+    triggerAiBounce();
+  }, aiTapRate);
+}
+
+function stopAI() {
+  if (aiTapInterval) { clearInterval(aiTapInterval); aiTapInterval = null; }
+}
+
+function triggerAiBounce() {
+  const idx = Math.floor(Math.random() * 3);
+  aiBounce[idx] = 1;
+  // Spawn particle on AI side
+  const rect = canvas.getBoundingClientRect();
+  spawnParticles(rect.left + W * 0.75, rect.top + H * 0.5, '#FF4444', 5);
+}
+
+// ===================== PLAYER TAP =====================
+function tap() {
+  if (!roundActive || tapCooldown) return;
+  tapCooldown = true;
+  setTimeout(() => tapCooldown = false, 50);
+
+  const pullStrength = 0.025;
+  ropePos = Math.max(0, ropePos - pullStrength);
+
+  // Bounce animation
+  const idx = Math.floor(Math.random() * 3);
+  playerBounce[idx] = 1;
+  shakeAmt = 3;
+
+  // Particle
+  const rect = canvas.getBoundingClientRect();
+  spawnParticles(rect.left + W * 0.3, rect.top + H * 0.5, '#4488FF', 6);
+}
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'ArrowLeft') {
+    e.preventDefault();
+    tap();
+  }
+});
+
+// ===================== GAME LOOP =====================
+function startGame() {
+  document.getElementById('start-screen').classList.add('hidden');
+  playerScore = 0;
+  aiScore = 0;
+  currentRound = 1;
+  gameActive = true;
+  startRound();
+}
+
+function startRound() {
+  ropePos = 0.5;
+  roundTimer = roundDuration;
+  roundActive = true;
+  document.getElementById('round-info').textContent = `වටය ${currentRound} / ${totalRounds}`;
+  document.getElementById('tap-btn').disabled = false;
+  startAI();
+}
+
+function endRound(playerWon) {
+  roundActive = false;
+  stopAI();
+  document.getElementById('tap-btn').disabled = true;
+
+  const centerX = canvas.getBoundingClientRect().left + W / 2;
+  const centerY = canvas.getBoundingClientRect().top + H / 2;
+
+  if (playerWon) {
+    playerScore++;
+    document.getElementById('p1score').textContent = playerScore;
+    spawnParticles(centerX, centerY, '#FFD700', 40);
+    spawnParticles(centerX, centerY, '#4488FF', 30);
+    showRoundResult(true, 'ඔබ දිනා ගත්තා! 🎉', 'හොඳ ශක්තියක්! ඊළඟ වටයට සූදානම් වන්න.');
+  } else {
+    aiScore++;
+    document.getElementById('p2score').textContent = aiScore;
+    spawnParticles(centerX, centerY, '#FF4444', 40);
+    showRoundResult(false, 'AI දිනා ගත්තා! 😤', 'ඊළඟ වටයේ දී ශක්තිමත් ලෙස ඇදීම!');
+  }
+}
+
+function showRoundResult(won, title, sub) {
+  const isFinal = playerScore === 2 || aiScore === 2 || currentRound >= totalRounds;
+
+  if (isFinal) {
+    setTimeout(() => {
+      const playerWon = playerScore > aiScore;
+      document.getElementById('final-emoji').textContent = playerWon ? '🏆' : '😔';
+      document.getElementById('final-title').textContent = playerWon ? 'ජය ලැබුණා! 🎊' : 'AI ජය ගත්තා';
+      document.getElementById('final-sub').innerHTML = playerWon
+        ? `ඔබ <strong style="color:var(--gold)">${playerScore} : ${aiScore}</strong> ලකුණු වලින් AI ට පරාජය කළා!`
+        : `AI <strong style="color:#FF4444">${aiScore} : ${playerScore}</strong> ලකුණු වලින් ජය ගත්තා. නැවත උත්සාහ කරන්න!`;
+      document.getElementById('final-screen').classList.remove('hidden');
+      if (playerWon) {
+        setTimeout(() => {
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              spawnParticles(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.5,
+                ['#FFD700','#FF4444','#4488FF','#2E7D32'][Math.floor(Math.random()*4)], 30);
+            }, i * 200);
+          }
+        }, 200);
+      }
+    }, 1200);
+  } else {
+    document.getElementById('round-emoji').textContent = won ? '🎉' : '💪';
+    document.getElementById('round-title').textContent = title;
+    document.getElementById('round-sub').textContent = sub;
+    setTimeout(() => document.getElementById('round-screen').classList.remove('hidden'), 600);
+  }
+}
+
+function nextRound() {
+  document.getElementById('round-screen').classList.add('hidden');
+  currentRound++;
+  startRound();
+}
+
+function restartGame() {
+  document.getElementById('final-screen').classList.add('hidden');
+  document.getElementById('p1score').textContent = '0';
+  document.getElementById('p2score').textContent = '0';
+  startGame();
+}
+
+// ===================== MAIN LOOP =====================
+function gameLoop(ts) {
+  requestAnimationFrame(gameLoop);
+  const dt = Math.min((ts - lastTime) / 1000, 0.05);
+  lastTime = ts;
+
+  // Background
+  drawBg();
+
+  // Update particles
+  updateParticles();
+
+  // Canvas shake
+  if (shakeAmt > 0) {
+    shakeAmt *= 0.8;
+    ctx.save();
+    ctx.translate(Math.random() * shakeAmt - shakeAmt/2, Math.random() * shakeAmt - shakeAmt/2);
+  }
+
+  ctx.clearRect(-10, -10, W + 20, H + 20);
+
+  // Round timer
+  if (roundActive) {
+    roundTimer -= dt;
+    if (roundTimer <= 0) {
+      roundTimer = 0;
+      // Determine winner by rope position
+      const playerWon = ropePos < 0.5;
+      endRound(playerWon);
+    }
+  }
+
+  // Rope naturally returns to center slightly (tension)
+  if (roundActive) {
+    const tension = 0.001;
+    ropePos += (0.5 - ropePos) * tension;
+  }
+
+  drawTimer();
+  drawRope();
+  drawTeams();
+  drawPowerIndicator();
+
+  if (shakeAmt > 0.1) ctx.restore();
+}
+
+requestAnimationFrame((ts) => { lastTime = ts; gameLoop(ts); });
+</script>
+</body>
+</html>

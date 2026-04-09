@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>කනා මුට්ටිය 🫙</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Sinhala:ital@0;1&family=Yatra+One&family=Noto+Serif+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:      #D4A017;
+  --gold-lt:   #F5C842;
+  --deep-red:  #7A1515;
+  --maroon:    #5C0A0A;
+  --cream:     #FDF3DC;
+  --dark:      #120800;
+  --dark2:     #1E0D00;
+  --brown:     #6B3310;
+  --terra:     #8B4513;
+  --green:     #2d7a4f;
+  --green-lt:  #3fbb76;
+  --danger:    #c0392b;
+  --border:    rgba(212,160,23,0.25);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--dark);
+  font-family: 'Noto Serif Sinhala', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 30% 0%, rgba(122,21,21,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 100%, rgba(212,160,23,0.1) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A017' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.page-wrapper { max-width: 780px; margin: 0 auto; padding: 16px 16px 40px; }
+
+/* ─── HEADER ─── */
+header { text-align: center; padding: 24px 0 10px; }
+
+.header-border {
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--maroon), var(--gold), var(--maroon), transparent);
+  margin-bottom: 18px;
+  position: relative;
+}
+.header-border::before {
+  content: '❖';
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  color: var(--gold); font-size: 1.2rem;
+  background: var(--dark); padding: 0 10px;
+}
+
+.title-si {
+  font-family: 'Noto Serif Sinhala', serif;
+  font-weight: 900;
+  font-size: clamp(2.6rem, 9vw, 5rem);
+  color: var(--gold-lt);
+  text-shadow: 0 0 40px rgba(212,160,23,0.6), 3px 4px 0 var(--maroon), 6px 7px 0 rgba(92,10,10,0.4);
+  letter-spacing: 3px;
+  line-height: 1.1;
+  animation: titleBreath 4s ease-in-out infinite;
+}
+@keyframes titleBreath {
+  0%,100% { text-shadow: 0 0 40px rgba(212,160,23,0.6), 3px 4px 0 var(--maroon); }
+  50%      { text-shadow: 0 0 80px rgba(212,160,23,0.95), 3px 4px 0 var(--maroon), 0 0 120px rgba(245,200,66,0.2); }
+}
+.title-en {
+  font-family: 'Yatra One', cursive;
+  color: rgba(253,243,220,0.32);
+  font-size: 0.85rem;
+  letter-spacing: 8px;
+  margin-top: 4px;
+}
+
+.kolam-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin: 14px 0;
+  color: var(--gold); opacity: 0.45; font-size: 1.1rem; letter-spacing: 4px;
+}
+.kolam-row::before,.kolam-row::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold) 40%, var(--maroon) 60%, transparent);
+}
+
+/* ─── STATS ─── */
+.stats-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+.stat-box {
+  background: linear-gradient(160deg, rgba(255,248,220,0.06), rgba(255,248,220,0.02));
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 6px; text-align: center; position: relative; overflow: hidden;
+}
+.stat-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.5;
+}
+.stat-label { font-size: 0.58rem; color: var(--gold); opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; }
+.stat-val { font-family: 'Yatra One', cursive; font-size: 1.9rem; color: var(--cream); line-height: 1; margin-top: 2px; }
+.stat-val.sm { font-size: 1.45rem; }
+
+/* ─── TIMER ─── */
+.timer-section { margin-bottom: 14px; display: none; }
+.timer-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: rgba(253,243,220,0.5); margin-bottom: 5px; }
+.timer-label span { font-family:'Yatra One',cursive; font-size:1rem; color:var(--gold-lt); }
+.timer-track {
+  height: 11px; background: rgba(255,255,255,0.05);
+  border-radius: 10px; border: 1px solid var(--border); overflow: hidden;
+}
+.timer-fill {
+  height: 100%; width: 100%; border-radius: 10px;
+  background: linear-gradient(90deg, var(--green-lt) 0%, var(--gold) 50%, var(--danger) 100%);
+  transition: width 0.1s linear;
+}
+.timer-fill.urgent { animation: urgPulse 0.35s ease-in-out infinite; }
+@keyframes urgPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ─── LEVEL TABS ─── */
+.level-tabs {
+  display: flex; gap: 8px;
+  background: rgba(255,248,220,0.03); border: 1px solid var(--border);
+  border-radius: 14px; padding: 6px; margin-bottom: 16px;
+}
+.lvl-tab {
+  flex: 1; padding: 9px 6px; border: 1px solid transparent; border-radius: 10px;
+  background: transparent; cursor: pointer; font-family: 'Noto Serif Sinhala', serif;
+  font-size: 0.78rem; font-weight: 700; color: rgba(253,243,220,0.4); transition: all 0.25s; text-align: center;
+}
+.lvl-tab:hover { color: var(--cream); border-color: var(--border); background: rgba(255,255,255,0.04); }
+.lvl-tab.easy.on   { background: rgba(45,122,79,0.25); border-color: var(--green-lt); color: var(--green-lt); }
+.lvl-tab.medium.on { background: rgba(212,160,23,0.2);  border-color: var(--gold);     color: var(--gold-lt); }
+.lvl-tab.hard.on   { background: rgba(122,21,21,0.3);   border-color: #e55;            color: #ff8080; }
+
+/* ─── ARENA ─── */
+.arena {
+  background: linear-gradient(180deg, rgba(107,51,16,0.06) 0%, transparent 40%), rgba(255,248,220,0.022);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 22px 16px 18px;
+  margin-bottom: 16px; position: relative; overflow: hidden; min-height: 280px;
+}
+.arena::before { content:'᪤'; position:absolute; top:8px; left:12px; font-size:2.5rem; color:var(--gold); opacity:0.06; }
+.arena::after  { content:'᪤'; position:absolute; bottom:8px; right:12px; font-size:2.5rem; color:var(--gold); opacity:0.06; transform:rotate(180deg); }
+.mat { position:absolute; bottom:0; left:0; right:0; height:46px; background:linear-gradient(180deg,transparent,rgba(107,51,16,0.22)); border-top:1px solid rgba(212,160,23,0.07); }
+
+/* ─── INSTRUCTION ─── */
+.instruction {
+  text-align: center; font-family: 'Noto Serif Sinhala', serif;
+  font-size: clamp(0.82rem, 2.8vw, 1rem); color: rgba(253,243,220,0.7);
+  min-height: 50px; display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-bottom: 10px; position: relative; z-index: 3;
+}
+.inst-icon { font-size: 1.4rem; animation: iconPop 2s ease-in-out infinite; }
+@keyframes iconPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+
+/* ─── RESULT ─── */
+.result-msg {
+  text-align: center; font-family: 'Noto Serif Sinhala', serif;
+  font-size: clamp(0.95rem, 3.2vw, 1.4rem);
+  padding: 11px 16px; border-radius: 12px; margin-bottom: 12px;
+  display: none; animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative; z-index: 5;
+}
+@keyframes popIn { from{transform:scale(0.7) translateY(-8px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+.result-msg.win  { background:rgba(45,122,79,0.18); border:1.5px solid rgba(63,187,118,0.45); color:#6ee8a0; }
+.result-msg.lose { background:rgba(192,57,43,0.15); border:1.5px solid rgba(192,57,43,0.4);   color:#ff8070; }
+
+/* ─── POTS ─── */
+.pots-row {
+  display: flex; justify-content: center; align-items: flex-end;
+  gap: clamp(10px, 5vw, 48px); padding: 6px 0 14px;
+  position: relative; z-index: 4;
+}
+.pot-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; position: relative; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s;
+}
+.pot-wrap:hover  { transform: scale(1.07); }
+.pot-wrap:active { transform: scale(0.93); }
+.pot-svg { width: clamp(76px,17vw,116px); height:auto; filter:drop-shadow(0 8px 18px rgba(0,0,0,0.6)); transition:filter 0.3s; }
+.pot-wrap:hover .pot-svg { filter: drop-shadow(0 12px 28px rgba(212,160,23,0.38)); }
+
+.ball {
+  position: absolute; top: 28%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: clamp(20px,4.2vw,30px); height: clamp(20px,4.2vw,30px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fffbcc, #f0c030, #a06000);
+  box-shadow: 0 0 18px rgba(240,192,48,0.9), inset 0 -3px 6px rgba(0,0,0,0.35);
+  display: none; z-index: 10;
+}
+.ball.show { display:block; animation:ballPop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+@keyframes ballPop { from{transform:translate(-50%,-50%) scale(0) rotate(200deg);opacity:0} to{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1} }
+
+.pot-num { font-family:'Yatra One',cursive; font-size:1.3rem; color:rgba(253,243,220,0.28); margin-top:5px; transition:color 0.2s; }
+.pot-wrap:hover .pot-num { color: var(--gold); }
+
+@keyframes potLift  { 0%{transform:translateY(0)} 45%{transform:translateY(-36px)} 100%{transform:translateY(0)} }
+@keyframes potShake { 0%,100%{transform:translate(0)} 20%{transform:translate(-5px,0)} 40%{transform:translate(5px,0)} 60%{transform:translate(-4px,0)} 80%{transform:translate(4px,0)} }
+@keyframes potSway  { 0%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-4px) rotate(-2.5deg)} 75%{transform:translateY(-4px) rotate(2.5deg)} }
+
+.pot-wrap.shuffling .pot-svg { animation: potSway  0.2s ease-in-out infinite; }
+.pot-wrap.correct   .pot-svg { animation: potLift  0.65s ease-out; filter:drop-shadow(0 0 28px rgba(63,187,118,0.9)); }
+.pot-wrap.wrong     .pot-svg { animation: potShake 0.4s ease-out;  filter:drop-shadow(0 0 20px rgba(192,57,43,0.9)); }
+
+/* ─── PLAY BUTTON ─── */
+.btn-divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--maroon) 70%,transparent); margin-bottom:16px; opacity:.3; }
+.btn-wrap { text-align:center; }
+.btn-play {
+  display: inline-block; min-width: 260px;
+  font-family: 'Noto Serif Sinhala', serif; font-size: 1.1rem; font-weight: 700;
+  padding: 15px 36px; border: none; border-radius: 50px; cursor: pointer;
+  background: linear-gradient(135deg, var(--gold-lt) 0%, var(--gold) 50%, #a07010 100%);
+  color: var(--dark);
+  box-shadow: 0 6px 28px rgba(212,160,23,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+  position: relative; overflow: hidden; transition: all 0.25s; letter-spacing: 1px;
+}
+.btn-play:hover  { transform:translateY(-3px); box-shadow:0 10px 38px rgba(212,160,23,0.65),inset 0 1px 0 rgba(255,255,255,0.3); }
+.btn-play:active { transform:translateY(0); }
+.btn-play::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 60%); pointer-events:none; }
+
+/* ─── SCOREBOARD ─── */
+.scoreboard {
+  background: rgba(255,248,220,0.022); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 20px; margin-top: 18px;
+}
+.sb-title {
+  font-family: 'Noto Serif Sinhala', serif; color: var(--gold);
+  font-size: 0.88rem; font-weight: 700; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sb-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.sb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sb-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 12px; background: rgba(255,255,255,0.022); border-radius: 8px;
+  font-size: 0.78rem; color: rgba(253,243,220,0.52);
+}
+.sb-v { font-family:'Yatra One',cursive; font-size:1.2rem; color:var(--cream); }
+
+/* ─── PARTICLES & SOUND BTN ─── */
+.particle { position:fixed; pointer-events:none; z-index:9999; font-size:1.4rem; animation:partFly 1.4s ease-out forwards; }
+@keyframes partFly { 0%{transform:translateY(0) rotate(0) scale(1);opacity:1} 100%{transform:translateY(-260px) rotate(540deg) scale(0.1);opacity:0} }
+
+.sound-btn {
+  position:fixed; top:14px; right:14px; width:38px; height:38px;
+  border-radius:50%; border:1px solid var(--border); background:rgba(255,248,220,0.06);
+  color:var(--gold); font-size:1.1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; z-index:100; backdrop-filter:blur(6px);
+}
+.sound-btn:hover { background:rgba(212,160,23,0.15); border-color:var(--gold); }
+.sound-btn.muted { opacity:0.35; }
+
+@media(max-width:480px) {
+  .stats-strip { grid-template-columns: repeat(2,1fr); }
+  .sb-grid     { grid-template-columns: 1fr; }
+  .level-tabs  { flex-direction: column; }
+}
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Shell Game Mobile ── */
+@media(max-width:600px){
+  .page-wrapper { padding: 12px 10px 28px; }
+  .title-si { font-size: clamp(1.6rem,6vw,2.4rem) !important; }
+  .title-en { font-size: clamp(.55rem,2.5vw,.75rem) !important; letter-spacing:3px; }
+  .stats-strip { grid-template-columns: repeat(2,1fr); gap:8px; }
+  .pot-row { gap: 10px !important; justify-content: center; }
+  .pot { width: clamp(70px,22vw,110px) !important; height: clamp(80px,26vw,130px) !important; }
+  .level-tabs { flex-wrap: wrap; gap:6px; }
+  .sb-grid { grid-template-columns: 1fr; }
+  .sb-row td { font-size:.75rem; padding:6px 8px; }
+}
+@media(max-width:380px){
+  .pot { width: 60px !important; height: 72px !important; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
+
+<div class="page-wrapper">
+  <header>
+    <div class="header-border"></div>
+    <div class="title-si">කනා මුට්ටිය</div>
+    <div class="title-en">THE SHELL GAME · SRI LANKA</div>
+  </header>
+
+  <div class="kolam-row">⁕ ☸ ⁕</div>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat-box"><div class="stat-label">ලකුණු</div><div class="stat-val" id="scoreVal">0</div></div>
+    <div class="stat-box"><div class="stat-label">ජය</div><div class="stat-val" id="winsVal">0</div></div>
+    <div class="stat-box"><div class="stat-label">Round</div><div class="stat-val" id="roundVal">1/3</div></div>
+    <div class="stat-box"><div class="stat-label">Streak 🔥</div><div class="stat-val" id="streakVal">0</div></div>
+    <div class="stat-box"><div class="stat-label">ඉහළම</div><div class="stat-val sm" id="hiVal">0</div></div>
+  </div>
+
+  <!-- Timer -->
+  <div class="timer-section" id="timerSection">
+    <div class="timer-label"><span>⏱ ඉතිරි කාලය</span><span id="timerNum">10</span></div>
+    <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+  </div>
+
+  <!-- Level Tabs -->
+  <div class="level-tabs">
+    <button class="lvl-tab easy"      onclick="setLevel('easy')">🐢 සෙමින්</button>
+    <button class="lvl-tab medium on" onclick="setLevel('medium')">⚡ මධ්‍යම</button>
+    <button class="lvl-tab hard"      onclick="setLevel('hard')">🔥 ඉක්මනින්</button>
+  </div>
+
+  <!-- Arena -->
+  <div class="arena" id="arena">
+    <div class="mat"></div>
+    <div class="instruction" id="instruction">
+      <span class="inst-icon">🫙</span>
+      <span id="instText">ක්‍රීඩා ආරම්භ කිරීමට පහත බොත්තම ඔබන්න!</span>
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="pots-row" id="potsRow"></div>
+  </div>
+
+  <div class="btn-divider"></div>
+  <div class="btn-wrap">
+    <button class="btn-play" id="playBtn" onclick="startGame()">🎮 ක්‍රීඩා ආරම්භ කරන්න</button>
+  </div>
+
+  <!-- Scoreboard -->
+  <div class="scoreboard">
+    <div class="sb-title">📊 ක්‍රීඩා සාරාංශය</div>
+    <div class="sb-grid">
+      <div class="sb-row"><span>දිනූ ගේම්</span><span class="sb-v" id="sbWins">0</span></div>
+      <div class="sb-row"><span>ගේම් ගණන</span><span class="sb-v" id="sbTotal">0</span></div>
+      <div class="sb-row"><span>ජය %</span><span class="sb-v" id="sbPct">0%</span></div>
+      <div class="sb-row"><span>හොඳම Streak</span><span class="sb-v" id="sbBestStreak">0</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════
+   🔊 AUDIO ENGINE (Web Audio API)
+══════════════════════════════ */
+let audioCtx, soundOn = true;
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function tone(freq, type, dur, vol=0.28, delay=0) {
+  if (!soundOn) return;
+  try {
+    const ctx = getCtx();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type; o.frequency.value = freq;
+    const t = ctx.currentTime + delay;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur + 0.05);
+  } catch(e) {}
+}
+
+function noise(dur=0.08, vol=0.1) {
+  if (!soundOn) return;
+  try {
+    const ctx = getCtx();
+    const buf = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    g.gain.setValueAtTime(vol, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
+    src.buffer=buf; src.connect(g); g.connect(ctx.destination); src.start();
+  } catch(e) {}
+}
+
+const SFX = {
+  start:   () => { tone(440,'sine',0.14,0.22); tone(550,'sine',0.18,0.18,0.07); },
+  reveal:  () => { tone(520,'sine',0.2,0.26); tone(780,'triangle',0.24,0.14,0.06); },
+  hide:    () => { tone(350,'sine',0.15,0.2); tone(280,'sine',0.2,0.12,0.07); },
+  shuffle: () => { noise(0.07,0.09); tone(290,'triangle',0.08,0.09); },
+  win:     () => { [523,659,784,1047].forEach((f,i)=>tone(f,'sine',0.28,0.32,i*0.09)); },
+  lose:    () => { tone(320,'sawtooth',0.1,0.22); tone(220,'sawtooth',0.28,0.22,0.09); },
+  tick:    () => tone(860,'square',0.04,0.07),
+  urgTick: () => tone(1100,'square',0.05,0.13),
+};
+
+function toggleSound() {
+  soundOn = !soundOn;
+  const btn = document.getElementById('soundBtn');
+  btn.textContent = soundOn ? '🔊' : '🔇';
+  btn.classList.toggle('muted', !soundOn);
+}
+
+/* ══════════════════════════════
+   🎮 GAME STATE
+══════════════════════════════ */
+const CFG = {
+  easy:   { speed:800,  shuffles:5,  pots:3, timeLimit:13, pts:10 },
+  medium: { speed:450,  shuffles:8,  pots:3, timeLimit:10, pts:20 },
+  hard:   { speed:240,  shuffles:15, pots:4, timeLimit:7,  pts:38 },
+};
+
+let G = {
+  level:'medium', score:0, wins:0, total:0, hi:0,
+  streak:0, bestStreak:0, ballPos:-1,
+  phase:'idle', numPots:3,
+  timerInt:null, timerLeft:0,
+  // Best of 3 rounds
+  roundWins:0, roundLosses:0, roundNum:1,
+};
+const ROUNDS_TO_WIN=2, MAX_ROUNDS=3;
+
+/* ══════════════════════════════
+   🫙 POT SVG
+══════════════════════════════ */
+function makePot(i) {
+  return `<svg class="pot-svg" viewBox="0 0 100 125" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="50" cy="119" rx="35" ry="5.5" fill="rgba(0,0,0,0.32)"/>
+  <path d="M16 92 Q10 72 18 52 Q26 30 50 28 Q74 30 82 52 Q90 72 84 92 Q68 102 50 103 Q32 102 16 92Z" fill="url(#pg${i})"/>
+  <path d="M28 46 Q50 38 72 46 Q66 60 50 61 Q34 60 28 46Z" fill="rgba(255,255,255,0.13)"/>
+  <path d="M20 80 Q35 84 50 84 Q65 84 80 80" fill="none" stroke="rgba(212,160,23,0.22)" stroke-width="1.5"/>
+  <path d="M22 75 Q35 79 50 79 Q65 79 78 75" fill="none" stroke="rgba(212,160,23,0.11)" stroke-width="0.8"/>
+  <circle cx="50" cy="68" r="2.5" fill="rgba(212,160,23,0.2)"/>
+  <circle cx="38" cy="72" r="1.8" fill="rgba(212,160,23,0.13)"/>
+  <circle cx="62" cy="72" r="1.8" fill="rgba(212,160,23,0.13)"/>
+  <circle cx="44" cy="90" r="1.4" fill="rgba(212,160,23,0.1)"/>
+  <circle cx="56" cy="90" r="1.4" fill="rgba(212,160,23,0.1)"/>
+  <ellipse cx="50" cy="30" rx="34" ry="10" fill="url(#lg${i})"/>
+  <path d="M16 30 Q50 36 84 30" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+  <ellipse cx="50" cy="19" rx="9" ry="5.5" fill="url(#kg${i})"/>
+  <ellipse cx="50" cy="17" rx="8.5" ry="4.5" fill="rgba(255,255,255,0.11)"/>
+  <defs>
+    <linearGradient id="pg${i}" x1="0%" y1="0%" x2="100%" y2="110%">
+      <stop offset="0%"   stop-color="#B8601E"/>
+      <stop offset="38%"  stop-color="#8B4513"/>
+      <stop offset="100%" stop-color="#3E1500"/>
+    </linearGradient>
+    <linearGradient id="lg${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#C8783A"/>
+      <stop offset="100%" stop-color="#5A2000"/>
+    </linearGradient>
+    <linearGradient id="kg${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#D8884A"/>
+      <stop offset="100%" stop-color="#7B3200"/>
+    </linearGradient>
+  </defs>
+</svg>`;
+}
+
+/* ══════════════════════════════
+   🏗️ INIT
+══════════════════════════════ */
+function initPots() {
+  const row = document.getElementById('potsRow');
+  G.numPots = CFG[G.level].pots;
+  row.innerHTML = '';
+  for (let i=0; i<G.numPots; i++) {
+    const w = document.createElement('div');
+    w.className = 'pot-wrap'; w.id = `pw${i}`;
+    w.innerHTML = `${makePot(i)}<div class="ball" id="bl${i}"></div><div class="pot-num">${i+1}</div>`;
+    w.onclick = function(){ const row=document.getElementById('potsRow'); pickPot([...row.children].indexOf(this)); };
+    row.appendChild(w);
+  }
+}
+
+function setLevel(lv) {
+  G.level = lv;
+  G.roundWins=0; G.roundLosses=0; G.roundNum=1; G.streak=0;
+  document.querySelectorAll('.lvl-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelector(`.lvl-tab.${lv}`).classList.add('on');
+  updateUI();
+  if (G.phase==='idle') initPots();
+}
+
+/* ══════════════════════════════
+   🛠️ HELPERS
+══════════════════════════════ */
+function setInst(text, icon='🫙') {
+  document.getElementById('instText').textContent = text;
+  document.getElementById('instruction').querySelector('.inst-icon').textContent = icon;
+}
+
+function showResult(text, type) {
+  const el = document.getElementById('resultMsg');
+  el.textContent=text; el.className=`result-msg ${type}`; el.style.display='block';
+  setTimeout(()=>{ el.style.display='none'; }, 2700);
+}
+
+function getBallEl(pos) {
+  // pos = DOM position index
+  const row = document.getElementById('potsRow');
+  const pots = [...row.children];
+  return pots[pos] ? pots[pos].querySelector('.ball') : null;
+}
+function showBall(pos) {
+  const b = getBallEl(pos);
+  if(b){ b.style.display='block'; b.classList.add('show'); }
+}
+function hideBall(pos) {
+  const b = getBallEl(pos);
+  if(b){ b.classList.remove('show'); b.style.display='none'; }
+}
+function hideAllBalls() {
+  document.querySelectorAll('.ball').forEach(b=>{b.classList.remove('show');b.style.display='none';});
+}
+
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+/* ══════════════════════════════
+   ⏱️ TIMER
+══════════════════════════════ */
+function startTimer(seconds) {
+  stopTimer();
+  G.timerLeft = seconds;
+  const sec = document.getElementById('timerSection');
+  const fill = document.getElementById('timerFill');
+  const num  = document.getElementById('timerNum');
+  sec.style.display='block';
+  fill.style.width='100%';
+  fill.classList.remove('urgent');
+  num.textContent = seconds;
+
+  G.timerInt = setInterval(()=>{
+    G.timerLeft -= 0.1;
+    const pct = Math.max(0, G.timerLeft/seconds*100);
+    fill.style.width = pct+'%';
+    num.textContent = Math.ceil(G.timerLeft);
+
+    if (G.timerLeft <= 3)           { fill.classList.add('urgent'); SFX.urgTick(); }
+    else if (G.timerLeft % 1 < 0.15) { SFX.tick(); }
+
+    if (G.timerLeft <= 0) { stopTimer(); if(G.phase==='picking') timeOut(); }
+  }, 100);
+}
+
+function stopTimer() {
+  clearInterval(G.timerInt);
+  document.getElementById('timerSection').style.display = 'none';
+  document.getElementById('timerFill').classList.remove('urgent');
+}
+
+async async function timeOut() {
+  G.phase='revealed'; G.total++; G.streak=0; G.roundLosses++;
+  SFX.lose();
+  showBall(G.ballPos);
+  showResult(`⏰ Round ${G.roundNum} - කාලය ඉකුත්! No.${G.ballPos+1} යට`, 'lose');
+  updateUI();
+  await sleep(2200);
+  hideAllBalls();
+  G.roundNum++;
+  if(G.roundLosses>=ROUNDS_TO_WIN){
+    showResult('💔 Match End — නැවත ක්‍රීඩා!','lose');
+    await sleep(1600);
+    resetRounds();
+  } else if(G.roundNum>MAX_ROUNDS){
+    showResult(`🤝 Match ඉවරයි — ${G.roundWins}/${MAX_ROUNDS} ජය`,'win');
+    await sleep(1600);
+    resetRounds();
+  } else {
+    G.phase='idle';
+    document.getElementById('playBtn').style.display='block';
+    setInst(`Round ${G.roundNum} — ▶ ක්‍රීඩා!`, '🎮');
+  }
+}
+
+/* ══════════════════════════════
+   🔀 SHUFFLE
+══════════════════════════════ */
+async function swapPots(a, b, dur) {
+  // Get elements by CURRENT DOM position (re-query each time)
+  const row = document.getElementById('potsRow');
+  const pots = [...row.children];
+  const elA = pots[a], elB = pots[b];
+  if(!elA||!elB) return;
+
+  elA.classList.add('shuffling'); elB.classList.add('shuffling');
+  const rA=elA.getBoundingClientRect(), rB=elB.getBoundingClientRect();
+  const dx = rB.left - rA.left;
+
+  elA.style.transition=`transform ${dur}ms cubic-bezier(0.4,0,0.6,1)`;
+  elB.style.transition=`transform ${dur}ms cubic-bezier(0.4,0,0.6,1)`;
+  elA.style.transform=`translateX(${dx}px)`;
+  elB.style.transform=`translateX(${-dx}px)`;
+  await sleep(dur);
+
+  elA.style.transition='none'; elB.style.transition='none';
+  elA.style.transform=''; elB.style.transform='';
+  elA.classList.remove('shuffling'); elB.classList.remove('shuffling');
+
+  // Physical DOM swap only - NO ID changes
+  const nxt=elA.nextSibling;
+  if(nxt===elB){ row.insertBefore(elB,elA); }
+  else{ const nxtB=elB.nextSibling; row.insertBefore(elB,nxt); row.insertBefore(elA,nxtB||null); }
+
+  // Renumber pots by new DOM position
+  [...row.children].forEach((el,i)=>{
+    el.querySelector('.pot-num').textContent=i+1;
+  });
+}
+
+async function doShuffle(count, speed) {
+  const row=document.getElementById('potsRow');
+  for (let i=0; i<count; i++) {
+    const n=[...row.children].length;
+    let a=Math.floor(Math.random()*n), b;
+    do{ b=Math.floor(Math.random()*n); }while(b===a);
+    SFX.shuffle();
+    // Update ballPos BEFORE swap
+    const prevBall=G.ballPos;
+    await swapPots(a, b, speed);
+    // After DOM swap: ball moves with its pot — track new DOM index
+    if(prevBall===a) G.ballPos=b;
+    else if(prevBall===b) G.ballPos=a;
+    await sleep(speed*0.11);
+  }
+}
+
+/* ══════════════════════════════
+   🎮 MAIN GAME FLOW
+══════════════════════════════ */
+async function startGame() {
+  if (G.phase!=='idle') return;
+  // Auto-reset if match already over
+  if(G.roundNum>MAX_ROUNDS){ G.roundWins=0; G.roundLosses=0; G.roundNum=1; G.streak=0; }
+  G.phase='showing';
+  document.getElementById('playBtn').style.display='none';
+  document.getElementById('resultMsg').style.display='none';
+
+  const cfg = CFG[G.level];
+  initPots();
+  G.numPots = cfg.pots;
+  G.ballPos = Math.floor(Math.random()*G.numPots);
+
+  SFX.start();
+  setInst('බෝලය කොහේද? හොඳින් බලා ගන්න!', '👁️');
+
+  await sleep(380);
+  showBall(G.ballPos); SFX.reveal();
+  await sleep(1350);
+  hideBall(G.ballPos); SFX.hide();
+  await sleep(500);
+
+  setInst('මාරු වෙනවා... ඇස නොහරින්න!', '🔄');
+  G.phase='shuffling';
+  await doShuffle(cfg.shuffles, cfg.speed);
+
+  setInst('දැන් ගන්න! බෝලය ඇති මුට්ටිය ස්පර්ශ කරන්න!', '👆');
+  G.phase='picking';
+  startTimer(cfg.timeLimit);
+}
+
+async function pickPot(idx) {
+  if (G.phase!=='picking') return;
+  stopTimer();
+  G.phase='revealed'; G.total++;
+  // idx = DOM position of clicked pot
+  const row=document.getElementById('potsRow');
+  const pots=[...row.children];
+  const correct = (idx===G.ballPos);
+  const pw = pots[idx];
+
+  if (correct) {
+    G.wins++; G.roundWins++; G.streak++;
+    if (G.streak>G.bestStreak) G.bestStreak=G.streak;
+    const pts = CFG[G.level].pts + Math.min(G.streak*5, 30);
+    G.score+=pts; if(G.score>G.hi) G.hi=G.score;
+    pw.classList.add('correct');
+    showBall(idx); SFX.win(); celebrate(pw);
+    const sk = G.streak>1 ? ` · ${G.streak}x 🔥` : '';
+    showResult(`🎉 Round ${G.roundNum} ජය! +${pts}${sk}`, 'win');
+  } else {
+    G.streak=0; G.roundLosses++;
+    pw.classList.add('wrong');
+    showBall(G.ballPos); SFX.lose();
+    showResult(`😔 Round ${G.roundNum} වැරදි! No.${G.ballPos+1} යට තිබුණා`, 'lose');
+  }
+
+  updateUI();
+  await sleep(2200);
+  pw.classList.remove('correct','wrong');
+  hideAllBalls();
+
+  G.roundNum++;
+
+  // Check match result
+  if(G.roundWins>=ROUNDS_TO_WIN){
+    // WON THE MATCH
+    G.score+=50; if(G.score>G.hi) G.hi=G.score;
+    updateUI();
+    showResult(`🏆 ජය! ${G.roundWins}/${MAX_ROUNDS} rounds ජය! +50 bonus!`, 'win');
+    SFX.win();
+    await sleep(2500);
+    resetRounds();
+  } else if(G.roundLosses>=ROUNDS_TO_WIN){
+    // LOST THE MATCH
+    showResult(`💔 Match End — ${G.roundWins}/${MAX_ROUNDS} ජය. නැවත!`, 'lose');
+    SFX.lose();
+    await sleep(2500);
+    resetRounds();
+  } else if(G.roundNum>MAX_ROUNDS){
+    // Draw — all 3 rounds done
+    showResult(`🤝 ${G.roundWins}/${MAX_ROUNDS} — Match ඉවරයි!`, 'win');
+    await sleep(2000);
+    resetRounds();
+  } else {
+    // Next round
+    G.phase='idle';
+    document.getElementById('playBtn').style.display='block';
+    setInst(`Round ${G.roundNum} — ▶ ක්‍රීඩා!`, '🎮');
+  }
+}
+
+function resetRounds(){
+  G.roundWins=0; G.roundLosses=0; G.roundNum=1;
+  G.streak=0;
+  G.phase='idle';
+  document.getElementById('playBtn').style.display='block';
+  const rm=document.getElementById('resultMsg');
+  if(rm){rm.style.display='none';}
+  updateUI();
+  setInst('නව Match — Round 1 ▶', '🏆');
+}
+
+/* ══════════════════════════════
+   🎊 CELEBRATE
+══════════════════════════════ */
+function celebrate(el) {
+  const emojis=['🎉','⭐','✨','🏆','🌟','🎊','💛','🎶'];
+  const r=el.getBoundingClientRect();
+  for(let i=0;i<12;i++) {
+    setTimeout(()=>{
+      const p=document.createElement('div'); p.className='particle';
+      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      p.style.cssText=`left:${r.left+r.width/2+(Math.random()-.5)*110}px;top:${r.top+r.height*.35}px;animation-delay:${Math.random()*.28}s`;
+      document.body.appendChild(p); setTimeout(()=>p.remove(),1600);
+    },i*60);
+  }
+}
+
+/* ══════════════════════════════
+   📊 UPDATE UI
+══════════════════════════════ */
+function updateUI() {
+  document.getElementById('scoreVal').textContent    = G.score;
+  document.getElementById('winsVal').textContent     = G.wins;
+  document.getElementById('streakVal').textContent   = G.streak;
+  const rdEl=document.getElementById('roundVal');
+  if(rdEl) rdEl.textContent=`${Math.min(G.roundNum,MAX_ROUNDS)}/${MAX_ROUNDS}`;
+  document.getElementById('hiVal').textContent       = G.hi;
+  document.getElementById('sbWins').textContent      = G.wins;
+  document.getElementById('sbTotal').textContent     = G.total;
+  document.getElementById('sbPct').textContent       = G.total ? Math.round(G.wins/G.total*100)+'%' : '0%';
+  document.getElementById('sbBestStreak').textContent= G.bestStreak;
+}
+
+// ── Boot ──
+initPots(); updateUI();
+
+// Browser back button → AwruduFest main site
+window.addEventListener('popstate', function(e){
+  window.location.href = '/index.html';
+});
+// Push a state so back button works
+if(window.history && window.history.pushState){
+  window.history.pushState({page:'game'}, '', window.location.href);
+}
+
+</script>
+</body>
+</html>

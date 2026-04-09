@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>අවුරුදු රසකැවිලි 🍛 — AwruduFest by Feature Designz</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@300;400;600;700;900&family=Yatra+One&family=Gemunu+Libre:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A017;--gold-lt:#F5C842;--maroon:#5C0A0A;--orange:#E8640A;--cream:#FDF3DC;--dark:#0A0500;--green:#27AE60;--green-dk:#1B6B3A;--border:rgba(212,160,23,.18);--border2:rgba(212,160,23,.42);--glass:rgba(255,248,220,.035);--glass2:rgba(255,248,220,.07);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Serif Sinhala',serif;background:var(--dark);color:var(--cream);overflow-x:hidden;cursor:auto;background-image:radial-gradient(ellipse 60% 40% at 20% 0%,rgba(39,174,96,.14) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(212,160,23,.1) 0%,transparent 70%);}
+a{color:inherit;text-decoration:none;}button{cursor:pointer;border:none;outline:none;}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(10,5,0,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.tb-back{display:flex;align-items:center;gap:9px;font-family:'Gemunu Libre',cursive;font-size:.8rem;letter-spacing:1.5px;color:rgba(253,243,220,.45);transition:color .2s;}
+.tb-back:hover{color:var(--gold-lt);}
+.tb-logo{font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold-lt);}
+.tb-share{font-family:'Gemunu Libre',cursive;font-size:.75rem;letter-spacing:1.5px;padding:8px 20px;border-radius:50px;background:linear-gradient(135deg,#4CAF50,#27AE60);color:#fff;font-weight:700;transition:all .2s;}
+.tb-share:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(39,174,96,.4);}
+.hero{text-align:center;padding:70px 24px 44px;position:relative;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Gemunu Libre',cursive;font-size:.68rem;letter-spacing:3px;color:var(--green);background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);border-radius:50px;padding:5px 18px;margin-bottom:22px;}
+.hero-title{font-family:'Yatra One',cursive;font-size:clamp(2rem,7vw,4.5rem);background:linear-gradient(135deg,#e0ffe0,var(--green) 40%,var(--gold) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(39,174,96,.3));margin-bottom:10px;}
+.hero-desc{font-size:clamp(.82rem,1.8vw,.96rem);color:rgba(253,243,220,.5);line-height:1.85;max-width:580px;margin:0 auto 26px;}
+.cat-bar{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;padding:12px 24px 30px;background:rgba(10,5,0,.85);backdrop-filter:blur(12px);position:sticky;top:65px;z-index:50;}
+.cat-tab{font-family:'Gemunu Libre',cursive;font-size:.73rem;letter-spacing:1.5px;padding:9px 22px;border-radius:50px;border:1.5px solid var(--border);background:transparent;color:rgba(253,243,220,.5);transition:all .2s;}
+.cat-tab.active,.cat-tab:hover{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.5);color:#5DE89A;}
+.recipes-wrap{max-width:1180px;margin:0 auto;padding:40px 24px 80px;}
+.cat-sec{margin-bottom:58px;}
+.cat-hed{font-family:'Yatra One',cursive;font-size:clamp(1.2rem,3vw,1.8rem);color:var(--gold-lt);margin-bottom:5px;display:flex;align-items:center;gap:12px;}
+.cat-hed::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(39,174,96,.3),transparent);}
+.cat-sub{font-size:.76rem;color:rgba(253,243,220,.36);margin-bottom:24px;}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:20px;}
+.rcard{background:var(--glass);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;cursor:pointer;}
+.rcard:hover{transform:translateY(-7px);border-color:rgba(39,174,96,.45);box-shadow:0 20px 55px rgba(39,174,96,.12);}
+.rcard-thumb{height:165px;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;overflow:hidden;}
+.rcard-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(10,5,0,.88));}
+.rcard-ico{position:relative;z-index:1;filter:drop-shadow(0 4px 14px rgba(0,0,0,.4));animation:rFloat 4s ease-in-out infinite;}
+@keyframes rFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.rcard-body{padding:18px 20px 20px;}
+.rcard-label{font-family:'Gemunu Libre',cursive;font-size:.56rem;letter-spacing:2px;color:#5DE89A;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);border-radius:50px;padding:2px 11px;display:inline-block;margin-bottom:8px;}
+.rcard-title{font-family:'Yatra One',cursive;font-size:1.18rem;color:var(--cream);margin-bottom:5px;}
+.rcard-en{font-size:.7rem;color:rgba(253,243,220,.35);margin-left:6px;}
+.rcard-desc{font-size:.75rem;color:rgba(253,243,220,.45);line-height:1.65;margin-bottom:13px;}
+.rcard-foot{display:flex;align-items:center;gap:12px;}
+.rcard-meta{font-size:.67rem;color:rgba(253,243,220,.33);display:flex;gap:12px;flex:1;}
+.rcard-btn{font-family:'Gemunu Libre',cursive;font-size:.7rem;letter-spacing:1px;padding:7px 17px;border-radius:50px;background:linear-gradient(135deg,var(--green),var(--green-dk));color:#fff;transition:all .2s;}
+.rcard:hover .rcard-btn{box-shadow:0 4px 16px rgba(39,174,96,.4);}
+/* bg thumbs */
+.bg-kb{background:radial-gradient(ellipse at 30% 30%,#2a4a20,#0a1808);}
+.bg-ko{background:radial-gradient(ellipse at 30% 30%,#4a2a00,#1a0800);}
+.bg-al{background:radial-gradient(ellipse at 30% 30%,#3a1a00,#1a0800);}
+.bg-kv{background:radial-gradient(ellipse at 30% 30%,#4a3000,#1a1000);}
+.bg-id{background:radial-gradient(ellipse at 30% 30%,#003a30,#001510);}
+.bg-pn{background:radial-gradient(ellipse at 30% 30%,#3a2a00,#140e00);}
+.bg-kd{background:radial-gradient(ellipse at 30% 30%,#2a3a4a,#050e18);}
+.bg-ck{background:radial-gradient(ellipse at 30% 30%,#3a1800,#120700);}
+.bg-oj{background:radial-gradient(ellipse at 30% 30%,#3a1a00,#0f0800);}
+.bg-lv{background:radial-gradient(ellipse at 30% 30%,#3a1a2a,#140008);}
+/* modal */
+#recipeModal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.96);overflow-y:auto;padding:20px;}
+#recipeModal.open{display:block;}
+.rm-box{max-width:740px;margin:0 auto;background:linear-gradient(135deg,rgba(39,174,96,.07),rgba(10,5,0,.97));border:1px solid rgba(39,174,96,.28);border-radius:24px;padding:36px;position:relative;}
+.rm-close{display:block;margin-left:auto;margin-bottom:20px;font-family:'Gemunu Libre',cursive;font-size:.75rem;letter-spacing:1.5px;padding:8px 20px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--gold);cursor:pointer;transition:all .2s;}
+.rm-close:hover{border-color:var(--border2);}
+.rm-icon{font-size:3.8rem;display:block;text-align:center;margin-bottom:14px;}
+.rm-title{font-family:'Yatra One',cursive;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--gold-lt);text-align:center;margin-bottom:4px;}
+.rm-en{font-family:'Gemunu Libre',cursive;font-size:.68rem;letter-spacing:3px;color:#5DE89A;text-align:center;margin-bottom:22px;}
+.rm-metas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.rm-m{text-align:center;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:12px;padding:11px 18px;}
+.rm-ml{font-family:'Gemunu Libre',cursive;font-size:.56rem;letter-spacing:2px;color:rgba(253,243,220,.35);margin-bottom:3px;}
+.rm-mv{font-family:'Yatra One',cursive;font-size:.9rem;color:var(--gold-lt);}
+.rm-sh{font-family:'Yatra One',cursive;font-size:1.05rem;color:var(--gold);margin:22px 0 12px;padding-bottom:7px;border-bottom:1px solid rgba(212,160,23,.2);}
+.rm-ings{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.rm-ings li{display:flex;align-items:center;gap:10px;font-size:.83rem;color:rgba(253,243,220,.72);padding:9px 13px;background:rgba(0,0,0,.2);border-radius:9px;border-left:3px solid var(--green);}
+.rm-amt{font-family:'Yatra One',cursive;color:var(--gold-lt);min-width:85px;font-size:.88rem;}
+.rm-steps{display:flex;flex-direction:column;gap:12px;}
+.rm-step{display:flex;gap:13px;align-items:flex-start;padding:13px;background:rgba(0,0,0,.18);border-radius:11px;border:1px solid rgba(39,174,96,.1);}
+.rm-sn{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-dk));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Yatra One',cursive;font-size:.88rem;flex-shrink:0;}
+.rm-st{font-size:.81rem;color:rgba(253,243,220,.68);line-height:1.75;}
+.rm-tip{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.22);border-radius:11px;padding:14px;margin-top:18px;font-size:.78rem;color:rgba(253,243,220,.52);line-height:1.7;}
+.reveal{opacity:0;transform:translateY(22px);transition:all .6s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media(max-width:700px){.topbar{padding:12px 18px;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="tb-back">← AwruduFest</a>
+  <div class="tb-logo">🎊 AwruduFest.lk</div>
+  <button class="tb-share" onclick="shareP()">📤 Share</button>
+</div>
+
+<div class="hero reveal">
+  <div class="hero-eyebrow">🍛 RECIPES · වට්ටෝරු</div>
+  <h1 class="hero-title">අවුරුදු රසකැවිලි</h1>
+  <p class="hero-desc">සිංහල අවුරුදු සාම්ප්‍රදායික ආහාර — කිරිබත්, කොකිස්, කැවුම්, අල්වා!<br>Step-by-step recipes with ingredients in Sinhala & English.</p>
+</div>
+
+<div class="cat-bar" id="catBar">
+  <button class="cat-tab active" onclick="filterCat('all',this)">🍽️ සියල්ල</button>
+  <button class="cat-tab" onclick="filterCat('kiribath',this)">🍚 කිරි ආශ්‍රිත</button>
+  <button class="cat-tab" onclick="filterCat('sweet',this)">🍯 රසකැවිලි</button>
+  <button class="cat-tab" onclick="filterCat('fried',this)">🥙 බදින ලද</button>
+  <button class="cat-tab" onclick="filterCat('drink',this)">🥤 බීම</button>
+</div>
+
+<div class="recipes-wrap" id="recipesWrap"></div>
+
+<div id="recipeModal">
+  <div class="rm-box">
+    <button class="rm-close" onclick="closeModal()">✕ Close</button>
+    <div id="rmBody"></div>
+  </div>
+</div>
+
+<script>
+const R=[
+  {id:'kiribath',cat:'kiribath',icon:'🍚',bg:'bg-kb',title:'කිරිබත්',en:'Milk Rice',time:'30 min',serves:'6',diff:'Easy',desc:'Creamy rice cooked in coconut milk — the most sacred Avurudu food. Made at the auspicious nakath time.',
+   ing:[{a:'2 cups',n:'Raw rice (Samba/Keeri)'}   ,{a:'2 cans',n:'Thick coconut milk'}  ,{a:'2 tsp',n:'Salt'},{a:'2 cups',n:'Water'},{a:'2 tbsp',n:'Ghee (optional)'}],
+   steps:['Wash rice until water runs clear. Soak 15 minutes.','Cook rice with water on medium heat until water absorbs (~12 min).','Add coconut milk and salt. Stir well.','Cook on low heat, stirring, until creamy and thick (8-10 min).','Transfer to tray, flatten, cut into diamond shapes.','Serve with Lunu Miris or jaggery.'],
+   tip:'Make at the nakath time for authenticity! Add second can of coconut milk at end for extra richness.'},
+  {id:'kokis',cat:'fried',icon:'🌸',bg:'bg-ko',title:'කොකිස්',en:'Kokis (Crispy Flowers)',time:'45 min',serves:'20',diff:'Medium',desc:'Traditional crispy flower-shaped fritters — the most iconic Avurudu sweet. Uses a special brass mold.',
+   ing:[{a:'2 cups',n:'Rice flour'}  ,{a:'1 cup',n:'Thick coconut milk'},{a:'1 cup',n:'Water'},{a:'2',n:'Eggs'},{a:'1 tsp',n:'Turmeric'},{a:'1 tsp',n:'Salt'},{a:'3 cups',n:'Coconut oil for frying'}],
+   steps:['Mix rice flour, turmeric, salt, eggs and coconut milk into smooth batter.','Add water to get medium-thin consistency.','Heat oil in deep pan until 350°F / hot. Place mold in oil to heat.','Dip hot mold into batter (3/4 submerged). Place in hot oil.','Gently shake mold — kokis should release. Fry until golden.','Drain on paper towels. Repeat until batter is done.'],
+   tip:'The mold MUST be very hot before dipping in batter — this is the secret to perfect kokis!'},
+  {id:'kavum',cat:'sweet',icon:'🍩',bg:'bg-kv',title:'කැවුම්',en:'Oil Cake (Kavum)',time:'60 min',serves:'25',diff:'Medium',desc:'Traditional Sri Lankan oil cake — golden crispy outside, soft inside. The quintessential Avurudu sweet.',
+   ing:[{a:'2 cups',n:'Rice flour (roasted)'}  ,{a:'1 cup',n:'Treacle (Kithul Pani)'},{a:'1 tsp',n:'Turmeric'},{a:'½ tsp',n:'Salt'},{a:'2 cups',n:'Coconut oil for frying'},{a:'¼ cup',n:'Warm water'}],
+   steps:['Roast rice flour in dry pan until lightly golden and fragrant.','Mix treacle, turmeric and salt into flour.','Add warm water gradually, knead into soft but firm dough.','Shape into ovals with wet hands (traditional torpedo shape).','Heat coconut oil. Deep fry kavum on medium-low heat.','Fry 8-10 minutes, turning once, until deep golden.'],
+   tip:'Use kithul treacle (not sugar) for authentic flavor. Medium-low heat ensures even cooking inside.'},
+
+  {id:'idiappa',cat:'kiribath',icon:'🌀',bg:'bg-id',title:'ඉදිඅප්ප',en:'Idiappa (String Hoppers)',time:'35 min',serves:'4',diff:'Easy',desc:'Delicate steamed rice noodle nests — eaten for breakfast with coconut milk and pol sambol.',
+   ing:[{a:'2 cups',n:'Fine rice flour'}  ,{a:'1 tsp',n:'Salt'},{a:'1 cup',n:'Hot water'},{a:'1 tbsp',n:'Coconut oil'}],
+   steps:['Mix rice flour and salt. Add hot water gradually, knead into soft dough.','Add coconut oil and knead until smooth and pliable.','Fill idiappa press with dough.','Press onto idiappa mats in circular patterns.','Steam for 8-10 minutes until cooked through.','Serve hot with coconut milk and pol sambol.'],
+   tip:'Dough should be soft but not sticky. Use hot water for best texture.'},
+
+
+  {id:'lavariya',cat:'sweet',icon:'🫘',bg:'bg-lv',title:'ළැවරිය',en:'Lavariya (ළැවරිය)',time:'55 min',serves:'15',diff:'Medium',desc:'Steamed sweet parcels — rice flour wrapped around coconut and treacle filling in banana leaves.',
+   ing:[{a:'2 cups',n:'Rice flour'}  ,{a:'2 cups',n:'Grated coconut (fresh)'},{a:'½ cup',n:'Kithul treacle'},{a:'½ tsp',n:'Cardamom powder'},{a:'Salt',n:'To taste'},{a:'Banana leaves',n:'For wrapping'}],
+   steps:['Mix grated coconut with treacle and cardamom to make filling.','Add boiling water to rice flour and salt, knead into pliable dough.','Divide dough into balls. Flatten each into small circles.','Place filling in center. Fold and seal edges well.','Wrap each in a piece of banana leaf.','Steam for 20-25 minutes until cooked.'],
+   tip:'Warm banana leaves before wrapping to make them pliable and to add wonderful flavor!'},
+  {id:'cake',cat:'sweet',icon:'🎂',bg:'bg-ck',title:'කේක්',en:'Sri Lankan Butter Cake',time:'55 min',serves:'12',diff:'Medium',desc:'Soft, moist Sri Lankan butter cake — golden, rich and aromatic. Perfect for Avurudu celebrations and gifting.',
+   ing:[{a:'2 cups',n:'All-purpose flour'},{a:'1 cup',n:'Butter (softened)'},{a:'1 cup',n:'Sugar'},{a:'4',n:'Eggs'},{a:'½ cup',n:'Milk'},{a:'2 tsp',n:'Vanilla extract'},{a:'2 tsp',n:'Baking powder'},{a:'½ tsp',n:'Salt'},{a:'1 tsp',n:'Rose essence (optional)'}],
+   steps:['Preheat oven to 180°C (350°F). Grease and flour a 9-inch cake pan.','Beat softened butter and sugar together until light and fluffy (5-6 min).','Add eggs one at a time, beating well after each addition.','Add vanilla essence and rose essence. Mix well.','Sift flour, baking powder and salt together.','Fold flour mixture into butter mixture alternating with milk — do not over-mix.','Pour into prepared pan. Tap lightly to remove air bubbles.','Bake 40-45 minutes until golden and a skewer comes out clean.','Cool in pan 10 min. Turn out and cool completely before slicing.'],
+   tip:'Room temperature butter and eggs are essential! Cold butter won\'t cream properly. Rose essence gives authentic Sri Lankan flavour.'},
+  {id:'ojuice',cat:'drink',icon:'🍊',bg:'bg-oj',title:'පලතුරු බීම',en:'Fresh Orange Juice',time:'10 min',serves:'4',diff:'Easy',desc:'Fresh squeezed orange juice — bright, refreshing and naturally sweet. The perfect Avurudu celebration drink for all ages.',
+   ing:[{a:'8',n:'Ripe oranges (Sour oranges / Embul dodang)'},{a:'2 tbsp',n:'Sugar or honey (adjust to taste)'},{a:'½ tsp',n:'Salt (tiny pinch)'},{a:'1 cup',n:'Cold water'},{a:'Ice cubes',n:'To serve'},{a:'Mint leaves',n:'For garnish (optional)'}],
+   steps:['Wash oranges well. Roll on counter to loosen juice.','Cut in half and squeeze each orange using a citrus juicer.','Strain juice through fine sieve to remove seeds and pulp.','Add cold water to dilute slightly (or use as-is for stronger flavor).','Add sugar/honey and tiny pinch of salt. Stir until dissolved.','Taste and adjust sweetness.','Serve immediately over ice. Garnish with mint or orange slice.'],
+   tip:'A tiny pinch of salt enhances the sweetness naturally. Sri Lankan sour oranges (embul dodang) give the most authentic tropical flavor!'},
+];
+
+const CATS={kiribath:{label:'🍚 කිරි ආශ්‍රිත ආහාර',sub:'Milk & Rice based — the most sacred Avurudu foods'},sweet:{label:'🍯 රසකැවිලි',sub:'Traditional sweets — the soul of Avurudu'},fried:{label:'🥙 බදින ලද',sub:'Deep fried delights'},drink:{label:'🥤 බීම / Drinks',sub:'Fresh & traditional Avurudu beverages'}};
+let CUR='all';
+
+function filterCat(c,btn){CUR=c;document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');render();}
+
+function render(){
+  const wrap=document.getElementById('recipesWrap');
+  const list=CUR==='all'?R:R.filter(r=>r.cat===CUR);
+  if(CUR==='all'){
+    const cats=[...new Set(R.map(r=>r.cat))];
+    wrap.innerHTML=cats.map(cat=>{
+      const cr=R.filter(r=>r.cat===cat);
+      const ci=CATS[cat]||{label:cat,sub:''};
+      return `<div class="cat-sec reveal in"><h2 class="cat-hed">${ci.label}</h2><p class="cat-sub">${ci.sub}</p><div class="recipe-grid">${cr.map(card).join('')}</div></div>`;
+    }).join('');
+  }else{
+    const ci=CATS[CUR]||{label:CUR,sub:''};
+    wrap.innerHTML=`<div class="cat-sec reveal in"><h2 class="cat-hed">${ci.label}</h2><p class="cat-sub">${ci.sub}</p><div class="recipe-grid">${list.map(card).join('')}</div></div>`;
+  }
+}
+
+function card(r){return`<div class="rcard" onclick="openRecipe('${r.id}')"><div class="rcard-thumb ${r.bg}"><span class="rcard-ico">${r.icon}</span></div><div class="rcard-body"><span class="rcard-label">${r.cat.toUpperCase()}</span><div style="margin-bottom:5px"><span class="rcard-title">${r.title}</span><span class="rcard-en">${r.en}</span></div><p class="rcard-desc">${r.desc}</p><div class="rcard-foot"><div class="rcard-meta"><span>⏱ ${r.time}</span><span>👥 ${r.serves}</span></div><span class="rcard-btn">View →</span></div></div></div>`;}
+
+function openRecipe(id){
+  const r=R.find(x=>x.id===id);if(!r)return;
+  document.getElementById('rmBody').innerHTML=`
+  <span class="rm-icon">${r.icon}</span>
+  <h2 class="rm-title">${r.title}</h2>
+  <div class="rm-en">${r.en.toUpperCase()} · AVURUDU TRADITIONAL RECIPE</div>
+  <div class="rm-metas">
+    <div class="rm-m"><div class="rm-ml">COOK TIME</div><div class="rm-mv">⏱ ${r.time}</div></div>
+    <div class="rm-m"><div class="rm-ml">SERVES</div><div class="rm-mv">👥 ${r.serves}</div></div>
+    <div class="rm-m"><div class="rm-ml">DIFFICULTY</div><div class="rm-mv">${r.diff}</div></div>
+  </div>
+  <p style="font-size:.84rem;color:rgba(253,243,220,.52);line-height:1.8;margin-bottom:6px">${r.desc}</p>
+  <h3 class="rm-sh">🛒 Ingredients / අමුද්‍රව්‍ය</h3>
+  <ul class="rm-ings">${r.ing.map(i=>`<li><span class="rm-amt">${i.a}</span><span>${i.n}</span></li>`).join('')}</ul>
+  <h3 class="rm-sh">👨‍🍳 Method / ක්‍රමය</h3>
+  <div class="rm-steps">${r.steps.map((s,i)=>`<div class="rm-step"><div class="rm-sn">${i+1}</div><div class="rm-st">${s}</div></div>`).join('')}</div>
+  <div class="rm-tip">${r.tip}</div>`;
+  document.getElementById('recipeModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('recipeModal').classList.remove('open');document.body.style.overflow='';}
+function shareP(){if(navigator.share)navigator.share({title:'🍛 Avurudu Recipes — AwruduFest',url:location.href});else navigator.clipboard.writeText(location.href).then(()=>alert('Copied!'));}
+render();
+</script>
+</body>
+</html>

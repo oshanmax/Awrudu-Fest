@@ -1,1 +1,1765 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Awrudu with Feature Designz — සිංහල හා දෙමළ අලුත් අවුරුදු ජනක්‍රීඩා 🎊">
+<meta property="og:title" content="🎊 Awrudu with Feature Designz">
+<meta property="og:description" content="සිංහල අවුරුදු ජනක්‍රීඩා online! Play කනා මුට්ටිය, කොට්ට පොර & more!">
+<meta name="theme-color" content="#D4A017">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<title>Awrudu with Feature Designz 🎊</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@300;400;600;700;900&family=Yatra+One&family=Gemunu+Libre:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ROOT VARIABLES & RESET
+═══════════════════════════════════════ */
+:root{
+  --gold:#D4A017; --gold-lt:#F5C842; --gold-dk:#9A7010;
+  --maroon:#5C0A0A; --deep-red:#8B1A1A; --crimson:#C0392B;
+  --orange:#E8640A; --saffron:#F5A623;
+  --cream:#FDF3DC; --cream2:#F0DDA8;
+  --dark:#0A0500; --dark2:#140900; --dark3:#1E0D00;
+  --green:#1E6B3A; --green-lt:#27AE60;
+  --border:rgba(212,160,23,0.18); --border2:rgba(212,160,23,0.4);
+  --glass:rgba(255,248,220,0.035); --glass2:rgba(255,248,220,0.07);
+  /* Admin-customizable theme */
+  --accent1:var(--gold); --accent2:var(--orange); --hero-bg1:#0A0500; --hero-bg2:#1E0D00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{
+  font-family:'Noto Serif Sinhala',serif;
+  background:var(--dark);color:var(--cream);
+  overflow-x:hidden;cursor:auto;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 20% 0%,rgba(139,26,26,0.28) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 100%,rgba(212,160,23,0.14) 0%,transparent 70%);
+}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;border:none;outline:none;}
+img{max-width:100%;}
 
+
+/* ═══════════════════════════════════════
+   BG CANVAS
+═══════════════════════════════════════ */
+#bgCv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6;}
+
+/* ═══════════════════════════════════════
+   TICKER / ANNOUNCEMENT BAR
+═══════════════════════════════════════ */
+.ticker{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:32px;overflow:hidden;display:flex;align-items:center;
+  background:linear-gradient(90deg,var(--maroon),var(--deep-red) 30%,var(--maroon) 70%,var(--deep-red));
+  border-bottom:1px solid rgba(212,160,23,.35);
+}
+.ticker-inner{
+  display:flex;gap:0;white-space:nowrap;
+  animation:tickerMove 40s linear infinite;
+}
+@keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  font-family:'Gemunu Libre',cursive;font-size:.78rem;letter-spacing:.5px;
+  color:var(--gold-lt);padding:0 40px;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.ticker-item::after{content:'✦';color:rgba(212,160,23,.5);margin-left:20px;}
+.ticker-tag{
+  background:var(--gold);color:var(--dark);font-size:.6rem;
+  padding:1px 7px;border-radius:50px;font-weight:700;margin-right:4px;letter-spacing:1px;
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+nav{
+  position:fixed;top:32px;left:0;right:0;z-index:150;
+  padding:14px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s;
+}
+nav.solid{
+  background:rgba(10,5,0,.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 30px rgba(0,0,0,.5);
+}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{font-size:1.9rem;display:inline-block;animation:logoBounce 3s ease-in-out infinite;}
+@keyframes logoBounce{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg) scale(1.1)}}
+.logo-text{font-family:'Yatra One',cursive;font-size:1.05rem;line-height:1.2;}
+.logo-main{color:var(--gold-lt);display:block;letter-spacing:.5px;}
+.logo-sub{color:rgba(253,243,220,.35);font-size:.6rem;letter-spacing:3px;font-family:'Gemunu Libre',cursive;}
+.nav-center{display:flex;gap:32px;align-items:center;}
+.nav-link{
+  font-family:'Gemunu Libre',cursive;font-size:.82rem;letter-spacing:1.5px;
+  color:rgba(253,243,220,.55);transition:color .2s;position:relative;padding:4px 0;
+}
+.nav-link::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:var(--gold-lt);transform:scaleX(0);transition:transform .25s;}
+.nav-link:hover{color:var(--gold-lt);}
+.nav-link:hover::after{transform:scaleX(1);}
+/* Nav special highlights */
+.nav-nak { color:var(--gold) !important; }
+.nav-nak::after { background:var(--gold) !important; }
+.nav-game { color:#FFA870 !important; }
+.nav-game::after { background:#FFA870 !important; }
+
+.nav-right{display:flex;gap:10px;align-items:center;}
+.nav-play{
+  font-family:'Noto Serif Sinhala',serif;font-size:.78rem;font-weight:700;
+  padding:9px 22px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold));
+  color:var(--dark);transition:all .22s;
+  box-shadow:0 4px 16px rgba(212,160,23,.35);letter-spacing:.3px;
+}
+.nav-play:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,160,23,.55);}
+.nav-admin{
+  font-size:.75rem;padding:8px 16px;border-radius:50px;
+  border:1px solid var(--border);color:rgba(253,243,220,.45);
+  background:transparent;transition:all .2s;letter-spacing:1px;
+}
+.nav-admin:hover{border-color:var(--border2);color:var(--gold);}
+.nav-ham{display:none;background:none;border:1px solid var(--border);color:var(--gold);padding:7px 12px;border-radius:8px;font-size:1.1rem;}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:160px 24px 100px;z-index:2;
+  overflow:hidden;
+}
+/* Mandala / decorative rings behind */
+.hero-ring{
+  position:absolute;border-radius:50%;border:1px solid;
+  pointer-events:none;animation:rotate3d linear infinite;
+}
+.hero-ring:nth-child(1){width:500px;height:500px;border-color:rgba(212,160,23,.05);top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:40s;}
+.hero-ring:nth-child(2){width:700px;height:700px;border-color:rgba(212,160,23,.04);top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:60s;animation-direction:reverse;}
+.hero-ring:nth-child(3){width:900px;height:900px;border-color:rgba(212,160,23,.025);top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:90s;}
+@keyframes rotate3d{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);
+  border-radius:50px;padding:5px 18px 5px 6px;
+  font-family:'Gemunu Libre',cursive;font-size:.72rem;letter-spacing:2px;color:var(--gold);
+  margin-bottom:30px;animation:fadeSlideUp .8s ease both;
+}
+.hero-eyebrow-dot{width:22px;height:22px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--dark);}
+
+.hero-title{margin-bottom:18px;animation:fadeSlideUp .9s ease .1s both;}
+.hero-title-l1{
+  font-family:'Yatra One',cursive;
+  font-size:clamp(1rem,3.5vw,1.6rem);
+  color:rgba(253,243,220,.5);letter-spacing:6px;
+  display:block;margin-bottom:8px;
+}
+.hero-title-l2{
+  font-family:'Yatra One',cursive;
+  font-size:clamp(3rem,10vw,7.5rem);
+  line-height:.95;display:block;margin-bottom:8px;
+  background:linear-gradient(135deg,#fff5d0 0%,var(--gold-lt) 25%,var(--gold) 50%,var(--orange) 75%,var(--saffron) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 50px rgba(245,200,66,.45));
+}
+.hero-title-l3{
+  font-family:'Gemunu Libre',cursive;font-weight:300;
+  font-size:clamp(.8rem,2.2vw,1.1rem);
+  color:rgba(253,243,220,.4);letter-spacing:5px;display:block;
+}
+.hero-desc{
+  max-width:520px;margin:0 auto 44px;
+  font-size:clamp(.88rem,1.8vw,1.05rem);color:rgba(253,243,220,.6);
+  line-height:1.85;animation:fadeSlideUp .9s ease .2s both;
+}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeSlideUp .9s ease .3s both;}
+.cta-main{
+  font-family:'Noto Serif Sinhala',serif;font-weight:700;font-size:1rem;
+  padding:16px 40px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold),var(--orange));
+  color:var(--dark);letter-spacing:.3px;
+  box-shadow:0 8px 36px rgba(212,160,23,.45);
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.cta-main::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,transparent 60%);
+  pointer-events:none;
+}
+.cta-main:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 16px 50px rgba(212,160,23,.6);}
+.cta-sec{
+  font-family:'Gemunu Libre',cursive;font-size:.95rem;letter-spacing:1px;
+  padding:15px 32px;border-radius:50px;
+  border:1.5px solid var(--border2);background:rgba(255,248,220,.04);
+  color:var(--gold-lt);backdrop-filter:blur(12px);
+  transition:all .25s;
+}
+.cta-sec:hover{background:rgba(212,160,23,.1);border-color:var(--gold);transform:translateY(-2px);}
+
+/* Hero decorative bottom */
+.hero-deco{
+  position:absolute;bottom:0;left:0;right:0;height:180px;
+  background:linear-gradient(0deg,var(--dark) 0%,transparent 100%);
+  pointer-events:none;
+}
+/* Floating kolam dots */
+.hero-stats{
+  display:flex;gap:48px;flex-wrap:wrap;justify-content:center;
+  margin-top:60px;padding-top:44px;
+  border-top:1px solid var(--border);
+  animation:fadeSlideUp .9s ease .4s both;
+}
+.hstat{text-align:center;}
+.hstat-n{
+  font-family:'Yatra One',cursive;font-size:2.2rem;
+  color:var(--gold-lt);display:block;line-height:1;
+}
+.hstat-l{font-family:'Gemunu Libre',cursive;font-size:.65rem;color:rgba(253,243,220,.4);letter-spacing:2.5px;margin-top:5px;}
+
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════
+   DIVIDER KOLAM
+═══════════════════════════════════════ */
+.kolam-divider{
+  display:flex;align-items:center;gap:14px;padding:0 24px;
+  margin:8px auto;width:fit-content;
+}
+.kolam-divider::before,.kolam-divider::after{
+  content:'';height:1px;width:120px;
+  background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--maroon) 60%,transparent);
+}
+.kolam-divider span{color:var(--gold);font-size:.9rem;letter-spacing:5px;opacity:.5;}
+
+/* ═══════════════════════════════════════
+   COUNTDOWN
+═══════════════════════════════════════ */
+.countdown-wrap{
+  position:relative;z-index:2;
+  background:linear-gradient(135deg,rgba(92,10,10,.35),rgba(14,7,0,.85),rgba(92,10,10,.2));
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:56px 24px;text-align:center;
+}
+.cd-label{
+  font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold);
+  letter-spacing:3px;margin-bottom:32px;opacity:.75;
+}
+.cd-grid{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;}
+.cd-box{
+  background:rgba(255,248,220,.04);border:1px solid var(--border);
+  border-radius:18px;padding:22px 32px;min-width:100px;
+  position:relative;overflow:hidden;
+}
+.cd-box::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.cd-n{font-family:'Yatra One',cursive;font-size:3rem;color:var(--gold-lt);line-height:1;display:block;}
+.cd-u{font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:3px;color:rgba(253,243,220,.4);margin-top:5px;}
+.cd-sep{font-family:'Yatra One',cursive;font-size:2.2rem;color:var(--gold);opacity:.4;}
+/* After Avurudu banner */
+.avurudu-live{
+  padding:20px;background:rgba(212,160,23,.1);border:1px solid var(--border2);
+  border-radius:16px;max-width:500px;margin:0 auto;display:none;
+}
+
+/* ═══════════════════════════════════════
+   SECTION COMMONS
+═══════════════════════════════════════ */
+.section{position:relative;z-index:2;padding:90px 24px;}
+.s-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Gemunu Libre',cursive;font-size:.65rem;letter-spacing:3px;color:var(--gold);
+  background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.22);
+  border-radius:50px;padding:4px 16px;margin-bottom:14px;
+}
+.s-title{
+  font-family:'Yatra One',cursive;
+  font-size:clamp(1.8rem,5vw,3.2rem);
+  color:var(--gold-lt);
+  text-shadow:0 0 40px rgba(212,160,23,.35),2px 3px 0 var(--maroon);
+  line-height:1.1;margin-bottom:14px;
+}
+.s-desc{font-size:.95rem;color:rgba(253,243,220,.5);line-height:1.8;max-width:560px;}
+.wrap{max-width:1180px;margin:0 auto;}
+
+/* ═══════════════════════════════════════
+   GAMES SECTION
+═══════════════════════════════════════ */
+.games-section{text-align:center;}
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(270px,45vw),1fr));
+  gap:22px;margin-top:52px;
+}
+.gcard{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:22px;overflow:hidden;position:relative;
+  transition:transform .32s,box-shadow .32s,border-color .32s;
+  text-align:left;
+}
+.gcard:hover{
+  transform:translateY(-8px);
+  border-color:rgba(212,160,23,.5);
+  box-shadow:0 24px 64px rgba(212,160,23,.18),0 0 0 1px rgba(212,160,23,.08);
+}
+.gcard-img{
+  height:175px;display:flex;align-items:center;justify-content:center;
+  font-size:5.5rem;position:relative;overflow:hidden;
+}
+.gcard-img::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,5,0,.92));}
+.gcard-icon{position:relative;z-index:1;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));animation:floatIcon 4s ease-in-out infinite;}
+@keyframes floatIcon{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+/* Thumb backgrounds */
+.tb-shell{background:radial-gradient(ellipse at 30% 30%,#5a2a00,#1a0800);}
+.tb-tag  {background:radial-gradient(ellipse at 30% 30%,#003a20,#001208);}
+.tb-kotta{background:radial-gradient(ellipse at 30% 30%,#20003a,#080012);}
+.tb-soon {background:radial-gradient(ellipse at 30% 30%,#2a2000,#080500);}
+.tb-kiriko{background:radial-gradient(ellipse at 30% 30%,#3a1a00,#120500);}
+.tb-kanamut{background:radial-gradient(ellipse at 30% 30%,#003a10,#001005);}
+.tb-pancha{background:radial-gradient(ellipse at 30% 30%,#00103a,#000512);}
+.tb-rahas{background:radial-gradient(ellipse at 30% 30%,#2a003a,#0a0012);}
+.tb-snake{background:radial-gradient(ellipse at 30% 30%,#003a00,#001200);}
+.gcard-soon{opacity:.6;pointer-events:none;}
+.gcard-soon .gcard-btn{cursor:default!important;}
+.gcard-badge{
+  position:absolute;top:14px;left:14px;z-index:2;
+  font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:2px;
+  padding:3px 12px;border-radius:50px;font-weight:700;
+}
+.badge-hot{background:var(--crimson);color:#fff;}
+.badge-new{background:var(--green-lt);color:#fff;}
+.badge-soon{background:rgba(212,160,23,.3);color:var(--gold);}
+.gcard-body{padding:20px 20px 22px;}
+.gcard-tag{
+  font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:2px;
+  color:var(--gold);background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.22);
+  border-radius:50px;padding:2px 12px;display:inline-block;margin-bottom:10px;
+}
+.gcard-title{font-family:'Yatra One',cursive;font-size:1.28rem;color:var(--cream);margin-bottom:7px;}
+.gcard-desc{font-size:.78rem;color:rgba(253,243,220,.48);line-height:1.65;margin-bottom:18px;}
+.gcard-foot{display:flex;align-items:center;justify-content:space-between;}
+.gcard-meta{font-size:.68rem;color:rgba(253,243,220,.35);}
+.gcard-btn{
+  font-family:'Noto Serif Sinhala',serif;font-weight:700;font-size:.76rem;
+  padding:9px 22px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold));
+  color:var(--dark);transition:all .2s;
+}
+.gcard-btn:hover{transform:scale(1.06);box-shadow:0 6px 22px rgba(212,160,23,.45);}
+.gcard-btn:disabled{opacity:.35;transform:none;box-shadow:none;}
+/* Play count badge */
+.gcard-plays{
+  position:absolute;top:14px;right:14px;z-index:2;
+  background:rgba(0,0,0,.55);border:1px solid rgba(212,160,23,.3);
+  border-radius:50px;padding:2px 10px;font-size:.6rem;color:rgba(253,243,220,.7);
+  font-family:'Gemunu Libre',cursive;letter-spacing:1px;
+}
+
+/* ═══════════════════════════════════════
+   FEATURE STRIP
+═══════════════════════════════════════ */
+.feat-strip{
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  background:rgba(255,248,220,.025);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  position:relative;z-index:2;
+}
+.feat-strip::-webkit-scrollbar{display:none;}
+.feat-item{
+  flex:1;min-width:155px;padding:26px 18px;text-align:center;
+  border-right:1px solid var(--border);transition:background .22s;
+}
+.feat-item:last-child{border-right:none;}
+.feat-item:hover{background:var(--glass2);}
+.feat-ico{font-size:1.65rem;margin-bottom:8px;}
+.feat-t{font-family:'Yatra One',cursive;font-size:.82rem;color:var(--gold-lt);margin-bottom:3px;}
+.feat-d{font-size:.65rem;color:rgba(253,243,220,.38);line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   LEADERBOARD
+═══════════════════════════════════════ */
+.lb-section{text-align:center;}
+.lb-tabs{display:flex;gap:6px;justify-content:center;margin:36px 0 0;flex-wrap:wrap;overflow-x:auto;padding-bottom:4px;}
+.lb-tab{
+  font-family:'Gemunu Libre',cursive;font-size:.75rem;letter-spacing:1.5px;
+  padding:8px 20px;border-radius:50px;border:1px solid var(--border);
+  background:transparent;color:rgba(253,243,220,.5);transition:all .2s;
+}
+.lb-tab.active,.lb-tab:hover{background:rgba(212,160,23,.15);border-color:var(--border2);color:var(--gold-lt);}
+.lb-card{
+  max-width:720px;margin:20px auto 0;
+  background:var(--glass);border:1px solid var(--border);border-radius:22px;overflow:hidden;
+}
+.lb-head{
+  display:grid;grid-template-columns:52px 1fr 110px 90px;
+  padding:14px 24px;background:rgba(212,160,23,.07);
+  border-bottom:1px solid var(--border);
+  font-family:'Gemunu Libre',cursive;font-size:.62rem;letter-spacing:2.5px;color:rgba(212,160,23,.7);
+}
+.lb-row{
+  display:grid;grid-template-columns:52px 1fr 110px 90px;
+  padding:14px 24px;border-bottom:1px solid rgba(212,160,23,.06);
+  align-items:center;transition:background .2s;
+}
+.lb-row:last-child{border-bottom:none;}
+.lb-row:hover{background:var(--glass2);}
+.lb-row.r1{background:rgba(212,160,23,.06);}
+.lb-row.r2{background:rgba(200,200,200,.03);}
+.lb-row.r3{background:rgba(180,100,30,.04);}
+.lb-rank{font-family:'Yatra One',cursive;font-size:1.1rem;color:var(--gold);}
+.lb-player{display:flex;align-items:center;gap:10px;}
+.lb-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--maroon),var(--deep-red));
+  display:flex;align-items:center;justify-content:center;font-size:.88rem;
+  border:1px solid var(--border);flex-shrink:0;
+}
+.lb-pname{font-size:.88rem;color:var(--cream);}
+.lb-pgame{font-size:.68rem;color:rgba(253,243,220,.38);}
+.lb-score{font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold-lt);text-align:right;}
+.lb-refresh{
+  font-family:'Gemunu Libre',cursive;font-size:.7rem;letter-spacing:1.5px;
+  padding:7px 18px;border-radius:50px;border:1px solid var(--border);
+  background:transparent;color:rgba(253,243,220,.45);margin-top:20px;transition:all .2s;
+}
+.lb-refresh:hover{border-color:var(--border2);color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   SOCIAL SHARE SECTION
+═══════════════════════════════════════ */
+.social-section{
+  text-align:center;
+  background:linear-gradient(135deg,rgba(92,10,10,.25),rgba(10,5,0,.8),rgba(212,160,23,.06));
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.social-grid{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:40px 0;}
+.soc-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 28px;border-radius:16px;
+  border:1px solid var(--border);background:var(--glass);
+  color:var(--cream);transition:all .25s;backdrop-filter:blur(10px);
+}
+.soc-btn:hover{transform:translateY(-4px);border-color:var(--border2);background:var(--glass2);}
+.soc-btn.yt:hover{background:rgba(255,0,0,.1);border-color:rgba(255,0,0,.5);}
+.soc-btn.tt:hover{background:rgba(0,242,234,.07);border-color:rgba(0,242,234,.4);}
+.soc-btn.fb:hover{background:rgba(66,103,178,.1);border-color:rgba(66,103,178,.4);}
+.soc-btn.wa:hover{background:rgba(37,211,102,.08);border-color:rgba(37,211,102,.4);}
+.soc-ico{font-size:1.6rem;}
+.soc-name{font-weight:700;font-size:.88rem;font-family:'Gemunu Libre',cursive;}
+.soc-handle{font-size:.68rem;opacity:.5;margin-top:1px;}
+.share-bar{
+  display:flex;align-items:center;gap:12px;
+  max-width:660px;margin:0 auto;padding:18px 22px;
+  background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:16px;flex-wrap:wrap;
+}
+.share-url{flex:1;font-size:.8rem;color:rgba(253,243,220,.45);font-family:monospace;min-width:180px;}
+.share-btn{
+  font-family:'Gemunu Libre',cursive;font-size:.75rem;letter-spacing:1px;
+  padding:9px 20px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:var(--dark);
+  font-weight:700;transition:all .2s;
+}
+.share-btn:hover{transform:scale(1.04);box-shadow:0 6px 20px rgba(212,160,23,.4);}
+.share-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;}
+
+/* ═══════════════════════════════════════
+   ABOUT / TRADITION
+═══════════════════════════════════════ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;max-width:1000px;margin:52px auto 0;}
+.tradition-list{display:flex;flex-direction:column;gap:16px;}
+.tcard{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--glass);border:1px solid var(--border);border-radius:16px;
+  padding:18px;transition:all .28s;
+}
+.tcard:hover{background:var(--glass2);transform:translateX(8px);border-color:var(--border2);}
+.tcard-ico{font-size:1.9rem;flex-shrink:0;}
+.tcard-title{font-family:'Yatra One',cursive;font-size:.9rem;color:var(--gold-lt);margin-bottom:5px;}
+.tcard-desc{font-size:.76rem;color:rgba(253,243,220,.45);line-height:1.65;}
+
+/* ═══════════════════════════════════════
+   NEWSLETTER
+═══════════════════════════════════════ */
+.nl-section{text-align:center;}
+.nl-box{
+  max-width:580px;margin:0 auto;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:26px;padding:52px 44px;position:relative;overflow:hidden;
+}
+.nl-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold),var(--orange),var(--gold),var(--maroon),transparent);}
+.nl-form{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;}
+.nl-input{
+  flex:1;min-width:210px;padding:13px 22px;border-radius:50px;
+  border:1.5px solid var(--border);background:rgba(0,0,0,.35);
+  color:var(--cream);font-family:'Noto Serif Sinhala',serif;font-size:.88rem;outline:none;
+  transition:border-color .2s;
+}
+.nl-input:focus{border-color:var(--gold);}
+.nl-input::placeholder{color:rgba(253,243,220,.3);}
+.nl-btn{
+  font-family:'Noto Serif Sinhala',serif;font-size:.88rem;font-weight:700;
+  padding:13px 28px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:var(--dark);
+  transition:all .22s;white-space:nowrap;
+}
+.nl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,160,23,.4);}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{
+  position:relative;z-index:2;
+  border-top:1px solid var(--border);padding:70px 48px 32px;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;
+  gap:44px;max-width:1180px;margin:0 auto 56px;
+}
+.footer-brand-desc{font-size:.8rem;color:rgba(253,243,220,.38);line-height:1.75;max-width:270px;margin-top:14px;}
+.footer-socials{display:flex;gap:10px;margin-top:18px;}
+.footer-social-ico{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(253,243,220,.45);font-size:.95rem;transition:all .2s;
+}
+.footer-social-ico:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,160,23,.1);}
+.footer-col-title{font-family:'Yatra One',cursive;font-size:.85rem;color:var(--gold);margin-bottom:18px;letter-spacing:.5px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:11px;}
+.footer-links a{font-size:.8rem;color:rgba(253,243,220,.42);transition:color .2s;}
+.footer-links a:hover{color:var(--gold-lt);}
+.footer-bottom{
+  border-top:1px solid var(--border);padding-top:26px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  max-width:1180px;margin:0 auto;
+}
+.footer-copy{font-size:.74rem;color:rgba(253,243,220,.28);}
+.footer-made{font-family:'Yatra One',cursive;font-size:.78rem;color:var(--gold);opacity:.7;}
+
+/* ═══════════════════════════════════════
+   GAME MODAL
+═══════════════════════════════════════ */
+#gameModal{
+  display:none;position:fixed;inset:0;z-index:500;
+  flex-direction:column;background:rgba(0,0,0,.97);
+}
+.modal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  background:rgba(10,5,0,.97);flex-shrink:0;
+  min-height:48px;
+}
+.modal-title{
+  font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold-lt);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw;
+}
+.modal-close{
+  font-family:'Gemunu Libre',cursive;font-size:.78rem;letter-spacing:1px;
+  padding:8px 18px;border-radius:50px;border:1.5px solid rgba(212,160,23,.45);
+  background:rgba(212,160,23,.08);color:var(--gold);transition:all .2s;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+.modal-close:hover{background:rgba(212,160,23,.18);border-color:var(--gold);}
+#gameFrame{flex:1;border:none;width:100%;height:100%;}
+@media(max-width:600px){
+  .modal-nav{padding:8px 12px;min-height:44px;}
+  .modal-title{font-size:.85rem;max-width:55vw;}
+  .modal-close{font-size:.72rem;padding:7px 14px;letter-spacing:.5px;}
+}
+
+/* ══════════════════════════════
+   CONTACT / SOCIAL SECTION
+══════════════════════════════ */
+.contact-section{text-align:center;}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:960px;margin:36px auto 0;}
+.ccard{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px 18px;transition:all .28s;text-align:center;}
+.ccard:hover{background:var(--glass2);border-color:var(--border2);transform:translateY(-5px);}
+.ccard-ico{font-size:1.9rem;margin-bottom:9px;display:block;}
+.ccard-label{font-family:'Gemunu Libre',cursive;font-size:.57rem;letter-spacing:2.5px;color:rgba(212,160,23,.55);margin-bottom:5px;}
+.ccard-val{font-family:'Yatra One',cursive;font-size:.86rem;color:var(--gold-lt);}
+.ccard-val a{color:inherit;text-decoration:none;}.ccard-val a:hover{color:#fff;}
+.social-row{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin:28px 0 0;}
+.soc-pill{display:flex;align-items:center;gap:9px;padding:11px 20px;border-radius:50px;border:1.5px solid var(--border);background:rgba(0,0,0,.28);transition:all .24s;font-family:'Gemunu Libre',cursive;font-size:.77rem;text-decoration:none;color:var(--cream);}
+.soc-pill:hover{transform:translateY(-3px);}
+.soc-pill.yt{border-color:rgba(255,0,0,.32);color:#ff6b6b;}.soc-pill.yt:hover{background:rgba(255,0,0,.1);border-color:rgba(255,0,0,.55);}
+.soc-pill.tt{border-color:rgba(0,242,234,.28);color:#00f2ea;}.soc-pill.tt:hover{background:rgba(0,242,234,.06);border-color:rgba(0,242,234,.48);}
+.soc-pill.fb{border-color:rgba(66,103,178,.38);color:#7ba3e8;}.soc-pill.fb:hover{background:rgba(66,103,178,.1);border-color:rgba(66,103,178,.6);}
+.soc-pill.ig{border-color:rgba(228,64,95,.32);color:#f06292;}.soc-pill.ig:hover{background:rgba(228,64,95,.08);border-color:rgba(228,64,95,.55);}
+.soc-pill.wa{border-color:rgba(37,211,102,.32);color:#25D366;}.soc-pill.wa:hover{background:rgba(37,211,102,.07);border-color:rgba(37,211,102,.55);}
+
+/* ══════════════════════════════
+   AVURUDU POPUP
+══════════════════════════════ */
+#fwCv{position:fixed;inset:0;z-index:799;pointer-events:none;}
+#avuruduPopup{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .45s;padding:20px;}
+#avuruduPopup.open{opacity:1;pointer-events:all;}
+.popup-box{position:relative;max-width:500px;width:100%;background:linear-gradient(145deg,rgba(92,10,10,.78),rgba(14,7,0,.96),rgba(92,10,10,.55));border:2px solid var(--gold);border-radius:28px;padding:48px 34px 40px;text-align:center;animation:popIn .55s cubic-bezier(.34,1.56,.64,1) both;box-shadow:0 0 80px rgba(212,160,23,.35),0 40px 100px rgba(0,0,0,.7);overflow:hidden;}
+@keyframes popIn{from{transform:scale(.6) translateY(40px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.popup-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold-lt),#fff8d0,var(--gold-lt),var(--gold),var(--maroon),transparent);}
+.popup-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold),var(--gold-lt),var(--gold),var(--maroon),transparent);}
+.popup-close{position:absolute;top:13px;right:15px;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:50%;width:31px;height:31px;display:flex;align-items:center;justify-content:center;font-size:.82rem;color:var(--gold);cursor:pointer;transition:all .2s;}
+.popup-close:hover{background:rgba(212,160,23,.22);}
+.popup-corner{position:absolute;font-size:1.3rem;opacity:.16;}
+.popup-corner.tl{top:13px;left:15px}.popup-corner.tr{top:13px;right:44px}.popup-corner.bl{bottom:13px;left:15px}.popup-corner.br{bottom:13px;right:15px}
+.popup-from{font-family:'Gemunu Libre',cursive;font-size:.63rem;letter-spacing:3px;color:rgba(212,160,23,.5);margin-bottom:14px;}
+.popup-brand{font-family:'Yatra One',cursive;font-size:1.2rem;color:var(--gold-lt);margin-bottom:4px;text-shadow:0 0 20px rgba(212,160,23,.5);}
+.popup-emojis{font-size:2.2rem;margin:14px 0;letter-spacing:8px;animation:eDance 2s ease-in-out infinite;}
+@keyframes eDance{0%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}70%{transform:translateY(-4px)}}
+.popup-wish{font-family:'Yatra One',cursive;font-size:clamp(1.4rem,5vw,2rem);background:linear-gradient(135deg,#fff8e0,var(--gold-lt) 30%,var(--gold) 60%,var(--orange) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.3;margin-bottom:9px;filter:drop-shadow(0 0 20px rgba(212,160,23,.4));}
+.popup-sub{font-size:.86rem;color:rgba(253,243,220,.45);line-height:1.75;margin-bottom:20px;}
+.popup-pill{display:inline-block;font-family:'Gemunu Libre',cursive;font-size:.67rem;letter-spacing:2.5px;padding:4px 18px;border-radius:50px;margin-bottom:24px;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.38);color:var(--gold);}
+.popup-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.popup-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Yatra One',cursive;font-size:.88rem;padding:12px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--gold-lt),var(--gold),var(--orange));color:var(--dark);cursor:pointer;transition:all .25s;box-shadow:0 6px 26px rgba(212,160,23,.42);}
+.popup-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 14px 40px rgba(212,160,23,.58);}
+.popup-btn.sec{background:transparent;border:1.5px solid rgba(212,160,23,.4);color:var(--gold-lt);box-shadow:none;}
+.popup-btn.sec:hover{background:rgba(212,160,23,.1);}
+/* Popup — New Year special state */
+#avuruduPopup.newyear .popup-box{
+  border-color:var(--gold-lt);
+  box-shadow:0 0 120px rgba(245,200,66,.55),0 0 200px rgba(212,160,23,.3),0 40px 100px rgba(0,0,0,.7);
+  animation:popIn .55s cubic-bezier(.34,1.56,.64,1) both, popGlow 2s ease-in-out .6s infinite;
+}
+@keyframes popGlow{0%,100%{box-shadow:0 0 80px rgba(245,200,66,.4),0 0 160px rgba(212,160,23,.2),0 40px 100px rgba(0,0,0,.7)}50%{box-shadow:0 0 140px rgba(245,200,66,.7),0 0 240px rgba(212,160,23,.4),0 40px 100px rgba(0,0,0,.7)}}
+#avuruduPopup.newyear .popup-wish{font-size:clamp(1.6rem,5.5vw,2.3rem);}
+#avuruduPopup.newyear .popup-emojis{font-size:2.8rem;animation:eDance 1.2s ease-in-out infinite;}
+.popup-year-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Gemunu Libre',cursive;font-size:.72rem;letter-spacing:2.5px;
+  padding:6px 22px;border-radius:50px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(212,160,23,.2),rgba(232,100,10,.15));
+  border:1.5px solid rgba(212,160,23,.55);color:var(--gold-lt);
+  animation:pillPulse 2s ease-in-out infinite;
+}
+@keyframes pillPulse{0%,100%{border-color:rgba(212,160,23,.55);box-shadow:none}50%{border-color:var(--gold-lt);box-shadow:0 0 14px rgba(212,160,23,.4)}}
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-l.in{opacity:1;transform:translateX(0);}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-r.in{opacity:1;transform:translateX(0);}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:rgba(16,8,0,.95);border:1px solid var(--gold);border-radius:50px;
+  padding:12px 30px;font-family:'Yatra One',cursive;font-size:.82rem;color:var(--gold-lt);
+  z-index:600;transition:transform .38s cubic-bezier(.34,1.56,.64,1);
+  backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(212,160,23,.3);white-space:nowrap;
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ═══════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════ */
+.mob-menu{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:rgba(10,5,0,.97);backdrop-filter:blur(20px);
+  flex-direction:column;align-items:center;justify-content:center;gap:32px;
+  border-top:1px solid var(--border);
+}
+.mob-menu.open{display:flex;}
+.mob-link{font-family:'Yatra One',cursive;font-size:1.8rem;color:var(--gold-lt);}
+.mob-close{
+  position:absolute;top:28px;right:28px;
+  background:none;border:1px solid var(--border);color:var(--gold);
+  padding:8px 14px;border-radius:8px;font-size:1.2rem;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+
+/* ═══════════════════════════════════════
+   4 MAIN HUB
+═══════════════════════════════════════ */
+.hub-section{position:relative;z-index:2;padding:80px 24px 88px;text-align:center;}
+.hub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px;max-width:1180px;margin-left:auto;margin-right:auto;}
+.hub-card{border-radius:24px;padding:34px 22px 28px;border:1.5px solid;position:relative;overflow:hidden;transition:transform .38s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;display:block;text-decoration:none;text-align:center;cursor:pointer;}
+.hub-card:hover{transform:translateY(-12px) scale(1.02);}
+.hub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.hub-card::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,var(--hg,rgba(212,160,23,.18)) 0%,transparent 65%);opacity:.9;}
+/* Nakath — gold pulse */
+.hub-nak{background:linear-gradient(145deg,rgba(212,160,23,.13),rgba(92,10,10,.2),rgba(212,160,23,.05));border-color:rgba(212,160,23,.5);--hg:rgba(212,160,23,.22);animation:nakPulse 3.5s ease-in-out infinite;}
+.hub-nak::before{background:linear-gradient(90deg,transparent,var(--gold-lt),var(--gold),var(--gold-lt),transparent);}
+.hub-nak:hover{box-shadow:0 28px 70px rgba(212,160,23,.38);animation:none;}
+@keyframes nakPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,160,23,0),0 4px 20px rgba(212,160,23,.08);}50%{box-shadow:0 0 0 8px rgba(212,160,23,.06),0 8px 36px rgba(212,160,23,.18);}}
+/* Games — orange */
+.hub-games{background:linear-gradient(145deg,rgba(232,100,10,.14),rgba(92,10,10,.25),rgba(232,100,10,.05));border-color:rgba(232,100,10,.48);--hg:rgba(232,100,10,.18);}
+.hub-games::before{background:linear-gradient(90deg,transparent,var(--orange),var(--saffron),var(--orange),transparent);}
+.hub-games:hover{box-shadow:0 28px 70px rgba(232,100,10,.3);}
+/* Recipes — green */
+.hub-recipes{background:linear-gradient(145deg,rgba(39,174,96,.12),rgba(15,50,28,.3),rgba(39,174,96,.04));border-color:rgba(39,174,96,.42);--hg:rgba(39,174,96,.15);}
+.hub-recipes::before{background:linear-gradient(90deg,transparent,#27AE60,#52D68A,#27AE60,transparent);}
+.hub-recipes:hover{box-shadow:0 28px 70px rgba(39,174,96,.24);}
+/* Greetings — purple */
+.hub-greetings{background:linear-gradient(145deg,rgba(108,52,131,.13),rgba(25,10,40,.3),rgba(108,52,131,.05));border-color:rgba(108,52,131,.46);--hg:rgba(108,52,131,.18);}
+.hub-greetings::before{background:linear-gradient(90deg,transparent,#9B59B6,#D7BDE2,#9B59B6,transparent);}
+.hub-greetings:hover{box-shadow:0 28px 70px rgba(108,52,131,.26);}
+/* Hub internals */
+.hub-icon{font-size:3.2rem;display:block;margin-bottom:14px;position:relative;z-index:1;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5));animation:hubFloat 4s ease-in-out infinite;}
+.hub-card:nth-child(2) .hub-icon{animation-delay:.7s;}
+.hub-card:nth-child(3) .hub-icon{animation-delay:1.4s;}
+.hub-card:nth-child(4) .hub-icon{animation-delay:2.1s;}
+@keyframes hubFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.hub-pill{display:inline-block;font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:2px;font-weight:700;padding:3px 12px;border-radius:50px;margin-bottom:11px;position:relative;z-index:1;}
+.hub-nak      .hub-pill{background:rgba(212,160,23,.22);color:var(--gold-lt);border:1px solid rgba(212,160,23,.45);}
+.hub-games    .hub-pill{background:rgba(232,100,10,.2);color:#FFA870;border:1px solid rgba(232,100,10,.45);}
+.hub-recipes  .hub-pill{background:rgba(39,174,96,.18);color:#5DE89A;border:1px solid rgba(39,174,96,.38);}
+.hub-greetings .hub-pill{background:rgba(108,52,131,.2);color:#D7BDE2;border:1px solid rgba(108,52,131,.42);}
+.hub-name{font-family:'Yatra One',cursive;font-size:1.18rem;display:block;margin-bottom:9px;position:relative;z-index:1;}
+.hub-nak       .hub-name{color:var(--gold-lt);}
+.hub-games     .hub-name{color:#FFA870;}
+.hub-recipes   .hub-name{color:#5DE89A;}
+.hub-greetings .hub-name{color:#D7BDE2;}
+.hub-desc{font-size:.77rem;color:rgba(253,243,220,.47);line-height:1.72;margin-bottom:18px;position:relative;z-index:1;}
+.hub-btn{display:inline-flex;align-items:center;gap:6px;font-family:'Gemunu Libre',cursive;font-size:.72rem;letter-spacing:1.5px;font-weight:700;padding:8px 20px;border-radius:50px;border:1px solid;transition:all .22s;position:relative;z-index:1;}
+.hub-card:hover .hub-btn{transform:translateX(4px);}
+.hub-nak       .hub-btn{color:var(--gold);border-color:rgba(212,160,23,.45);background:rgba(212,160,23,.1);}
+.hub-games     .hub-btn{color:#FFA870;border-color:rgba(232,100,10,.45);background:rgba(232,100,10,.1);}
+.hub-recipes   .hub-btn{color:#5DE89A;border-color:rgba(39,174,96,.38);background:rgba(39,174,96,.09);}
+.hub-greetings .hub-btn{color:#D7BDE2;border-color:rgba(108,52,131,.42);background:rgba(108,52,131,.1);}
+.hub-hot{position:absolute;top:14px;right:14px;z-index:3;font-family:'Gemunu Libre',cursive;font-size:.55rem;letter-spacing:1.5px;font-weight:700;background:var(--crimson);color:#fff;padding:3px 10px;border-radius:50px;animation:hotBlink 2s ease-in-out infinite;}
+@keyframes hotBlink{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ═══════════════════════════════════════
+   NAKATH HIGHLIGHT STRIP
+═══════════════════════════════════════ */
+.nakath-strip{position:relative;z-index:2;background:linear-gradient(135deg,rgba(212,160,23,.11),rgba(92,10,10,.22),rgba(212,160,23,.07));border-top:2px solid rgba(212,160,23,.42);border-bottom:2px solid rgba(212,160,23,.42);padding:58px 24px;}
+.nakath-strip::before,.nakath-strip::after{content:'';position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--maroon) 15%,var(--gold) 40%,var(--gold-lt) 50%,var(--gold) 60%,var(--maroon) 85%,transparent);}
+.nakath-strip::before{top:0;} .nakath-strip::after{bottom:0;}
+.nak-strip-eye{display:inline-flex;align-items:center;gap:6px;font-family:'Gemunu Libre',cursive;font-size:.65rem;letter-spacing:3px;background:rgba(212,160,23,.14);border:1px solid rgba(212,160,23,.46);border-radius:50px;padding:5px 18px;color:var(--gold-lt);margin-bottom:12px;}
+.nak-strip-title{font-family:'Yatra One',cursive;font-size:clamp(1.3rem,3.5vw,1.95rem);color:var(--gold-lt);text-shadow:0 0 30px rgba(212,160,23,.4),1px 2px 0 var(--maroon);}
+.nak-strip-sub{font-size:.8rem;color:rgba(253,243,220,.42);margin-top:6px;}
+.nak-strip-sub a{color:var(--gold-lt);text-decoration:underline;text-underline-offset:3px;}
+.nak-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;max-width:1100px;margin:28px auto;}
+.nak-t{background:rgba(0,0,0,.28);border:1px solid rgba(212,160,23,.22);border-radius:14px;padding:16px 16px 14px;position:relative;overflow:hidden;transition:all .28s;}
+.nak-t:hover{background:rgba(212,160,23,.09);border-color:rgba(212,160,23,.5);transform:translateY(-3px);}
+.nak-t::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--gold);border-radius:2px;opacity:.6;}
+.nak-t.next{border-color:rgba(212,160,23,.65);background:rgba(212,160,23,.11);box-shadow:0 0 22px rgba(212,160,23,.14);}
+.nak-t.next::before{opacity:1;}
+.nak-t.next::after{content:'▶ NEXT';position:absolute;top:9px;right:9px;font-family:'Gemunu Libre',cursive;font-size:.5rem;letter-spacing:2px;background:var(--gold);color:var(--dark);padding:2px 8px;border-radius:50px;font-weight:700;}
+.nt-icon{font-size:1.45rem;display:block;margin-bottom:7px;}
+.nt-name{font-family:'Yatra One',cursive;font-size:.88rem;color:var(--cream);margin-bottom:4px;}
+.nt-time{font-family:'Yatra One',cursive;font-size:1.35rem;color:var(--gold-lt);display:block;line-height:1;}
+.nt-date{font-size:.65rem;color:rgba(253,243,220,.4);margin-top:4px;}
+.nak-strip-cta{text-align:center;margin-top:28px;}
+.nak-cta-btn{display:inline-flex;align-items:center;gap:9px;font-family:'Gemunu Libre',cursive;font-size:.82rem;letter-spacing:1.5px;font-weight:700;padding:13px 36px;border-radius:50px;background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:var(--dark);transition:all .22s;box-shadow:0 6px 26px rgba(212,160,23,.38);text-decoration:none;}
+.nak-cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(212,160,23,.55);}
+
+/* ═══════════════════════════════════════
+   GAMES SECTION HIGHLIGHT WRAPPER
+═══════════════════════════════════════ */
+.games-wrap{position:relative;z-index:2;border-top:1px solid rgba(232,100,10,.22);border-bottom:1px solid rgba(232,100,10,.22);background:linear-gradient(180deg,rgba(232,100,10,.05) 0%,transparent 20%,transparent 80%,rgba(232,100,10,.05) 100%);}
+.games-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(232,100,10,.35),rgba(212,160,23,.6),rgba(232,100,10,.35),transparent);}
+.g-eye{display:inline-flex;align-items:center;gap:6px;background:rgba(232,100,10,.14);border:1px solid rgba(232,100,10,.42);border-radius:50px;padding:4px 16px;font-family:'Gemunu Libre',cursive;font-size:.63rem;letter-spacing:3px;color:#FFA870;margin-bottom:12px;}
+
+@media(max-width:960px){.hub-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.hub-grid{grid-template-columns:1fr;}.hub-card{padding:26px 18px 22px;}}
+
+@media(max-width:980px){
+  nav{padding:12px 20px;}
+  .nav-center{display:none;}
+  .nav-ham{display:block;}
+  .about-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .games-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+  .hub-grid{grid-template-columns:1fr 1fr;}
+  .nak-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+}
+@media(max-width:700px){
+  .games-grid{grid-template-columns:repeat(2,1fr);gap:12px;margin-top:30px;}
+  .gcard-title{font-size:1.05rem;}
+  .gcard-desc{font-size:.72rem;margin-bottom:12px;}
+  .gcard-body{padding:14px 14px 16px;}
+  .gcard-btn{font-size:.75rem;padding:9px 14px;}
+  .hub-grid{grid-template-columns:1fr 1fr;gap:14px;}
+  .lb-tabs{gap:5px;}
+  .lb-tab{font-size:.65rem;padding:7px 10px;}
+  .nak-cards{grid-template-columns:repeat(3,1fr);gap:10px;}
+}
+@media(max-width:600px){
+  .hero-stats{gap:18px;flex-wrap:wrap;}
+  .hero-stats>div{min-width:80px;}
+  .footer-grid{grid-template-columns:1fr;}
+  .cd-grid{gap:8px;}
+  .cd-box{padding:12px 14px;min-width:64px;}
+  .cd-n{font-size:2rem;}
+  .cd-l{font-size:.55rem;}
+  section,.section{padding:52px 14px;}
+  nav{padding:10px 14px;}
+  .nl-box{padding:28px 18px;}
+  footer{padding:44px 16px 24px;}
+  .s-title{font-size:clamp(2rem,8vw,3.2rem);}
+  .s-sub{font-size:clamp(1.05rem,4vw,1.4rem);}
+  .s-desc{font-size:.85rem;}
+}
+@media(max-width:480px){
+  .games-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .gcard-img{height:120px;}
+  .gcard-icon{font-size:2.6rem;}
+  .gcard-title{font-size:.95rem;}
+  .gcard-body{padding:12px 12px 14px;}
+  .gcard-desc{display:none;}
+  .gcard-btn{font-size:.72rem;padding:8px 12px;}
+  .hub-grid{grid-template-columns:1fr 1fr;}
+  .hub-card{padding:20px 14px 16px;}
+  .hub-icon{font-size:2rem;}
+  .hub-title{font-size:1rem;}
+  .hub-desc{display:none;}
+  .nak-cards{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .nt-name{font-size:.7rem;}
+  .nt-time{font-size:1rem;}
+  .nt-date{font-size:.6rem;}
+  .lb-tabs{gap:4px;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;}
+  .lb-tab{font-size:.6rem;padding:6px 9px;white-space:nowrap;flex-shrink:0;}
+  .nav-play{display:none;}
+  .logo-main{font-size:.85rem;}
+  .logo-sub{font-size:.48rem;}
+}
+
+/* ── Game Card Mobile Polish ── */
+@media(max-width:600px){
+  .gcard-img{height:130px;}
+  .gcard-icon{font-size:clamp(2.5rem,8vw,3.5rem)!important;}
+  .gcard-plays{font-size:.6rem!important;}
+}
+@media(max-width:380px){
+  .gcard-img{height:110px;}
+  .gcard-title{font-size:.9rem;}
+  .gcard-tag{font-size:.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+
+
+<!-- BG CANVAS -->
+<canvas id="bgCv"></canvas>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker" id="ticker">
+  <div class="ticker-inner" id="tickerInner">
+    <span class="ticker-item"><span class="ticker-tag">NEW</span>🎊 AwruduFest by Feature Designz — Complete Avurudu Platform!</span>
+    <span class="ticker-item"><span class="ticker-tag">NAK</span>☸ April 14 · 9:32 AM — සිංහල අලුත් අවුරුද්ද 2026! Official Nakath times!</span>
+    <span class="ticker-item"><span class="ticker-tag">LIVE</span>🎮 කොට්ට පොර · කනා මුට්ටිය · Blind Tag — Play Now!</span>
+    <span class="ticker-item"><span class="ticker-tag">HOT</span>🍛 Recipes — කිරිබත්, කොකිස්, අල්වා, ඉදිඅප්ප Step-by-Step!</span>
+    <span class="ticker-item"><span class="ticker-tag">NEW</span>💌 සුබ පැතුම් Generator — Card හදාගෙන Share!</span>
+    <span class="ticker-item"><span class="ticker-tag">NEW</span>🎊 AwruduFest by Feature Designz — Complete Avurudu Platform!</span>
+    <span class="ticker-item"><span class="ticker-tag">NAK</span>☸ April 14 · 9:32 AM — සිංහල අලුත් අවුරුද්ද 2026! Official Nakath times!</span>
+    <span class="ticker-item"><span class="ticker-tag">LIVE</span>🎮 කොට්ට පොර · කනා මුට්ටිය · Blind Tag — Play Now!</span>
+    <span class="ticker-item"><span class="ticker-tag">HOT</span>🍛 Recipes — කිරිබත්, කොකිස්, අල්වා, ඉදිඅප්ප Step-by-Step!</span>
+    <span class="ticker-item"><span class="ticker-tag">NEW</span>💌 සුබ පැතුම් Generator — Card හදාගෙන Share!</span>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="navbar">
+  <a href="#" class="logo">
+    <span class="logo-icon">🎊</span>
+    <span class="logo-text">
+      <span class="logo-main">Awrudu with Feature Designz</span>
+      <span class="logo-sub">SINHALA NEW YEAR · 2026</span>
+    </span>
+  </a>
+  <div class="nav-center">
+    <a href="nakath.html" class="nav-link nav-nak">☸ නැකත්</a>
+    <a href="#games" class="nav-link nav-game">🎮 ක්‍රීඩා</a>
+    <a href="recipes.html" class="nav-link">🍛 Recipes</a>
+    <a href="greetings.html" class="nav-link">💌 සුබ පැතුම්</a>
+    <a href="#leaderboard" class="nav-link">🏆 Leaderboard</a>
+    <a href="#contact" class="nav-link">📱 Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="admin.html" class="nav-admin">⚙️ Admin</a>
+    <button class="nav-play" onclick="scrollToGames()">🎮 ක්‍රීඩා</button>
+    <button class="nav-ham" id="hamBtn">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" id="mobClose">✕</button>
+  <a href="nakath.html" class="mob-link" style="color:var(--gold-lt)">☸ නැකත් සීට්ටුව</a>
+  <a href="#games" class="mob-link" style="color:#FFA870" onclick="closeMob()">🎮 ක්‍රීඩා</a>
+  <a href="recipes.html" class="mob-link" style="color:#5DE89A">🍛 Recipes</a>
+  <a href="greetings.html" class="mob-link" style="color:#C39BD3">💌 සුබ පැතුම්</a>
+  <a href="#leaderboard" class="mob-link" onclick="closeMob()">🏆 Leaderboard</a>
+  <a href="admin.html" class="mob-link">⚙️ Admin</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
+
+  <div class="hero-eyebrow">
+    <span class="hero-eyebrow-dot">🎊</span>
+    සිංහල & දෙමළ අලුත් අවුරුදු · 2026
+  </div>
+
+  <div class="hero-title">
+    <span class="hero-title-l1">AWRUDU WITH</span>
+    <span class="hero-title-l2">Feature Designz</span>
+    <span class="hero-title-l3">ජනක්‍රීඩා · ONLINE GAMES · SRI LANKA 🇱🇰</span>
+  </div>
+
+  <p class="hero-desc">
+    සාම්ප්‍රදායික සිංහල ජනක්‍රීඩා online ෙකළිය හැකිය!
+    <b style="color:var(--gold-lt)">Feature Designz</b> ගේ විශේෂ නිර්මාණය.
+    කනා මුට්ටිය, කොට්ට පොර & තවත් games! Leaderboard ජය ගෙන friends challenge කරන්න! 🎉
+  </p>
+
+  <div class="hero-ctas">
+    <button class="cta-main" onclick="scrollToGames()">🎮 ක්‍රීඩා ආරම්භ කරන්න</button>
+    <button class="cta-sec" onclick="shareWebsite()">📤 Share කරන්න</button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-n" id="sCnt">3,241</span><span class="hstat-l">ACTIVE PLAYERS</span></div>
+    <div class="hstat"><span class="hstat-n">3</span><span class="hstat-l">GAMES</span></div>
+    <div class="hstat"><span class="hstat-n" id="gCnt">21,884</span><span class="hstat-l">GAMES PLAYED</span></div>
+    <div class="hstat"><span class="hstat-n">🇱🇰</span><span class="hstat-l">SRI LANKA</span></div>
+  </div>
+  <div class="hero-deco"></div>
+</section>
+
+<!-- ═══ COUNTDOWN ═══ -->
+<div class="countdown-wrap">
+  <div class="cd-label" id="cdLabel">⏳ ඊළඟ සිංහල අවුරුදු දක්වා</div>
+  <div class="cd-grid" id="cdGrid">
+    <div class="cd-box"><span class="cd-n" id="cdD">--</span><span class="cd-u">DAYS</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cdH">--</span><span class="cd-u">HOURS</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cdM">--</span><span class="cd-u">MINUTES</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cdS">--</span><span class="cd-u">SECONDS</span></div>
+  </div>
+</div>
+
+<!-- ═══ FEAT STRIP ═══ -->
+<div class="feat-strip">
+  <div class="feat-item"><div class="feat-ico">🎮</div><div class="feat-t">Online Games</div><div class="feat-d">Browser-based, no download</div></div>
+  <div class="feat-item"><div class="feat-ico">🏆</div><div class="feat-t">Leaderboard</div><div class="feat-d">Global rankings</div></div>
+  <div class="feat-item"><div class="feat-ico">📱</div><div class="feat-t">Mobile Ready</div><div class="feat-d">Any device, any screen</div></div>
+  <div class="feat-item"><div class="feat-ico">🆓</div><div class="feat-t">100% Free</div><div class="feat-d">Forever, always free</div></div>
+  <div class="feat-item"><div class="feat-ico">🔥</div><div class="feat-t">More Coming</div><div class="feat-d">New games soon!</div></div>
+  <div class="feat-item"><div class="feat-ico">🇱🇰</div><div class="feat-t">Made in SL</div><div class="feat-d">By Feature Designz</div></div>
+</div>
+
+
+<!-- ══════ 4 MAIN HUB ══════ -->
+<div class="hub-section reveal">
+  <div class="s-eyebrow">🌟 AwruduFest Features</div>
+  <h2 class="s-title" style="font-size:clamp(1.7rem,4.5vw,2.8rem)">සිංහල අවුරුදු — සම්පූර්ණ Platform</h2>
+  <p style="font-size:.88rem;color:rgba(253,243,220,.45);max-width:500px;margin:8px auto 0;line-height:1.8">නැකත් · ක්‍රීඩා · රසකැවිලි · සුබ පැතුම් — AwruduFest ගේ Complete Collection!</p>
+  <div class="hub-grid">
+    <a href="nakath.html" class="hub-card hub-nak">
+      <span class="hub-icon">☸</span>
+      <span class="hub-pill">✦ AUSPICIOUS TIMES ✦</span>
+      <span class="hub-name">නැකත් සීට්ටුව</span>
+      <p class="hub-desc">2026 ශුභ නැකත් — color-coded highlighted times, දිශා, ලග්න සහිත complete sheet!</p>
+      <span class="hub-btn">NAKATH SHEET →</span>
+    </a>
+    <a href="#games" class="hub-card hub-games" onclick="event.preventDefault();scrollToGames()">
+      <span class="hub-hot">HOT 🔥</span>
+      <span class="hub-icon">🎮</span>
+      <span class="hub-pill">🎮 LIVE GAMES</span>
+      <span class="hub-name">අවුරුදු ක්‍රීඩා</span>
+      <p class="hub-desc">කනා මුට්ටිය, කොට්ට පොර, Blind Tag — 3 games live! Leaderboard ජය ගෙන friends challenge!</p>
+      <span class="hub-btn">▶ Play</span>
+    </a>
+    <a href="recipes.html" class="hub-card hub-recipes">
+      <span class="hub-icon">🍛</span>
+      <span class="hub-pill">🍴 RECIPES</span>
+      <span class="hub-name">රසකැවිලි Recipes</span>
+      <p class="hub-desc">කිරිබත්, කොකිස්, අල්වා, ඉදිඅප්ප — සම්පූර්ණ step-by-step අවුරුදු රසකැවිලි!</p>
+      <span class="hub-btn">Recipes →</span>
+    </a>
+    <a href="greetings.html" class="hub-card hub-greetings">
+      <span class="hub-icon">💌</span>
+      <span class="hub-pill">💌 GENERATOR</span>
+      <span class="hub-name">සුබ පැතුම්</span>
+      <p class="hub-desc">ඔබේ නමින් personalized greeting card හදාගෙන WhatsApp, Facebook share කරන්න!</p>
+      <span class="hub-btn">Generate →</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════ NAKATH HIGHLIGHT STRIP ══════ -->
+<div class="nakath-strip reveal">
+  <div style="text-align:center;margin-bottom:30px">
+    <div class="nak-strip-eye">☸ 2026 ශුභ නැකත් — QUICK REFERENCE</div>
+    <h2 class="nak-strip-title">April 14–15 · Key Auspicious Times · 2026</h2>
+    <p class="nak-strip-sub">සම්පූර්ණ නැකත් සීට්ටුව සඳහා <a href="nakath.html">click කරන්න →</a></p>
+  </div>
+  <div class="nak-cards">
+    <div class="nak-t next"><span class="nt-icon">🌅</span><div class="nt-name">අලුත් අවුරුද්ද</div><span class="nt-time">09:32 AM</span><div class="nt-date">Apr 14 · Tuesday</div></div>
+    <div class="nak-t"><span class="nt-icon">🔥</span><div class="nt-name">ලිප දැල්වීම</div><span class="nt-time">11:08 AM</span><div class="nt-date">Apr 5 · Sunday</div></div>
+    <div class="nak-t"><span class="nt-icon">☸️</span><div class="nt-name">පුණ්‍ය කාලය</div><span class="nt-time">03:08 – 03:56</span><div class="nt-date">Apr 14 · Tuesday</div></div>
+    <div class="nak-t"><span class="nt-icon">🍚</span><div class="nt-name">ආහාර පිසීම</div><span class="nt-time">10:51 AM</span><div class="nt-date">Apr 14 · Tuesday</div></div>
+    <div class="nak-t"><span class="nt-icon">💆</span><div class="nt-name">හිසතෙල් ගෑම</div><span class="nt-time">06:55 AM</span><div class="nt-date">Apr 15 · Wednesday</div></div>
+    <div class="nak-t"><span class="nt-icon">💼</span><div class="nt-name">රැකිරක්ෂා</div><span class="nt-time">06:27 AM</span><div class="nt-date">Apr 20 · Monday</div></div>
+  </div>
+  <div class="nak-strip-cta">
+    <a href="nakath.html" class="nak-cta-btn">☸ සම්පූර්ණ නැකත් සීට්ටුව — FULL SHEET →</a>
+  </div>
+</div>
+
+<!-- ══════ GAMES (highlighted wrapper) ══════ -->
+<div class="games-wrap">
+<!-- ═══ GAMES ═══ -->
+<section class="section games-section wrap reveal" id="games">
+  <div class="g-eye">🎮 ජනක්‍රීඩා · LIVE NOW</div>
+  <h2 class="s-title">සාම්ප්‍රදායික ක්‍රීඩා</h2>
+  <p class="s-desc">සිංහල අවුරුදු සාම්ප්‍රදායික ජනක්‍රීඩා online ෙකළිය හැකිය! Feature Designz ගේ special design.</p>
+  <div class="kolam-divider" style="margin:20px auto"><span>⁕ ☸ ⁕</span></div>
+
+  <div class="games-grid" id="gamesGrid">
+    <!-- Games loaded from API + hardcoded fallback -->
+    <div class="gcard">
+      <div class="gcard-img tb-shell">
+        <span class="gcard-icon">🏺</span>
+        <span class="gcard-badge badge-hot">HOT 🔥</span>
+        <span class="gcard-plays" id="plays-shell">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">SHELL GAME</span>
+        <h3 class="gcard-title">කනා මුට්ටිය</h3>
+        <p class="gcard-desc">Pot shuffle game! Ball සඟවලා — නිවැරදි pot තෝරා ලකුණු ගන්න. 3 difficulty levels, special bonuses!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 Player · Casual</span>
+          <button class="gcard-btn" onclick="launchGame('shell')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-tag">
+        <span class="gcard-icon" style="animation-delay:.5s">🙈</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-tag">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">ACTION TAG</span>
+        <h3 class="gcard-title">Blind Tag</h3>
+        <p class="gcard-desc">Blindfolded character ගෙන AI runners catch කරන්න! Mouse, Arrow Keys, D-Pad controls. 6 Levels!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 vs AI · Action</span>
+          <button class="gcard-btn" onclick="launchGame('tag')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-kotta">
+        <span class="gcard-icon" style="animation-delay:1s">🛏️</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-kotta">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">TURN BASED</span>
+        <h3 class="gcard-title">කොට්ට පොර</h3>
+        <p class="gcard-desc">AI ව කොට්ටෙන් Turn-by-turn combat! Detailed characters, special moves, best of 3, leaderboard!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 vs AI · Fighting</span>
+          <button class="gcard-btn" onclick="launchGame('kotta')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-kiriko">
+        <span class="gcard-icon" style="animation-delay:1.5s">🪢</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-kiriko">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">ROPE PULL</span>
+        <h3 class="gcard-title">කඹ ඇදීම</h3>
+        <p class="gcard-desc">AI කණ්ඩායමට එරෙහිව ශක්තිමත් ලෙස ඇදීම! ඉක්මනින් tap කර 3 වටයෙන් ජය ගන්න!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 vs AI · Rope Pull</span>
+          <button class="gcard-btn" onclick="launchGame('kiriko')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-kanamut">
+        <span class="gcard-icon" style="animation-delay:2s">🎯</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-kanamut">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">POT BREAKING</span>
+        <h3 class="gcard-title">කණමුට්ටි ගැසීම</h3>
+        <p class="gcard-desc">ඇස් බැඳ ගෙස්ම! ගමන් කරන pendulum ළඟ click කර කාමර කඩාගන්න. 60s challenge!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 Player · Aim</span>
+          <button class="gcard-btn" onclick="launchGame('kanamut')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-pancha">
+        <span class="gcard-icon" style="animation-delay:0.5s">🪁</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-pancha">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">CATAPULT</span>
+        <h3 class="gcard-title">කැටපොලෙන් විදීම</h3>
+        <p class="gcard-desc">Catapult shoot & release! ගමන් කරන ඉලක්ක hit කරන්න. Streak bonus & 3 rounds!</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 Player · Skill</span>
+          <button class="gcard-btn" onclick="launchGame('pancha')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-rahas">
+        <span class="gcard-icon" style="animation-delay:1s">🧗</span>
+        <span class="gcard-badge badge-new">NEW ✨</span>
+        <span class="gcard-plays" id="plays-rahas">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">TREASURE HUNT</span>
+        <h3 class="gcard-title">රහස් දඩයම</h3>
+        <p class="gcard-desc">ඉඟිය කියවා සැඟවුණු ධජය සොයා ගන්න! 90s ඇතුළත ධජ 5ක් hunt කරන්න 🏳️</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 Player · Puzzle</span>
+          <button class="gcard-btn" onclick="launchGame('rahas')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gcard">
+      <div class="gcard-img tb-snake">
+        <span class="gcard-icon" style="animation-delay:0.8s">🐍</span>
+        <span class="gcard-badge badge-hot">HOT 🔥</span>
+        <span class="gcard-plays" id="plays-snake">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">BOARD GAME</span>
+        <h3 class="gcard-title">සර්ප හා ඉණිමං</h3>
+        <p class="gcard-desc">සිංහල Snakes & Ladders! AI එක්ක dice ගසා board race කරන්න. සාම්ප්‍රදායික design! 🎲</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 1 vs AI · Board</span>
+          <button class="gcard-btn" onclick="launchGame('snake')">▶ Play</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /games-wrap -->
+
+<!-- ═══ LEADERBOARD ═══ -->
+<section class="section lb-section wrap reveal" id="leaderboard">
+  <div class="s-eyebrow">🏆 ශ්‍රේෂ්ඨ ක්‍රීඩකයෝ</div>
+  <h2 class="s-title">Global Leaderboard</h2>
+  <p class="s-desc">ශ්‍රේෂ්ඨ ජයග්‍රාහකයෝ. ඔබේ score ජය ගන්නද? Games play කර leaderboard ඉහළ නගින්න!</p>
+  <div class="lb-tabs">
+    <button class="lb-tab active" onclick="switchLB('all',this)">සියල්ල</button>
+    <button class="lb-tab" onclick="switchLB('shell',this)">🏺 කනා</button>
+    <button class="lb-tab" onclick="switchLB('tag',this)">🙈 Tag</button>
+    <button class="lb-tab" onclick="switchLB('kotta',this)">🛏️ කොට්ට</button>
+    <button class="lb-tab" onclick="switchLB('kiriko',this)">🪢 කඹ ඇදීම</button>
+    <button class="lb-tab" onclick="switchLB('kanamut',this)">🎯 කණ</button>
+    <button class="lb-tab" onclick="switchLB('pancha',this)">🪁 පංච</button>
+    <button class="lb-tab" onclick="switchLB('rahas',this)">🧗 රහස්</button>
+    <button class="lb-tab" onclick="switchLB('snake',this)">🐍 සර්ප</button>
+  </div>
+  <div class="lb-card">
+    <div class="lb-head"><span>#</span><span>ක්‍රීඩකයා</span><span>ක්‍රීඩාව</span><span style="text-align:right">ලකුණු</span></div>
+    <div id="lbBody">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+  <button class="lb-refresh" onclick="loadLB(currentLBFilter)">🔄 Refresh</button>
+</section>
+
+<!-- ═══ TRADITION ═══ -->
+<section class="section wrap" id="tradition">
+  <div class="about-grid">
+    <div class="reveal-l">
+      <div class="s-eyebrow">🇱🇰 සම්ප්‍රදාය</div>
+      <h2 class="s-title">සිංහල<br>අවුරුදු</h2>
+      <p class="s-desc" style="margin-top:14px">සිංහල හා දෙමළ ජනතාවගේ සාම්ප්‍රදායික නව වර්ෂ ජනක්‍රීඩා ඩිජිටල් ලොවට! Feature Designz ගේ නිර්මාණය.</p>
+      <div class="kolam-divider" style="margin:22px 0;justify-content:flex-start"><span>⁕ ☸ ⁕</span></div>
+      <button class="cta-main" style="display:inline-block;margin-top:4px" onclick="scrollToGames()">🎮 ෙකළිය ආරම්භ</button>
+    </div>
+    <div class="tradition-list reveal-r">
+      <div class="tcard"><span class="tcard-ico">🏺</span><div><div class="tcard-title">කනා මුට්ටිය</div><div class="tcard-desc">Ball hidden under pots! සාම්ප්‍රදායික pot shuffle game. Click fast to find the ball!</div></div></div>
+      <div class="tcard"><span class="tcard-ico">🛏️</span><div><div class="tcard-title">කොට්ට පොර</div><div class="tcard-desc">Pillow fight tradition! Turn-based combat with detailed Sri Lankan characters & special moves.</div></div></div>
+      <div class="tcard"><span class="tcard-ico">🙈</span><div><div class="tcard-title">Blind Tag</div><div class="tcard-desc">Blindfolded catch game! Mouse/keys/D-pad — catch AI runners before time runs out!</div></div></div>
+      <div class="tcard"><span class="tcard-ico">🎊</span><div><div class="tcard-title">Feature Designz</div><div class="tcard-desc">YouTube & TikTok @FeatureDesignz — Subscribe & share! Made with ❤️ in Sri Lanka.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOCIAL ═══ -->
+<section class="section social-section" id="social">
+  <div class="wrap reveal" style="text-align:center">
+    <div class="s-eyebrow">📱 Follow & Share</div>
+    <h2 class="s-title">AwruduFest Viral කරමු!</h2>
+    <p class="s-desc" style="margin:0 auto">ඔබේ scores share කරන්න! Friends challenge කරන්න! Feature Designz follow කරන්න!</p>
+    <div class="social-grid">
+      <a href="#" class="soc-btn yt"><span class="soc-ico">▶️</span><div><div class="soc-name">YouTube</div><div class="soc-handle">@FeatureDesignz</div></div></a>
+      <a href="#" class="soc-btn tt"><span class="soc-ico">🎵</span><div><div class="soc-name">TikTok</div><div class="soc-handle">@FeatureDesignz</div></div></a>
+      <a href="#" class="soc-btn fb"><span class="soc-ico">👍</span><div><div class="soc-name">Facebook</div><div class="soc-handle">Feature Designz</div></div></a>
+      <a href="#" class="soc-btn wa" onclick="whatsappShare();return false"><span class="soc-ico">💬</span><div><div class="soc-name">WhatsApp</div><div class="soc-handle">Share Now</div></div></a>
+    </div>
+    <div class="share-bar reveal">
+      <span class="share-url" id="shareUrl">awrudu.featuredesignz.site</span>
+      <button class="share-btn" onclick="copyLink()">📋 Copy Link</button>
+      <button class="share-btn wa" onclick="whatsappShare()">💬 WhatsApp</button>
+      <button class="share-btn" onclick="shareWebsite()" style="background:linear-gradient(135deg,#1DA1F2,#0d8cd1);color:#fff">🐦 Share</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ CONTACT & SOCIAL ═══ -->
+<section class="section contact-section wrap reveal" id="contact">
+  <div class="s-eyebrow">📱 Feature Designz — Contact & Social</div>
+  <h2 class="s-title">Connect කරන්න</h2>
+  <p class="s-desc" style="margin:0 auto">AwruduFest.lk ගේ team ට connect කරන්න. Features, feedback, collabs — welcome!</p>
+
+  <div class="contact-grid">
+    <div class="ccard">
+      <span class="ccard-ico">📧</span>
+      <div class="ccard-label">EMAIL</div>
+      <div class="ccard-val"><a class="contact-email" href="/cdn-cgi/l/email-protection#2a43444c456a4c4f4b5e5f584f4e4f59434d4450044641"><span class="__cf_email__" data-cfemail="e28b8c848da2848783969790878687918b858c98cc8e89">[email&#160;protected]</span></a></div>
+    </div>
+    <div class="ccard">
+      <span class="ccard-ico">📞</span>
+      <div class="ccard-label">PHONE / WHATSAPP</div>
+      <div class="ccard-val"><a class="contact-phone" href="tel:+94771234567">+94 786 675 150</a></div>
+    </div>
+    <div class="ccard">
+      <span class="ccard-ico">🌐</span>
+      <div class="ccard-label">WEBSITE</div>
+      <div class="ccard-val"><a class="contact-website" href="https://featuredesignz.site" target="_blank">featuredesignz.site</a></div>
+    </div>
+    <div class="ccard">
+      <span class="ccard-ico">📍</span>
+      <div class="ccard-label">LOCATION</div>
+      <div class="ccard-val">Sri Lanka 🇱🇰</div>
+    </div>
+  </div>
+
+  <div class="social-row" style="margin-top:32px">
+    <a class="soc-pill yt social-yt-link" href="https://www.youtube.com/channel/UCda2mc_f-nIinjWpDUJiA2g" target="_blank">
+      ▶️ <span><b>YouTube</b><br><span class="yt-handle" style="font-size:.65rem;opacity:.7">@FeatureDesignz</span></span>
+    </a>
+    <a class="soc-pill tt social-tt-link" href="https://www.tiktok.com/@featuredesignz" target="_blank">
+      🎵 <span><b>TikTok</b><br><span class="tt-handle" style="font-size:.65rem;opacity:.7">@FeatureDesignz</span></span>
+    </a>
+    <a class="soc-pill fb social-fb-link" href="https://www.facebook.com/featuredesignz" target="_blank">
+      👍 <span><b>Facebook</b><br><span style="font-size:.65rem;opacity:.7">Feature Designz</span></span>
+    </a>
+    <a class="soc-pill ig social-ig-link" href="https://www.instagram.com/featuredesignz" target="_blank">
+      📸 <span><b>Instagram</b><br><span style="font-size:.65rem;opacity:.7">@FeatureDesignz</span></span>
+    </a>
+    <a class="soc-pill wa social-wa-link" href="https://wa.me/94786675150" target="_blank">
+      💬 <span><b>WhatsApp</b><br><span style="font-size:.65rem;opacity:.7">Chat Now</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<section class="section nl-section wrap reveal">
+  <div class="nl-box">
+    <div class="s-eyebrow">📬 Updates</div>
+    <h2 class="s-title" style="font-size:1.9rem">Notify කරන්නද?</h2>
+    <p style="font-size:.85rem;color:rgba(253,243,220,.45);margin-top:8px;line-height:1.7">නව games, events, leaderboard updates — first දැනගන්න!</p>
+    <form class="nl-form" onsubmit="subscribe(event)">
+      <input type="email" class="nl-input" placeholder="ඔබේ email..." required>
+      <button type="submit" class="nl-btn">✉️ Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a href="#" class="logo">
+        <span class="logo-icon" style="font-size:1.5rem">🎊</span>
+        <span class="logo-text">
+          <span class="logo-main">Awrudu with Feature Designz</span>
+          <span class="logo-sub">SINHALA NEW YEAR · 2026</span>
+        </span>
+      </a>
+      <p class="footer-brand-desc">සිංහල හා දෙමළ ජනතාවගේ අලුත් අවුරුදු ජනක්‍රීඩා online platform. Feature Designz ගේ නිර්මාණය. Made with ❤️ in Sri Lanka.</p>
+      <div class="footer-socials">
+        <a href="https://www.youtube.com/channel/UCda2mc_f-nIinjWpDUJiA2g" class="footer-social-ico social-yt-link" target="_blank">▶️</a>
+        <a href="https://www.tiktok.com/@featuredesignz" class="footer-social-ico social-tt-link" target="_blank">🎵</a>
+        <a href="https://www.facebook.com/featuredesignz" class="footer-social-ico social-fb-link" target="_blank">👍</a>
+        <a href="https://www.instagram.com/featuredesignz" class="footer-social-ico social-ig-link" target="_blank">📸</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">ක්‍රීඩා</div>
+      <ul class="footer-links">
+        <li><a href="nakath.html">☸ නැකත් සීට්ටුව</a></li>
+        <li><a href="#" onclick="scrollToGames()">🎮 ක්‍රීඩා</a></li>
+        <li><a href="recipes.html">🍛 රසකැවිලි</a></li>
+        <li><a href="greetings.html">💌 සුබ පැතුම්</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Feature Designz</div>
+      <ul class="footer-links">
+        <li><a href="#contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us 📞</a></li>
+        <li><a href="https://www.youtube.com/channel/UCda2mc_f-nIinjWpDUJiA2g" class="social-yt-link" target="_blank">YouTube ▶️</a></li>
+        <li><a href="https://www.tiktok.com/@featuredesignz" class="social-tt-link" target="_blank">TikTok 🎵</a></li>
+        <li><a href="https://www.facebook.com/featuredesignz" class="social-fb-link" target="_blank">Facebook 👍</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">More</div>
+      <ul class="footer-links">
+        <li><a href="admin.html">⚙️ Admin Panel</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#" onclick="subscribe(null)">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 AwruduFest — Feature Designz සියලුම හිමිකම් ඇවිරිණි.</span>
+    <span class="footer-made">🎊 සිංහල අවුරුදු 2026 · Feature Designz</span>
+  </div>
+</footer>
+
+<!-- ═══ GAME MODAL ═══ -->
+<div id="gameModal">
+  <div class="modal-nav">
+    <span class="modal-title" id="modalTitle">Game</span>
+    <div style="display:flex;gap:8px">
+      <button class="modal-close" onclick="closeGame()">✕ Close</button>
+    </div>
+  </div>
+  <iframe id="gameFrame" src="about:blank"></iframe>
+</div>
+
+<div id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+/* ═══════════ BG CANVAS ═══════════ */
+const cv=document.getElementById('bgCv'),bx=cv.getContext('2d');
+let pts=[];
+function rsBg(){cv.width=innerWidth;cv.height=innerHeight;}rsBg();
+window.addEventListener('resize',rsBg);
+for(let i=0;i<70;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:.5+Math.random()*2,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,a:.04+Math.random()*.2,c:Math.random()<.6?'212,160,23':'253,243,220'});
+(function drawBg(){bx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;bx.save();bx.globalAlpha=p.a*(0.6+0.4*Math.sin(Date.now()*.001+p.x));bx.fillStyle=`rgb(${p.c})`;bx.beginPath();bx.arc(p.x,p.y,p.r,0,Math.PI*2);bx.fill();bx.restore();});requestAnimationFrame(drawBg);})();
+
+/* ═══════════ FALLING PETALS ═══════════ */
+const petals=['🌸','🌺','🌼','🌻','🎊','✨','🌷','🪷'];
+function mkPetal(){
+  const d=document.createElement('div');
+  d.style.cssText=`position:fixed;top:-40px;left:${Math.random()*100}vw;font-size:${.7+Math.random()*.8}rem;opacity:.75;pointer-events:none;z-index:1;animation:petalFall ${9+Math.random()*10}s linear forwards;`;
+  d.textContent=petals[Math.floor(Math.random()*petals.length)];
+  document.body.appendChild(d);setTimeout(()=>d.remove(),22000);
+}
+const petalStyle=document.createElement('style');
+petalStyle.textContent='@keyframes petalFall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(540deg);opacity:0}}';
+document.head.appendChild(petalStyle);
+for(let i=0;i<10;i++)setTimeout(mkPetal,i*600);
+setInterval(mkPetal,2200);
+
+/* ═══════════ NAV ═══════════ */
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('solid',scrollY>60));
+document.getElementById('hamBtn').onclick=()=>document.getElementById('mobMenu').classList.add('open');
+document.getElementById('mobClose').onclick=closeMob;
+function closeMob(){document.getElementById('mobMenu').classList.remove('open');}
+
+/* ═══════════ COUNTDOWN ═══════════ */
+// 2026 Sinhala New Year: April 14, 2026 at 07:23:00 Sri Lanka Time (UTC+5:30)
+const NAKATH_TARGET = new Date('2026-04-14T09:32:00+05:30');
+
+function runCd(){
+  const now = new Date();
+  const diff = NAKATH_TARGET - now;
+  if(diff <= 0){
+    document.getElementById('cdLabel').textContent = '🎊 සිංහල අවුරුදු 2026 ශුභ! Happy New Year!';
+    ['D','H','M','S'].forEach(k => { document.getElementById('cd'+k).textContent='00'; });
+    // Trigger popup when countdown reaches zero
+    triggerNewYearPopup();
+    return;
+  }
+  const d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);
+  ['D','H','M','S'].forEach((k,i)=>{document.getElementById('cd'+k).textContent=String([d,h,m,s][i]).padStart(2,'0');});
+}
+runCd();setInterval(runCd,1000);
+
+/* ═══════════ SCROLL REVEAL ═══════════ */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+/* ═══════════ STAT COUNTER ═══════════ */
+function ctr(el,n,dur=1800){let s=0;const step=n/dur*16;const t=setInterval(()=>{s+=step;if(s>=n){clearInterval(t);el.textContent=n.toLocaleString();}else el.textContent=Math.round(s).toLocaleString();},16);}
+const sObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){ctr(document.getElementById('sCnt'),3241);ctr(document.getElementById('gCnt'),21884,2200);sObs.disconnect();}});},{threshold:.5});
+sObs.observe(document.querySelector('.hero-stats'));
+
+/* ═══════════ LEADERBOARD ═══════════ */
+const defaultLB=[
+  {rank:'🥇',name:'Kavindi R.',avatar:'👩',game:'කොට්ට පොර',score:2840,cls:'r1'},
+  {rank:'🥈',name:'Sasith M.',avatar:'👨',game:'Blind Tag',score:2611,cls:'r2'},
+  {rank:'🥉',name:'Dinusha P.',avatar:'👩',game:'කනා මුට්ටිය',score:2380,cls:'r3'},
+  {rank:'4',name:'Tharindu K.',avatar:'👨',game:'කොට්ට පොර',score:2145,cls:''},
+  {rank:'5',name:'Nimesha S.',avatar:'👩',game:'Blind Tag',score:1988,cls:''},
+  {rank:'6',name:'Ruwan A.',avatar:'👨',game:'කනා මුට්ටිය',score:1724,cls:''},
+];
+let currentLBFilter='all';
+function renderLBRows(data){
+  const med=['🥇','🥈','🥉'];
+  document.getElementById('lbBody').innerHTML=data.map((e,i)=>`
+    <div class="lb-row ${e.cls||''}">
+      <span class="lb-rank">${med[i]||e.rank||i+1}</span>
+      <div class="lb-player"><div class="lb-avatar">${e.avatar||'🧑'}</div><div><div class="lb-pname">${e.name}</div><div class="lb-pgame">${e.game}</div></div></div>
+      <span style="font-size:.75rem;color:rgba(253,243,220,.4);align-self:center">${e.game}</span>
+      <span class="lb-score">${(e.score||0).toLocaleString()}</span>
+    </div>`).join('');
+}
+async function loadLB(filter='all'){
+  currentLBFilter=filter;
+  try{
+    const url='/api/leaderboard?limit=6'+(filter!=='all'?'&game='+filter:'');
+    const res=await fetch(url);
+    if(res.ok){const d=await res.json();if(d.length){renderLBRows(d);return;}}
+  }catch(e){}
+  // fallback
+  const filtered=filter==='all'?defaultLB:defaultLB.filter(e=>e.game.toLowerCase().includes(filter.toLowerCase()));
+  renderLBRows(filtered.length?filtered:defaultLB);
+}
+function switchLB(filter,btn){
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');loadLB(filter);
+}
+loadLB();
+
+/* Load play counts + dynamic games from API */
+let liveGamesData = null;
+
+// ── Background class map by game type
+const BG_MAP = {
+  'SHELL GAME':'tb-shell','ACTION TAG':'tb-tag','TURN BASED':'tb-kotta',
+  'ROPE PULL':'tb-kiriko','POT BREAKING':'tb-kanamut','CATAPULT':'tb-pancha',
+  'TREASURE HUNT':'tb-rahas','BOARD GAME':'tb-snake',
+};
+
+// ── Load from API, fall back to hardcoded cards if server offline
+async function loadGamesFromAPI(){
+  try{
+    const res = await fetch('/api/games?t='+Date.now()); // cache-bust
+    if(!res.ok) return; // keep hardcoded cards
+    const games = await res.json();
+    if(!games || !games.length) return; // keep hardcoded cards
+    liveGamesData = games;
+
+    // Update GAMES launch map (use id OR gameId)
+    games.forEach(g=>{
+      const key = g.id || g.gameId;
+      if(key && g.file) GAMES[key]={file:g.file, title:`${g.icon||'🎮'} ${g.name}`};
+    });
+
+    renderGamesGrid(games);
+  }catch(e){
+    // Server offline — hardcoded cards stay visible, no error
+  }
+}
+
+function renderGamesGrid(games){
+  const grid = document.getElementById('gamesGrid');
+  if(!grid) return;
+  const visible = games.filter(g => g.status !== 'hidden');
+  if(!visible.length) return; // don't wipe if nothing to show
+
+  grid.innerHTML = visible.map((g,i) => {
+    const key      = g.id || g.gameId || '';
+    const bgClass  = BG_MAP[g.type] || 'tb-soon';
+    const isSoon   = g.status === 'soon';
+    const badgeHtml= g.badge
+      ? `<span class="gcard-badge ${g.badge==='HOT'?'badge-hot':'badge-new'}">${g.badge==='HOT'?'HOT 🔥':'NEW ✨'}</span>`
+      : '';
+    return `
+    <div class="gcard${isSoon?' gcard-soon':''}">
+      <div class="gcard-img ${bgClass}" style="animation-delay:${i*0.12}s">
+        <span class="gcard-icon" style="animation-delay:${i*0.25}s">${g.icon||'🎮'}</span>
+        ${badgeHtml}
+        <span class="gcard-plays" id="plays-${key}">-- plays</span>
+      </div>
+      <div class="gcard-body">
+        <span class="gcard-tag">${g.type||'GAME'}</span>
+        <h3 class="gcard-title">${g.name}</h3>
+        <p class="gcard-desc">${g.desc||''}</p>
+        <div class="gcard-foot">
+          <span class="gcard-meta">👤 ${g.players||'1 Player'}</span>
+          ${isSoon
+            ? `<button class="gcard-btn" disabled style="opacity:.4">Coming Soon</button>`
+            : `<button class="gcard-btn" onclick="launchGame('${key}')">▶ Play</button>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadPlayCounts(){
+  try{
+    const res=await fetch('/api/stats');
+    if(!res.ok) return;
+    const d=await res.json();
+    Object.entries(d).forEach(([key,val])=>{
+      const el=document.getElementById('plays-'+key);
+      if(el) el.textContent=Number(val).toLocaleString()+' plays';
+    });
+  }catch(e){}
+}
+
+// Load games from API (replaces hardcoded cards only if API responds)
+// then update play counts
+loadGamesFromAPI().then(()=>loadPlayCounts());
+loadPlayCounts(); // also run immediately for hardcoded cards
+
+/* Load ticker from API */
+async function loadTicker(){
+  try{
+    const res=await fetch('/api/announcements');
+    if(res.ok){
+      const d=await res.json();
+      if(d.length){
+        const inner=document.getElementById('tickerInner');
+        const html=d.map(a=>`<span class="ticker-item"><span class="ticker-tag">${a.tag||'INFO'}</span>${a.text}</span>`).join('');
+        inner.innerHTML=html+html;
+      }
+    }
+  }catch(e){}
+}
+loadTicker();
+
+/* ═══════════ GAME LAUNCH ═══════════ */
+const GAMES={
+  shell: {file:'kana-muttiya.html',title:'🏺 කනා මුට්ටිය'},
+  tag:   {file:'kana-muttiya-tag.html',title:'🙈 Blind Tag'},
+  kotta: {file:'kotta-pora.html',title:'🛏️ කොට්ට පොර'},
+  kiriko:{file:'kiri-ko-adeema.html',title:'🪢 කඹ ඇදීම'},
+  kanamut:{file:'kana-muttiya-gasima.html',title:'🎯 කණමුට්ටි ගැසීම'},
+  pancha:{file:'pancha-keliya.html',title:'🪁 කැටපොලෙන් විදීම'},
+  rahas: {file:'rahas-dadayama.html',title:'🧗 රහස් දඩයම'},
+  snake: {file:'sarpa-inimang.html',title:'🐍 සර්ප හා ඉණිමං'},
+};
+function launchGame(type){
+  if(!GAMES[type]){showToast('🔜 Coming soon!');return;}
+  const g=GAMES[type];
+  document.getElementById('gameModal').style.display='flex';
+  document.getElementById('modalTitle').textContent=g.title;
+  document.getElementById('gameFrame').src=g.file;
+  document.body.style.overflow='hidden';
+  // Track play count
+  fetch('/api/play/'+type,{method:'POST'}).catch(()=>{});
+}
+function closeGame(){
+  document.getElementById('gameModal').style.display='none';
+  document.getElementById('gameFrame').src='about:blank';
+  document.body.style.overflow='';
+}
+function scrollToGames(){document.getElementById('games').scrollIntoView({behavior:'smooth'});}
+
+/* ═══════════ SHARE ═══════════ */
+function shareWebsite(){
+  if(navigator.share){navigator.share({title:'🎊 Awrudu with Feature Designz',text:'සිංහල අවුරුදු ජනක්‍රීඩා online ෙකළිය හැකිය!',url:location.href});}
+  else copyLink();
+}
+function copyLink(){
+  navigator.clipboard.writeText(location.href).then(()=>showToast('✅ Link copied!'));
+}
+function whatsappShare(){
+  window.open(`https://wa.me/?text=${encodeURIComponent('🎊 Awrudu with Feature Designz — සිංහල අවුරුදු ජනක්‍රීඩා play කරන්න! '+location.href)}`);
+}
+
+/* ═══════════ NEWSLETTER ═══════════ */
+function subscribe(e){
+  if(e){e.preventDefault();}
+  fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e?.target?.querySelector('input')?.value||''})}).catch(()=>{});
+  showToast('✅ Subscribe! 🎊 ස්තූතියි!');
+  if(e)e.target.reset();
+}
+
+/* ═══════════ TOAST ═══════════ */
+let toastTO=null;
+function showToast(msg,dur=2800){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTO);toastTO=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ═══════════ SOCIAL LINKS from API ═══════════ */
+async function loadSocialLinks(){
+  try{
+    const res=await fetch('/api/social');
+    if(!res.ok)return;
+    const s=await res.json();
+    // Update footer social icons
+    if(s.youtube)   document.querySelectorAll('.social-yt-link').forEach(el=>el.href=s.youtube);
+    if(s.tiktok)    document.querySelectorAll('.social-tt-link').forEach(el=>el.href=s.tiktok);
+    if(s.facebook)  document.querySelectorAll('.social-fb-link').forEach(el=>el.href=s.facebook);
+    if(s.instagram) document.querySelectorAll('.social-ig-link').forEach(el=>el.href=s.instagram);
+    if(s.whatsapp)  document.querySelectorAll('.social-wa-link').forEach(el=>el.href=s.whatsapp);
+    // Update contact info
+    if(s.email)     document.querySelectorAll('.contact-email').forEach(el=>{el.textContent=s.email;el.href='mailto:'+s.email;});
+    if(s.phone)     document.querySelectorAll('.contact-phone').forEach(el=>{el.textContent=s.phone;el.href='tel:'+s.phone;});
+    if(s.website)   document.querySelectorAll('.contact-website').forEach(el=>{el.textContent=s.website;el.href=s.website;});
+    // Update handles
+    if(s.youtubeHandle) document.querySelectorAll('.yt-handle').forEach(el=>el.textContent=s.youtubeHandle||'@FeatureDesignz');
+    if(s.tiktokHandle)  document.querySelectorAll('.tt-handle').forEach(el=>el.textContent=s.tiktokHandle||'@FeatureDesignz');
+  }catch(e){}
+}
+loadSocialLinks();
+
+/* ═══════════ AVURUDU POPUP ═══════════ */
+// Popup only shows when countdown hits zero (controlled by backend settings too)
+let popupShown = false;
+
+function openAvuruduPopup(isNewYear=false){
+  if(popupShown) return;
+  popupShown = true;
+  const popup = document.getElementById('avuruduPopup');
+  popup.classList.add('open');
+  if(isNewYear){
+    popup.classList.add('newyear');
+    launchFireworks();
+    setTimeout(launchFireworks, 1200);
+    setTimeout(launchFireworks, 2600);
+  } else {
+    launchFireworks();
+  }
+}
+
+function triggerNewYearPopup(){
+  // Only called when countdown reaches 00:00:00
+  if(popupShown) return;
+  sessionStorage.setItem('awrudu_popup_2026','1');
+  openAvuruduPopup(true);
+}
+
+function closePopup(){
+  document.getElementById('avuruduPopup').classList.remove('open');
+}
+
+// Load popup content & settings from API (admin can customize)
+async function loadPopupSettings(){
+  try{
+    const res = await fetch('/api/popup');
+    if(!res.ok) return;
+    const p = await res.json();
+    if(!p || p.enabled === false) return; // Admin disabled popup
+    // Update popup content dynamically from backend
+    if(p.wish)     document.getElementById('popupWish').innerHTML = p.wish.replace(/\n/g,'<br>');
+    if(p.subText)  document.getElementById('popupSub').innerHTML  = p.subText;
+    if(p.from)     document.getElementById('popupFrom').textContent = '✦ ' + p.from.toUpperCase() + ' ✦';
+    if(p.emojis)   document.getElementById('popupEmojis').textContent = p.emojis;
+    if(p.pillText) document.getElementById('popupPill').textContent = p.pillText;
+    if(p.btn1Text) document.getElementById('popupBtn1').textContent = p.btn1Text;
+    if(p.btn1Link) document.getElementById('popupBtn1').setAttribute('data-link', p.btn1Link);
+    if(p.btn2Text) document.getElementById('popupBtn2').textContent = p.btn2Text;
+    if(p.btn2Link) document.getElementById('popupBtn2').href = p.btn2Link;
+  }catch(e){ /* offline — use hardcoded defaults */ }
+}
+loadPopupSettings();
+
+let fwCanvas=null,fwCtx=null,fwParts=[],fwAF=null;
+function launchFireworks(){
+  const cv=document.getElementById('fwCv');
+  if(!cv)return;
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  fwCtx=cv.getContext('2d');
+  const colors=['#F5C842','#D4A017','#E8640A','#FF6B6B','#C39BD3','#5DE89A','#fff'];
+  for(let i=0;i<90;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=2+Math.random()*5;
+    fwParts.push({
+      x:cv.width/2+(Math.random()-.5)*200,
+      y:cv.height*0.38+(Math.random()-.5)*100,
+      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-3,
+      alpha:1,decay:.012+Math.random()*.015,
+      r:2+Math.random()*3,
+      color:colors[Math.floor(Math.random()*colors.length)]
+    });
+  }
+  function draw(){
+    fwCtx.clearRect(0,0,cv.width,cv.height);
+    fwParts=fwParts.filter(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.alpha-=p.decay;
+      fwCtx.save();fwCtx.globalAlpha=Math.max(0,p.alpha);
+      fwCtx.fillStyle=p.color;fwCtx.beginPath();fwCtx.arc(p.x,p.y,p.r,0,Math.PI*2);fwCtx.fill();
+      fwCtx.restore();return p.alpha>0;
+    });
+    if(fwParts.length>0)fwAF=requestAnimationFrame(draw);
+    else fwCtx.clearRect(0,0,cv.width,cv.height);
+  }
+  draw();
+}
+// Popup triggers only via countdown zero (triggerNewYearPopup)
+
+/* ═══════════ THEME from API ═══════════ */
+async function applyTheme(){
+  try{
+    const res=await fetch('/api/theme');
+    if(!res.ok)return;
+    const t=await res.json();
+    const r=document.documentElement.style;
+    if(t.gold)      r.setProperty('--gold',t.gold);
+    if(t.maroon)    r.setProperty('--maroon',t.maroon);
+    if(t.dark)      r.setProperty('--dark',t.dark);
+    if(t.goldLt)    r.setProperty('--gold-lt',t.goldLt);
+  }catch(e){}
+}
+applyTheme();
+
+// Share URL display
+document.getElementById('shareUrl').textContent=location.host||'awrudu.featuredesignz.site';
+</script>
+
+<!-- ═══ FIREWORKS CANVAS ═══ -->
+<canvas id="fwCv"></canvas>
+
+<!-- ═══ AVURUDU 2026 POPUP ═══ -->
+<div id="avuruduPopup">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <span class="popup-corner tl">✦</span>
+    <span class="popup-corner tr">✦</span>
+    <span class="popup-corner bl">✦</span>
+    <span class="popup-corner br">✦</span>
+
+    <div class="popup-year-badge" id="popupPill">🎊 සිංහල 2569 · AVURUDU 2026</div>
+    <div class="popup-from" id="popupFrom">✦ FEATURE DESIGNZ TEAM ✦</div>
+    <div class="popup-brand">🎊 AwruduFest.lk</div>
+
+    <div class="popup-emojis" id="popupEmojis">🌸 ☸ 🌺</div>
+
+    <div class="popup-wish" id="popupWish">සිංහල හා දෙමළ<br>ජනතාවට සුබ<br>අලුත් අවුරුද්දක් වේවා!</div>
+
+    <p class="popup-sub" id="popupSub">
+      Feature Designz Team ගෙන් ඔබට සහ ඔබේ ආදරණීය<br>
+      පවුලට සතුටින් පිරි <b>සිංහල අවුරුදු 2026</b> වේවා! 🎉
+    </p>
+
+
+    <div class="popup-actions">
+      <button class="popup-btn" id="popupBtn1" data-link="#games" onclick="closePopup();var l=this.getAttribute('data-link');if(l.startsWith('#')){document.querySelector

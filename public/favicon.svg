@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="45%" r="52%">
+      <stop offset="0%" stop-color="#FFE98A"/>
+      <stop offset="55%" stop-color="#F5C842"/>
+      <stop offset="100%" stop-color="#A87C1A"/>
+    </radialGradient>
+    <radialGradient id="lotusGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF6B6B" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#CC2200" stop-opacity="0.7"/>
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#A87C1A" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glow-filter">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer ring -->
+  <circle cx="32" cy="32" r="30" fill="url(#glow)" filter="url(#shadow)"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#FFE98A" stroke-width="1.2" opacity="0.6"/>
+  <circle cx="32" cy="32" r="27" fill="none" stroke="#A87C1A" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Inner dark disc -->
+  <circle cx="32" cy="32" r="24" fill="#1A0A00" opacity="0.55"/>
+
+  <!-- Dharma wheel / Awurudu symbol - 8 spokes -->
+  <g transform="translate(32,32)" opacity="0.9">
+    <!-- Spokes -->
+    <g stroke="#F5C842" stroke-width="1.4" stroke-linecap="round">
+      <line x1="0" y1="-17" x2="0" y2="17"/>
+      <line x1="12" y1="-12" x2="-12" y2="12"/>
+      <line x1="17" y1="0" x2="-17" y2="0"/>
+      <line x1="12" y1="12" x2="-12" y2="-12"/>
+    </g>
+    <!-- Hub -->
+    <circle r="5" fill="#F5C842"/>
+    <circle r="3" fill="#1A0A00"/>
+    <circle r="1.5" fill="#FFE98A"/>
+    <!-- Rim -->
+    <circle r="17" fill="none" stroke="#F5C842" stroke-width="1.8"/>
+    <circle r="14" fill="none" stroke="#A87C1A" stroke-width="0.7" opacity="0.6"/>
+  </g>
+
+  <!-- Lotus petals at cardinal points (decorative) -->
+  <g filter="url(#glow-filter)" opacity="0.85">
+    <!-- Top -->
+    <ellipse cx="32" cy="6.5" rx="3" ry="4.5" fill="url(#lotusGlow)" transform="rotate(0,32,32)"/>
+    <!-- Right -->
+    <ellipse cx="57.5" cy="32" rx="3" ry="4.5" fill="url(#lotusGlow)" transform="rotate(90,32,32)"/>
+    <!-- Bottom -->
+    <ellipse cx="32" cy="57.5" rx="3" ry="4.5" fill="url(#lotusGlow)" transform="rotate(180,32,32)"/>
+    <!-- Left -->
+    <ellipse cx="6.5" cy="32" rx="3" ry="4.5" fill="url(#lotusGlow)" transform="rotate(270,32,32)"/>
+  </g>
+
+  <!-- Corner jewel dots -->
+  <circle cx="32" cy="4.5" r="1.8" fill="#FFE98A" opacity="0.9"/>
+  <circle cx="59.5" cy="32" r="1.8" fill="#FFE98A" opacity="0.9"/>
+  <circle cx="32" cy="59.5" r="1.8" fill="#FFE98A" opacity="0.9"/>
+  <circle cx="4.5" cy="32" r="1.8" fill="#FFE98A" opacity="0.9"/>
+</svg>

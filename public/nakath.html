@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>නැකත් සීට්ටුව 2026 — AwruduFest by Feature Designz</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@300;400;700;900&family=Yatra+One&family=Gemunu+Libre:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A017;--gold-lt:#F5C842;--maroon:#5C0A0A;--orange:#E8640A;--cream:#FDF3DC;--dark:#060300;--border:rgba(212,160,23,0.2);--border2:rgba(212,160,23,0.45);--glass:rgba(255,248,220,0.04);--glass2:rgba(255,248,220,0.08);--green:#27AE60;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Serif Sinhala',serif;background:var(--dark);color:var(--cream);overflow-x:hidden;cursor:auto;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 10%,rgba(139,26,26,.32) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 90%,rgba(212,160,23,.15) 0%,transparent 60%);}
+#starCv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;}
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(6,3,0,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-back{color:rgba(253,243,220,.5);font-family:'Gemunu Libre',cursive;font-size:.8rem;letter-spacing:1.5px;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px;}
+.nav-back:hover{color:var(--gold-lt);}
+.nav-t{font-family:'Yatra One',cursive;font-size:.95rem;color:var(--gold-lt);}
+.nav-y{font-family:'Gemunu Libre',cursive;font-size:.7rem;color:rgba(253,243,220,.3);letter-spacing:3px;}
+.hero{position:relative;z-index:2;text-align:center;padding:70px 24px 44px;overflow:hidden;}
+.mandala{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:560px;height:560px;opacity:.045;pointer-events:none;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:50px;padding:5px 20px;margin-bottom:22px;font-family:'Gemunu Libre',cursive;font-size:.7rem;letter-spacing:3px;color:var(--gold);animation:fadeUp .8s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.hero-si{font-family:'Yatra One',cursive;font-size:clamp(2.6rem,9vw,6rem);line-height:1;background:linear-gradient(135deg,#fff8e0,var(--gold-lt) 30%,var(--gold) 55%,var(--orange) 80%,#fff8e0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(245,200,66,.5));animation:fadeUp .9s ease .1s both;}
+.hero-en{font-family:'Gemunu Libre',cursive;font-weight:300;font-size:clamp(.8rem,2.5vw,1.1rem);color:rgba(253,243,220,.3);letter-spacing:6px;animation:fadeUp .9s ease .2s both;}
+.hero-pill{display:inline-block;margin-top:18px;font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold);background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.25);border-radius:50px;padding:6px 26px;animation:fadeUp .9s ease .3s both;}
+.kolam{display:flex;align-items:center;gap:12px;justify-content:center;padding:22px 0;}
+.kolam::before,.kolam::after{content:'';height:1px;width:100px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.kolam span{color:var(--gold);font-size:.85rem;letter-spacing:6px;opacity:.5;}
+/* COUNTDOWN */
+.cd-wrap{position:relative;z-index:2;text-align:center;padding:0 24px 44px;}
+.live-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.28);border-radius:50px;padding:4px 16px;margin-bottom:18px;font-family:'Gemunu Libre',cursive;font-size:.68rem;letter-spacing:2px;color:var(--green);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.cd-row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;}
+.cd-box{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:20px 26px;min-width:86px;text-align:center;position:relative;overflow:hidden;}
+.cd-box::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.cd-box.lit{border-color:var(--gold);background:rgba(212,160,23,.08);box-shadow:0 0 24px rgba(212,160,23,.2);}
+.cd-n{font-family:'Yatra One',cursive;font-size:2.8rem;color:var(--gold-lt);line-height:1;display:block;}
+.cd-l{font-family:'Gemunu Libre',cursive;font-size:.56rem;letter-spacing:3px;color:rgba(253,243,220,.38);margin-top:4px;}
+.cd-sep{font-family:'Yatra One',cursive;font-size:2rem;color:var(--gold);opacity:.35;}
+/* MAIN DATE CARD */
+.mdc-wrap{position:relative;z-index:2;display:flex;justify-content:center;padding:0 24px 55px;}
+.mdc{background:linear-gradient(135deg,rgba(92,10,10,.5),rgba(26,10,0,.85),rgba(92,10,10,.3));border:2px solid var(--gold);border-radius:28px;padding:38px 48px;text-align:center;max-width:660px;width:100%;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(212,160,23,.22);animation:glow 4s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 60px rgba(212,160,23,.22)}50%{box-shadow:0 0 90px rgba(212,160,23,.4)}}
+.mdc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold-lt),var(--gold),var(--gold-lt),var(--maroon),transparent);}
+.mdc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold-lt),var(--gold),var(--gold-lt),var(--maroon),transparent);}
+.mdc-corner{position:absolute;font-size:1.3rem;opacity:.3;}
+.tl{top:12px;left:14px}.tr{top:12px;right:14px}.bl{bottom:12px;left:14px}.br{bottom:12px;right:14px}
+.mdc-label{font-family:'Gemunu Libre',cursive;font-size:.68rem;letter-spacing:4px;color:var(--gold);opacity:.7;margin-bottom:14px;}
+.mdc-si{font-family:'Yatra One',cursive;font-size:clamp(1.4rem,4.5vw,2.5rem);color:var(--cream);margin-bottom:5px;}
+.mdc-en{font-family:'Gemunu Libre',cursive;font-size:.9rem;color:rgba(253,243,220,.38);letter-spacing:2px;margin-bottom:22px;}
+.mdc-times{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.mdc-tbox{background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.3);border-radius:13px;padding:13px 18px;min-width:120px;}
+.mdc-tv{font-family:'Yatra One',cursive;font-size:1.45rem;color:var(--gold-lt);display:block;line-height:1;}
+.mdc-tl{font-size:.6rem;color:rgba(253,243,220,.38);letter-spacing:1.5px;margin-top:4px;}
+/* NAKATH GRID */
+.sec{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 24px 65px;}
+.sec-hdr{text-align:center;margin-bottom:34px;}
+.sec-ey{display:inline-flex;align-items:center;gap:6px;font-family:'Gemunu Libre',cursive;font-size:.64rem;letter-spacing:3px;color:var(--gold);background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.2);border-radius:50px;padding:4px 16px;margin-bottom:12px;}
+.sec-t{font-family:'Yatra One',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold-lt);text-shadow:0 0 40px rgba(212,160,23,.4),2px 3px 0 rgba(92,10,10,.8);margin-bottom:10px;}
+.sec-d{font-size:.88rem;color:rgba(253,243,220,.44);line-height:1.8;max-width:540px;margin:0 auto;}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+.nc{background:var(--glass);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative;transition:transform .3s,box-shadow .3s,border-color .3s;}
+.nc:hover{transform:translateY(-6px);border-color:var(--border2);box-shadow:0 18px 50px rgba(212,160,23,.15);}
+.nc.hi{border:2px solid var(--gold);background:linear-gradient(135deg,rgba(92,10,10,.38),rgba(20,7,0,.88),rgba(92,10,10,.22));box-shadow:0 0 36px rgba(212,160,23,.12);}
+.nc.hi::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,transparent,var(--gold-lt),var(--gold),var(--gold-lt),transparent);}
+.nc.ok{border:2px solid rgba(39,174,96,.55);background:linear-gradient(135deg,rgba(26,107,58,.28),rgba(6,20,10,.88));}
+.nc.ok::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,transparent,rgba(39,174,96,1),transparent);}
+.nc.no{border:1.5px solid rgba(231,76,60,.3);background:linear-gradient(135deg,rgba(92,10,10,.18),rgba(6,3,0,.88));}
+.nc-head{padding:17px 19px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px solid rgba(212,160,23,.06);}
+.nc-ico{font-size:2rem;flex-shrink:0;line-height:1;}
+.nc-si{font-family:'Yatra One',cursive;font-size:1rem;color:var(--cream);line-height:1.2;margin-bottom:2px;}
+.nc.hi .nc-si{color:var(--gold-lt);}.nc.ok .nc-si{color:#5dbd8a;}.nc.no .nc-si{color:#e99;}
+.nc-en{font-family:'Gemunu Libre',cursive;font-size:.64rem;letter-spacing:1.5px;color:rgba(253,243,220,.3);}
+.bdg{font-family:'Gemunu Libre',cursive;font-size:.56rem;letter-spacing:1.5px;padding:3px 10px;border-radius:50px;font-weight:700;flex-shrink:0;white-space:nowrap;}
+.bg{background:rgba(212,160,23,.2);color:var(--gold-lt);border:1px solid rgba(212,160,23,.4);}
+.bok{background:rgba(39,174,96,.2);color:var(--green);border:1px solid rgba(39,174,96,.4);}
+.bno{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3);}
+.nc-body{padding:14px 18px 17px;}
+.nc-time{display:flex;align-items:center;gap:10px;background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.14);border-radius:11px;padding:10px 14px;margin-bottom:10px;}
+.nc.ok .nc-time{background:rgba(39,174,96,.07);border-color:rgba(39,174,96,.2);}
+.nc.no .nc-time{background:rgba(231,76,60,.05);border-color:rgba(231,76,60,.2);}
+.nc-tv{font-family:'Yatra One',cursive;font-size:1.12rem;color:var(--gold-lt);}
+.nc.ok .nc-tv{color:#5dbd8a;}.nc.no .nc-tv{color:#e74c3c;}
+.nc-ts{font-size:.64rem;color:rgba(253,243,220,.36);}
+.nc-desc{font-size:.78rem;color:rgba(253,243,220,.5);line-height:1.7;}
+.nc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(212,160,23,.06);}
+.tag{font-size:.64rem;padding:3px 9px;border-radius:50px;background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.14);color:rgba(253,243,220,.5);}
+.tag-no{border-color:rgba(231,76,60,.22);color:rgba(231,76,60,.65);}
+/* DIRECTIONS / ATTIRE */
+.dcard{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:24px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+.comp{width:106px;height:106px;flex-shrink:0;position:relative;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse,rgba(212,160,23,.04),transparent 70%);}
+.cl{position:absolute;font-family:'Yatra One',cursive;font-size:.68rem;color:var(--gold);}
+.cn{top:5px;left:50%;transform:translateX(-50%);}.cs{bottom:5px;left:50%;transform:translateX(-50%);opacity:.35;}
+.ce{right:5px;top:50%;transform:translateY(-50%);opacity:.35;}.cw{left:5px;top:50%;transform:translateY(-50%);opacity:.35;}
+.dinfo-t{font-family:'Yatra One',cursive;font-size:1.05rem;color:var(--gold-lt);margin-bottom:8px;}
+.dgrid{display:flex;gap:11px;flex-wrap:wrap;margin-top:11px;}
+.di{background:rgba(212,160,23,.07);border:1px solid var(--border);border-radius:10px;padding:9px 14px;}
+.di-l{font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:2px;color:rgba(212,160,23,.55);}
+.di-v{font-family:'Yatra One',cursive;font-size:.9rem;color:var(--gold-lt);margin-top:2px;}
+.attire-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;}
+.ac{flex:1;min-width:100px;background:var(--glass);border:1px solid var(--border);border-radius:13px;padding:14px;text-align:center;transition:all .28s;}
+.ac:hover{transform:translateY(-4px);border-color:var(--border2);}
+.ac-sw{width:42px;height:42px;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.ac-si{font-family:'Yatra One',cursive;font-size:.8rem;color:var(--cream);margin-bottom:2px;}
+.ac-en{font-size:.58rem;color:rgba(253,243,220,.28);letter-spacing:1.5px;}
+.ac-note{font-size:.63rem;color:rgba(253,243,220,.4);margin-top:6px;line-height:1.5;}
+.food-row{display:flex;gap:9px;flex-wrap:wrap;}
+.fc{display:flex;align-items:center;gap:7px;background:rgba(139,26,26,.18);border:1px solid rgba(212,160,23,.18);border-radius:50px;padding:7px 15px;font-family:'Yatra One',cursive;font-size:.78rem;color:var(--cream);transition:all .2s;}
+.fc:hover{background:rgba(212,160,23,.12);border-color:rgba(212,160,23,.35);}
+.notice{background:linear-gradient(135deg,rgba(26,58,107,.28),rgba(6,3,0,.85));border:1px solid rgba(36,113,163,.3);border-radius:14px;padding:18px;display:flex;gap:13px;margin-top:26px;}
+.ni{font-size:1.6rem;flex-shrink:0;}.nt{font-family:'Yatra One',cursive;font-size:.88rem;color:#5dade2;margin-bottom:5px;}
+.nd{font-size:.77rem;color:rgba(253,243,220,.46);line-height:1.7;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s;}
+.reveal.in{opacity:1;transform:translateY(0);}
+.foot{position:relative;z-index:2;text-align:center;padding:26px;border-top:1px solid var(--border);font-family:'Gemunu Libre',cursive;font-size:.72rem;color:rgba(253,243,220,.22);}
+.foot a{color:var(--gold);text-decoration:none;}
+@media(max-width:640px){.nav{padding:12px 16px;}.mdc{padding:24px 16px;}.mdc-times{gap:10px;}.sec{padding:0 14px 50px;}}
+</style>
+</head>
+<body>
+<canvas id="starCv"></canvas>
+<nav class="nav">
+  <a href="index.html" class="nav-back">&#8592; AwruduFest</a>
+  <div class="nav-t">&#9784; නැකත් සීට්ටුව 2026</div>
+  <div class="nav-y">සිංහල 2569</div>
+</nav>
+
+<section class="hero">
+  <svg class="mandala" viewBox="0 0 560 560" fill="none">
+    <circle cx="280" cy="280" r="260" stroke="#D4A017" stroke-width="1" stroke-dasharray="8 6"/>
+    <circle cx="280" cy="280" r="200" stroke="#D4A017" stroke-width="1"/>
+    <circle cx="280" cy="280" r="140" stroke="#D4A017" stroke-width="1" stroke-dasharray="4 4"/>
+    <circle cx="280" cy="280" r="80" stroke="#D4A017" stroke-width="1"/>
+    <circle cx="280" cy="280" r="30" stroke="#D4A017" stroke-width="2"/>
+    <line x1="280" y1="20" x2="280" y2="540" stroke="#D4A017" stroke-width=".5" stroke-dasharray="3 6"/>
+    <line x1="20" y1="280" x2="540" y2="280" stroke="#D4A017" stroke-width=".5" stroke-dasharray="3 6"/>
+    <line x1="96" y1="96" x2="464" y2="464" stroke="#D4A017" stroke-width=".5" stroke-dasharray="3 6"/>
+    <line x1="464" y1="96" x2="96" y2="464" stroke="#D4A017" stroke-width=".5" stroke-dasharray="3 6"/>
+  </svg>
+  <div class="eyebrow">&#127775; සිංහල හා දෙමළ අලුත් අවුරුදු &middot; 2026</div>
+  <div class="hero-si">නැකත් සීට්ටුව</div>
+  <div class="hero-en">AUSPICIOUS TIMES &middot; SINHALA NEW YEAR 2026</div>
+  <div class="hero-pill">බක් මස &middot; ක්&#8205;රි.ව. 2026 &middot; සිංහල 2569</div>
+  <div class="kolam"><span>&#x2055; &#x2638; &#x2055;</span></div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="cd-wrap">
+  <div class="live-badge" id="liveBdg"><div class="live-dot"></div><span id="liveT">නැකතට ශේෂ</span></div>
+  <div class="cd-row">
+    <div class="cd-box" id="cdBD"><span class="cd-n" id="cdD">--</span><div class="cd-l">DAYS</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box" id="cdBH"><span class="cd-n" id="cdH">--</span><div class="cd-l">HOURS</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box" id="cdBM"><span class="cd-n" id="cdM">--</span><div class="cd-l">MINUTES</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box" id="cdBS"><span class="cd-n" id="cdS">--</span><div class="cd-l">SECONDS</div></div>
+  </div>
+</div>
+
+<!-- MAIN DATE CARD -->
+<div class="mdc-wrap">
+  <div class="mdc">
+    <span class="mdc-corner tl">&#10022;</span><span class="mdc-corner tr">&#10022;</span>
+    <span class="mdc-corner bl">&#10022;</span><span class="mdc-corner br">&#10022;</span>
+    <div class="mdc-label">&#127775; ප්&#8205;රධාන නැකත &middot; MAIN AUSPICIOUS MOMENT</div>
+    <div class="mdc-si">අප්&#8205;රේල් 14 &mdash; අඟහරුවාදා</div>
+    <div class="mdc-en">Tuesday, April 14, 2026 &middot; සිංහල 2569</div>
+    <div class="mdc-times">
+      <div class="mdc-tbox"><span class="mdc-tv">09:32 AM</span><div class="mdc-tl">නව අවුරුදු &middot; NEW YEAR</div></div>
+      <div class="mdc-tbox"><span class="mdc-tv">&#9728;&#65039; මේෂ</span><div class="mdc-tl">නැකත් ලග්නය</div></div>
+      <div class="mdc-tbox"><span class="mdc-tv">ඊශාන</span><div class="mdc-tl">ශුභ දිශාව</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAKATH CARDS -->
+<div class="sec">
+  <div class="sec-hdr reveal">
+    <div class="sec-ey">&#127775; 2026 ශුභ නැකත්</div>
+    <h2 class="sec-t">ශුභ නැකත් කාල</h2>
+    <p class="sec-d">2026 සිංහල අලුත් අවුරුදු ශ්&#8205;රී ලාංකීය ජ්&#8205;යෝතිෂ ශාස්ත්&#8205;රය අනුව සම්පාදිත ශුභ නැකත් කාල.</p>
+  </div>
+  <div class="kolam reveal"><span>&#x2055; &#x2638; &#x2055;</span></div>
+  <div class="ngrid reveal">
+
+    <!-- 1. තෙල්වලා ලිප දැල්වීම — Apr 5 -->
+    <div class="nc ok">
+      <div class="nc-head"><span class="nc-ico">🔥</span>
+        <div><div class="nc-si">තෙල්වලා ලිප දැල්වීම</div><div class="nc-en">LIGHTING THE HEARTH</div></div>
+        <span class="bdg bok">Apr 5</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 05 · 11:08 AM</div><div class="nc-ts">ඉරිදා, April 5, 2026</div></div></div>
+        <p class="nc-desc">රතු සහ කහ ගෙහොත් ඇඳ ලිප බද ගිනිමොලොව සිට දකුණු දිශාව බලා ලිප් බද ගිනි දල්වා අවුරුදු කෑලි ලබා ගැනීම.</p>
+        <div class="nc-tags"><span class="tag">🔴 රතු රෙදි</span><span class="tag">🟡 කහ රෙදි</span><span class="tag">🧭 දකුණු දිශාව</span></div>
+      </div>
+    </div>
+
+    <!-- 2. පරණ අවුරුද්ද සදහා ස්නානය — Apr 13 -->
+    <div class="nc">
+      <div class="nc-head"><span class="nc-ico">🛁</span>
+        <div><div class="nc-si">පරණ අවුරුද්ද සදහා ස්නානය</div><div class="nc-en">LAST YEAR RITUAL BATH</div></div>
+        <span class="bdg bok">Apr 13</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 13 · දිවා කාලය</div><div class="nc-ts">සෙනසුරාදා, April 13, 2026</div></div></div>
+        <p class="nc-desc">යුහු මිගු නාණු ගා ස්නාන කොට ඉෂ්ට දේවතා අනුස්මරණයෙහි යෙදී වාසය කරන්න.</p>
+        <div class="nc-tags"><span class="tag">🌿 ශ්‍රේෂ්ඨ ශාක</span><span class="tag">🙏 දේවතා</span></div>
+      </div>
+    </div>
+
+    <!-- 3. අලුත් අවුරුද්ද — Apr 14 09:32 AM -->
+    <div class="nc hi">
+      <div class="nc-head"><span class="nc-ico">🌅</span>
+        <div><div class="nc-si">අලුත් අවුරුද්ද</div><div class="nc-en">SINHALA NEW YEAR 2026</div></div>
+        <span class="bdg bg">ප්‍රධාන</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 14 · 09:32 AM</div><div class="nc-ts">අඟහරුවාදා, April 14, 2026</div></div></div>
+        <p class="nc-desc">සූර්යයා මේෂ රාශියට සංක්‍රාන්ති වන ශ්‍රේෂ්ඨ මොහොත. ගෙදර රැඳෙන්න, ප්‍රාර්ථනා කරන්න. ශාකල වර්ෂ 2569.</p>
+        <div class="nc-tags"><span class="tag">🙏 ගෙදර</span><span class="tag">🪔 පහන්</span><span class="tag">☸ ශ්‍රේෂ්ඨ</span></div>
+      </div>
+    </div>
+
+    <!-- 4. පුණ්‍ය කාලය — Apr 14 03:08–03:56 AM -->
+    <div class="nc ok">
+      <div class="nc-head"><span class="nc-ico">☸️</span>
+        <div><div class="nc-si">පුණ්‍ය කාලය</div><div class="nc-en">AUSPICIOUS PERIOD</div></div>
+        <span class="bdg bok">Apr 14</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 14 · 03:08 – 03:56 AM</div><div class="nc-ts">පෙ.ව. 3:08 සිට 3:56 දක්වා</div></div></div>
+        <p class="nc-desc">ගෙදර රැඳී ආගමික කටයුතු, ආධ්‍යාත්මික කටයුතු, ස්ථානය ගෙන, ආකාශ රේඛා ගැසූ ආහාර, ප්‍රාර්ථනා, ශ්‍රී සූක්තිය සිදු කිරීම.</p>
+        <div class="nc-tags"><span class="tag">🙏 ගෙදර</span><span class="tag">☸ ප්‍රාර්ථනා</span><span class="tag">⚠️ ගමන් නෑ</span></div>
+      </div>
+    </div>
+
+    <!-- 5. ආහාර පිසීම — Apr 14 10:51 AM -->
+    <div class="nc ok">
+      <div class="nc-head"><span class="nc-ico">🍚</span>
+        <div><div class="nc-si">ආහාර පිසීම (ලිප ගිනි දැල්වීම)</div><div class="nc-en">FIRST COOKING · MILK RICE</div></div>
+        <span class="bdg bok">Apr 14</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 14 · 10:51 AM</div><div class="nc-ts">රතු වර්ණ · දකුණු දිශාව</div></div></div>
+        <p class="nc-desc">රතු වර්ණ වස්ත්‍රාභරණයෙන් සැරසී දකුණු දිශාව බලා ලිප් බද ගිනි මොලොව සිට කිරිබත් + කෑවිල්ල + ද ඊ කිරි සහ පිළිසෙල කරගැනීම.</p>
+        <div class="nc-tags"><span class="tag">🔴 රතු රෙදි</span><span class="tag">🧭 දකුණු</span><span class="tag">🍚 කිරිබත්</span></div>
+      </div>
+    </div>
+
+    <!-- 6. වැඩ අල්ලීම, ගනුදෙනු, ආහාර — Apr 14 12:06 PM -->
+    <div class="nc ok">
+      <div class="nc-head"><span class="nc-ico">🤝</span>
+        <div><div class="nc-si">වැඩ අල්ලීම, ගනුදෙනු සිරිම හා ආහාර</div><div class="nc-en">WORK · TRANSACTIONS · MEAL</div></div>
+        <span class="bdg bok">Apr 14</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 14 · 12:06 PM</div><div class="nc-ts">රතු වර්ණ · දකුණු දිශාව</div></div></div>
+        <p class="nc-desc">රතු වස්ත්‍රාභරණයෙන් සැරසී දකුණු දිශාව බලා සියලු වැඩ අල්ලා ගනුදෙනු කොට ආහාර අනුභව කිරීම.</p>
+        <div class="nc-tags"><span class="tag">🔴 රතු රෙදි</span><span class="tag">🧭 දකුණු</span><span class="tag">💼 ගනුදෙනු</span></div>
+      </div>
+    </div>
+
+    <!-- 7. හිසතෙල් ගෑම — Apr 15 06:55 AM -->
+    <div class="nc ok">
+      <div class="nc-head"><span class="nc-ico">💆</span>
+        <div><div class="nc-si">හිසතෙල් ගෑම</div><div class="nc-en">HEAD OIL ANOINTING</div></div>
+        <span class="bdg bok">Apr 15</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 15 · 06:55 AM</div><div class="nc-ts">බදාදා, April 15 · කාළ + කොළ</div></div></div>
+        <p class="nc-desc">කාළ + කොළ ගෙහොත් ඇඳ, දකුණු දිශාව බලා, කොහොඹ + පත් ද තබා, කොහොඹ + යුහු මිගු නාණු සහ තෙල් ගා ස්නාන කිරීම.</p>
+        <div class="nc-tags"><span class="tag">🖤 කළු රෙදි</span><span class="tag">🟢 කොළ රෙදි</span><span class="tag">🧭 දකුණු</span><span class="tag">🌿 කොහොඹ</span></div>
+      </div>
+    </div>
+
+    <!-- 8. හේදිසී රාජකාරී — Apr 17 05:38 AM -->
+    <div class="nc">
+      <div class="nc-head"><span class="nc-ico">👑</span>
+        <div><div class="nc-si">හේදිසී රාජකාරී සදහා පිටත්ව යෑම</div><div class="nc-en">ROYAL DUTIES · FIRST JOURNEY</div></div>
+        <span class="bdg bok">Apr 17</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 17 · 05:38 AM</div><div class="nc-ts">සිකුරාදා, April 17 · රතු ගෙහොත්</div></div></div>
+        <p class="nc-desc">සිකුරාදා රතු ගෙහොත් ඇඳ, රත්වත් පාව් වස්ත්‍රාභරණයෙන් සැරසී දිකිරි මිගු කිරිබත් + ශිරිබාන + හෙල මොරු + ද උරු මිගු කාවිලිවර්ගයද් ආහාරය ගෙන, උකුරු දිශාව බලා පිටත්ව යෑම.</p>
+        <div class="nc-tags"><span class="tag">🔴 රතු රෙදි</span><span class="tag">🍚 කිරිබත්</span><span class="tag">👑 රාජකාරී</span></div>
+      </div>
+    </div>
+
+    <!-- 9. රැකිරක්ෂා 1 — Apr 20 06:27 AM -->
+    <div class="nc">
+      <div class="nc-head"><span class="nc-ico">💼</span>
+        <div><div class="nc-si">රැකිරක්ෂා සදහා පිටත්ව යෑම (1)</div><div class="nc-en">SETTING OUT FOR WORK · 1</div></div>
+        <span class="bdg bok">Apr 20</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 20 · 06:27 AM</div><div class="nc-ts">සඳුදා, April 20 · ස්වේත ගෙහොත්</div></div></div>
+        <p class="nc-desc">සඳුදා පෙ.ව. 06:27ට ස්වේත වර්ණ වස්ත්‍රාභරණයෙන් සැරසී කිරිබාණ + එළකිරි මිගු කාවිලිවර්ගයද් ආහාරය ගෙන, දකුණු දිශාව බලා පිටත්ව යෑම.</p>
+        <div class="nc-tags"><span class="tag">⬜ ස්වේත රෙදි</span><span class="tag">🍚 කිරිබාණ</span><span class="tag">🧭 දකුණු</span></div>
+      </div>
+    </div>
+
+    <!-- 10. රැකිරක්ෂා 2 — Apr 20 06:50 AM -->
+    <div class="nc">
+      <div class="nc-head"><span class="nc-ico">🌾</span>
+        <div><div class="nc-si">රැකිරක්ෂා සදහා පිටත්ව යෑම (2)</div><div class="nc-en">SETTING OUT FOR WORK · 2</div></div>
+        <span class="bdg bok">Apr 20</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 20 · 06:50 AM</div><div class="nc-ts">සඳුදා, April 20 · ස්වේත + භූමිනු</div></div></div>
+        <p class="nc-desc">සඳුදා ප.ව. 06:50ට භූමිනු + ස්වේත ගෙහොත් ඇඳ, ගිගෙනිහිර දිශාව නාගෙනිහිර දිශාව, ශිරිබාන + කිරිබත් + ද ිසිරි සහ අශ්ලෙෂා සමග කාවිලිවර්ගයද් ආහාරය ගෙන, ගිගෙනිහිර දිශාව බලා පිටත්ව යෑම.</p>
+        <div class="nc-tags"><span class="tag">⬜ ස්වේත</span><span class="tag">🟤 භූමිනු</span><span class="tag">🧭 ගිගෙනිහිර</span></div>
+      </div>
+    </div>
+
+    <!-- 11. පළ සිටුවීම — Apr 23 09:01 AM -->
+    <div class="nc">
+      <div class="nc-head"><span class="nc-ico">🌱</span>
+        <div><div class="nc-si">පළ සිටුවීම</div><div class="nc-en">PLANTING · AGRICULTURE</div></div>
+        <span class="bdg bok">Apr 23</span></div>
+      <div class="nc-body">
+        <div class="nc-time"><span style="font-size:1.1rem">⏰</span>
+          <div><div class="nc-tv">අප්‍රේල් 23 · 09:01 AM</div><div class="nc-ts">බ්‍රහස්පතින්දා, April 23 · රතු + ශේ</div></div></div>
+        <p class="nc-desc">බ්‍රහස්පතින්දා රතු + ශේ ගෙහොත් ඇඳ, රත්වත් පාව් වස්ත්‍රාභරණයෙන් සැරසී, නැගෙනහිර දිශාව බලා, ඉකිරිය ගෙන නැගෙනහිර දිශාව බලා, ශිරිබාණ + කිරිබත් ශ්‍රේෂ්ඨ. ඒ දිශා බලා, උකුරු දිශාව, ශිරිබාණ.</p>
+        <div class="nc-tags"><span class="tag">🔴 රතු රෙදි</span><span class="tag">🌱 ගොවිතැන</span><span class="tag">🧭 නැගෙනහිර</span></div>
+      </div>
+    </div>
+
+  </div><!-- /ngrid -->
+
+  <div class="notice reveal">
+    <span class="ni">&#8505;&#65039;</span>
+    <div>
+      <div class="nt">ශාස්ත්&#8205;රීය සටහන</div>
+      <div class="nd">මෙම නැකත් කාල ශ්&#8205;රී ලාංකීය සම්ප්&#8205;රදායික ජ්&#8205;යෝතිෂ ශාස්ත්&#8205;රය හා ශ්&#8205;රී ලාංකීය නූතන අලමනැකා (2026) ඇසුරෙන් සම්පාදිත. නිවැරදිම නැකත් සඳහා ඔබේ ප්&#8205;රාදේශීය ජ්&#8205;යෝතිෂවේදියා හෝ ජාතික රාජ්&#8205;ය ලේකම් කාර්යාලය සම්බන්ධ කරගන්න. Times are based on Sri Lankan traditional almanac for 2026.</div>
+    </div>
+  </div>
+
+  <!-- DIRECTIONS -->
+  <div style="margin-top:50px">
+    <div class="sec-hdr reveal"><div class="sec-ey">&#129517; ශුභ දිශා</div><h2 class="sec-t">2026 ශුභ දිශා</h2></div>
+    <div class="dcard reveal">
+      <div class="comp"><span class="cl cn">N&#8593;</span><span class="cl cs">S</span><span class="cl ce">E</span><span class="cl cw">W</span><span style="font-size:2.2rem">&#129517;</span></div>
+      <div>
+        <div class="dinfo-t">2026 ශුභ දිශා</div>
+        <p style="font-size:.79rem;color:rgba(253,243,220,.46);line-height:1.7">ශ්&#8205;රේෂ්ඨ ශුභ ක්&#8205;රියාකාරකම් සඳහා නිර්දේශිත දිශා:</p>
+        <div class="dgrid">
+          <div class="di"><div class="di-l">ගිනිකොකු</div><div class="di-v">&#129517; ඊශාන</div></div>
+          <div class="di"><div class="di-l">ආහාර ගැනීම</div><div class="di-v">&#129517; නැගෙනහිර</div></div>
+          <div class="di"><div class="di-l">ගෙදරට ඇතුළු</div><div class="di-v">&#129517; දකුණු දොර</div></div>
+          <div class="di"><div class="di-l">ගමන් ආරම්භ</div><div class="di-v">&#129517; නැගෙනහිර</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTIRE -->
+  <div style="margin-top:46px" class="reveal">
+    <div class="sec-hdr"><div class="sec-ey">&#128184; ශුභ ඇඳුම</div><h2 class="sec-t">2026 ශුභ ඇඳුම් වර්ණ</h2></div>
+    <div class="attire-row">
+      <div class="ac"><div class="ac-sw" style="background:#FFFDE7;border:2px solid rgba(255,255,255,.18)">&#11088;</div><div class="ac-si">සුදු</div><div class="ac-en">WHITE</div><div class="ac-note">ගිනි මතු, ස්නාන</div></div>
+      <div class="ac"><div class="ac-sw" style="background:#FDD835;border:2px solid rgba(253,216,53,.22)">&#127775;</div><div class="ac-si">කහ</div><div class="ac-en">YELLOW</div><div class="ac-note">ගනු දෙනු, කාරී</div></div>
+      <div class="ac"><div class="ac-sw" style="background:#43A047;border:2px solid rgba(67,160,71,.22)">&#127807;</div><div class="ac-si">කොළ</div><div class="ac-en">GREEN</div><div class="ac-note">ශ්&#8205;රී ලාභ</div></div>
+      <div class="ac"><div class="ac-sw" style="background:#E53935;border:2px solid rgba(229,57,53,.22)">&#127801;</div><div class="ac-si">රතු</div><div class="ac-en">RED</div><div class="ac-note">ශක්තිය</div></div>
+      <div class="ac"><div class="ac-sw" style="background:#1565C0;border:2px solid rgba(21,101,192,.22)">&#128153;</div><div class="ac-si">නිල්</div><div class="ac-en">BLUE</div><div class="ac-note">ස්නාන</div></div>
+      <div class="ac" style="opacity:.5"><div class="ac-sw" style="background:#111;border:2px solid rgba(0,0,0,.5)">&#128420;</div><div class="ac-si">කලු</div><div class="ac-en">AVOID</div><div class="ac-note" style="color:rgba(231,76,60,.65)">නව දිනය</div></div>
+    </div>
+  </div>
+
+  <!-- FOOD -->
+  <div style="margin-top:46px" class="reveal">
+    <div class="sec-hdr"><div class="sec-ey">&#127869; ශුභ ආහාර</div><h2 class="sec-t">ශුභ ප්&#8205;රථම ආහාර</h2></div>
+    <div class="food-row">
+      <div class="fc"><span>&#127834;</span> කිරිබත්</div><div class="fc"><span>&#127852;</span> කොකිස්</div>
+      <div class="fc"><span>&#129381;</span> කවුම්</div><div class="fc"><span>&#127855;</span> කිතුල් පැනි</div>
+      <div class="fc"><span>&#127799;</span> රොටි</div><div class="fc"><span>&#129395;</span> ඉදිඅප්ප</div>
+      <div class="fc"><span>&#127819;</span> ඇඹුල්</div><div class="fc"><span>&#129371;</span> හාල්-කිරි</div>
+    </div>
+  </div>
+
+</div><!-- /sec -->
+
+<div class="foot">
+  <p>&#169; 2026 <a href="index.html">AwruduFest &middot; Feature Designz</a> &middot; නැකත් ශ්&#8205;රී ලාංකීය සම්ප්&#8205;රදායික ජ්&#8205;යෝතිෂ ශාස්ත්&#8205;රය අනුව &middot; Made with &#10084;&#65039; in Sri Lanka</p>
+</div>
+
+<script>
+// Stars
+const cv=document.getElementById('starCv'),cx=cv.getContext('2d');
+function rsz(){cv.width=innerWidth;cv.height=innerHeight;}rsz();window.addEventListener('resize',rsz);
+const stars=Array.from({length:120},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:.3+Math.random()*1.2,a:Math.random(),sp:.0004+Math.random()*.0009}));
+(function draw(){cx.clearRect(0,0,cv.width,cv.height);stars.forEach(s=>{s.a+=s.sp;if(s.a>1)s.a=0;cx.save();cx.globalAlpha=s.a*.55;cx.fillStyle='#F5C842';cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();cx.restore();});requestAnimationFrame(draw);})();
+
+// Countdown — target: April 14, 2026 07:23:00 Sri Lanka time
+function runCd(){
+  const now=new Date();
+  const target=new Date('2026-04-14T09:32:00+05:30');
+  const diff=target-now;
+  if(diff<=0){
+    document.getElementById('liveBdg').innerHTML='<div class="live-dot" style="background:var(--gold)"></div><span>&#127882; සිංහල අවුරුදු 2026 ශුභ!</span>';
+    document.getElementById('cdD').textContent=document.getElementById('cdH').textContent=document.getElementById('cdM').textContent=document.getElementById('cdS').textContent='00';
+    return;
+  }
+  const d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);
+  document.getElementById('cdD').textContent=String(d).padStart(2,'0');
+  document.getElementById('cdH').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdM').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdS').textContent=String(s).padStart(2,'0');
+  document.querySelectorAll('.cd-box').forEach(b=>b.classList.remove('lit'));
+  if(d===0&&h===0)document.getElementById('cdBS').classList.add('lit');
+  else if(d===0)document.getElementById('cdBH').classList.add('lit');
+  else document.getElementById('cdBD').classList.add('lit');
+}
+runCd();setInterval(runCd,1000);
+
+// Scroll reveal
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

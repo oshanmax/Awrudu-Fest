@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Gold gradients -->
+    <radialGradient id="goldMain" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF0A0"/>
+      <stop offset="35%" stop-color="#F5C842"/>
+      <stop offset="75%" stop-color="#C8960A"/>
+      <stop offset="100%" stop-color="#7A5200"/>
+    </radialGradient>
+    <radialGradient id="goldRing" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="transparent"/>
+      <stop offset="85%" stop-color="#F5C842"/>
+      <stop offset="100%" stop-color="#A87C1A"/>
+    </radialGradient>
+    <radialGradient id="bgDisc" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#2E1800"/>
+      <stop offset="60%" stop-color="#1A0A00"/>
+      <stop offset="100%" stop-color="#0A0400"/>
+    </radialGradient>
+    <linearGradient id="petalRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8080"/>
+      <stop offset="100%" stop-color="#8B1A1A"/>
+    </linearGradient>
+    <linearGradient id="petalOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFAA55"/>
+      <stop offset="100%" stop-color="#CC5500"/>
+    </linearGradient>
+    <linearGradient id="gameIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE98A"/>
+      <stop offset="100%" stop-color="#F5C842"/>
+    </linearGradient>
+
+    <!-- Drop shadows -->
+    <filter id="outerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0.8 0 0 0  0.8 0.6 0 0 0  0 0 0 0 0  0 0 0 0.5 0" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="innerShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#7A5200" flood-opacity="0.7"/>
+    </filter>
+    <filter id="textGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ═══ OUTER GLOW RING ═══ -->
+  <circle cx="256" cy="256" r="250" fill="none" stroke="#F5C842" stroke-width="1" opacity="0.15"/>
+  <circle cx="256" cy="256" r="244" fill="none" stroke="#F5C842" stroke-width="0.5" opacity="0.1"/>
+
+  <!-- ═══ MAIN DISC ═══ -->
+  <circle cx="256" cy="256" r="236" fill="url(#bgDisc)" filter="url(#innerShadow)"/>
+
+  <!-- ═══ DECORATIVE OUTER RING (gold) ═══ -->
+  <circle cx="256" cy="256" r="236" fill="url(#goldMain)" opacity="0.12"/>
+  <circle cx="256" cy="256" r="236" fill="none" stroke="url(#goldMain)" stroke-width="12"/>
+  <circle cx="256" cy="256" r="224" fill="none" stroke="#A87C1A" stroke-width="2" opacity="0.5"/>
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#FFE98A" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- ═══ LOTUS PETALS (outer, 8 petals) ═══ -->
+  <g transform="translate(256,256)" filter="url(#outerGlow)">
+    <!-- 8 outer lotus petals -->
+    <g>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(45)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(90)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(135)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(180)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(225)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(270)"/>
+      <ellipse cx="0" cy="-200" rx="18" ry="36" fill="url(#petalRed)" opacity="0.85" transform="rotate(315)"/>
+    </g>
+    <!-- 8 middle orange petals (offset 22.5 deg) -->
+    <g>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(22.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(67.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(112.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(157.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(202.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(247.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(292.5)"/>
+      <ellipse cx="0" cy="-158" rx="13" ry="26" fill="url(#petalOrange)" opacity="0.7" transform="rotate(337.5)"/>
+    </g>
+  </g>
+
+  <!-- ═══ INNER RING ═══ -->
+  <circle cx="256" cy="256" r="145" fill="#1A0A00" opacity="0.7"/>
+  <circle cx="256" cy="256" r="145" fill="none" stroke="#F5C842" stroke-width="3" opacity="0.7"/>
+  <circle cx="256" cy="256" r="138" fill="none" stroke="#A87C1A" stroke-width="1" opacity="0.4"/>
+
+  <!-- ═══ DHARMA WHEEL (center) ═══ -->
+  <g transform="translate(256,256)" filter="url(#textGlow)">
+    <!-- 8 spokes -->
+    <g stroke="#F5C842" stroke-width="6" stroke-linecap="round" opacity="0.9">
+      <line x1="0" y1="-115" x2="0" y2="115"/>
+      <line x1="81" y1="-81" x2="-81" y2="81"/>
+      <line x1="115" y1="0" x2="-115" y2="0"/>
+      <line x1="81" y1="81" x2="-81" y2="-81"/>
+    </g>
+    <!-- Rim inner -->
+    <circle r="115" fill="none" stroke="#F5C842" stroke-width="5" opacity="0.85"/>
+    <circle r="105" fill="none" stroke="#A87C1A" stroke-width="1.5" opacity="0.5"/>
+    <!-- Hub ring -->
+    <circle r="38" fill="#1A0A00" stroke="#F5C842" stroke-width="4"/>
+    <circle r="28" fill="url(#goldMain)"/>
+    <circle r="18" fill="#1A0A00"/>
+    <!-- Center dot -->
+    <circle r="9" fill="#FFE98A"/>
+    <circle r="5" fill="#F5C842"/>
+  </g>
+
+  <!-- ═══ CORNER ORNAMENT DOTS on ring ═══ -->
+  <g fill="#FFE98A" opacity="0.9" filter="url(#textGlow)">
+    <circle cx="256" cy="22" r="7"/>
+    <circle cx="490" cy="256" r="7"/>
+    <circle cx="256" cy="490" r="7"/>
+    <circle cx="22" cy="256" r="7"/>
+    <circle cx="437" cy="75" r="5"/>
+    <circle cx="437" cy="437" r="5"/>
+    <circle cx="75" cy="75" r="5"/>
+    <circle cx="75" cy="437" r="5"/>
+  </g>
+
+  <!-- ═══ "AWRUDU 2026" ARC TEXT using path ═══ -->
+  <defs>
+    <path id="topArc" d="M 60,256 A 196,196 0 0,1 452,256"/>
+    <path id="botArc" d="M 80,300 A 196,196 0 0,0 432,300"/>
+  </defs>
+
+  <!-- ═══ GAME CONTROLLER ICON (center hub) ═══ -->
+  <!-- Small decorative game icons around the wheel -->
+  <g transform="translate(256,256)" font-size="28" text-anchor="middle" dominant-baseline="middle" opacity="0.75">
+    <text x="0" y="-76" fill="#F5C842">🏺</text>
+    <text x="54" y="-54" fill="#F5C842">🐍</text>
+    <text x="76" y="0" fill="#F5C842">🪢</text>
+    <text x="54" y="54" fill="#F5C842">🎯</text>
+    <text x="0" y="76" fill="#F5C842">🪁</text>
+    <text x="-54" y="54" fill="#F5C842">🪜</text>
+    <text x="-76" y="0" fill="#F5C842">🛏️</text>
+    <text x="-54" y="-54" fill="#F5C842">🎲</text>
+  </g>
+
+  <!-- ═══ BRAND TEXT ═══ -->
+  <g filter="url(#textGlow)" text-anchor="middle">
+    <!-- FD letters in hub -->
+    <text x="256" y="248" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="#FFE98A" letter-spacing="2">FD</text>
+    <text x="256" y="268" font-family="Georgia,serif" font-size="9" fill="#F5C842" letter-spacing="3" opacity="0.7">2026</text>
+  </g>
+</svg>

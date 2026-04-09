@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<script>
+// Browser back button → AwruduFest main site
+(function(){
+  // Push current page to history so back goes to index
+  if(window.history && window.history.pushState){
+    window.history.pushState({awrudu:true}, '', window.location.href);
+    window.addEventListener('popstate', function(e){
+      window.location.href = '/index.html';
+    });
+  }
+})();
+</script>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>කනා මුට්ටිය 🙈</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@400;700;900&family=Yatra+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A017;--gold-lt:#F5C842;--maroon:#5C0A0A;--deep-red:#7A1515;
+  --cream:#FDF3DC;--dark:#120800;--brown:#6B3310;
+  --green-lt:#3fbb76;--danger:#c0392b;--border:rgba(212,160,23,0.25);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{
+  background:var(--dark);font-family:'Noto Serif Sinhala',serif;
+  background-image:
+    radial-gradient(ellipse at 20% 10%,rgba(122,21,21,0.22) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 90%,rgba(212,160,23,0.1) 0%,transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D4A017' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+  display:flex;flex-direction:column;align-items:center;
+  user-select:none;-webkit-user-select:none;
+}
+
+/* TOP BAR */
+.top-bar{width:100%;max-width:680px;padding:8px 14px 4px;flex-shrink:0;}
+.hdr-line{height:3px;background:linear-gradient(90deg,transparent,var(--maroon),var(--gold),var(--maroon),transparent);margin-bottom:8px;position:relative;}
+.hdr-line::before{content:'❖';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--gold);font-size:1rem;background:var(--dark);padding:0 8px;}
+.game-title{text-align:center;font-weight:900;font-size:clamp(1.5rem,5vw,2.8rem);color:var(--gold-lt);text-shadow:0 0 30px rgba(212,160,23,0.6),2px 3px 0 var(--maroon);animation:breath 4s ease-in-out infinite;letter-spacing:2px;}
+@keyframes breath{0%,100%{text-shadow:0 0 30px rgba(212,160,23,0.6),2px 3px 0 var(--maroon);}50%{text-shadow:0 0 70px rgba(212,160,23,0.95),2px 3px 0 var(--maroon);}}
+.game-sub{text-align:center;font-family:'Yatra One',cursive;color:rgba(253,243,220,0.3);font-size:0.65rem;letter-spacing:6px;}
+.kolam{display:flex;align-items:center;gap:6px;margin:5px 0;color:var(--gold);opacity:0.4;font-size:.85rem;letter-spacing:3px;}
+.kolam::before,.kolam::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--maroon) 60%,transparent);}
+
+/* HUD */
+.hud{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:100%;max-width:680px;padding:0 14px;flex-shrink:0;margin-bottom:5px;}
+.hb{background:rgba(255,248,220,0.05);border:1px solid var(--border);border-radius:8px;padding:5px 4px;text-align:center;position:relative;overflow:hidden;}
+.hb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4;}
+.hl{font-size:.5rem;color:var(--gold);opacity:.7;letter-spacing:1px;text-transform:uppercase;}
+.hv{font-family:'Yatra One',cursive;font-size:1.4rem;color:var(--cream);line-height:1;margin-top:1px;}
+.hv.sm{font-size:.85rem;}
+.hv.lives{font-size:.82rem;}
+
+/* TIMER */
+.timer-wrap{width:100%;max-width:680px;padding:0 14px 4px;flex-shrink:0;}
+.timer-track{height:8px;background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid var(--border);overflow:hidden;}
+.timer-fill{height:100%;width:100%;border-radius:10px;background:linear-gradient(90deg,var(--green-lt),var(--gold),var(--danger));transition:width .1s linear;}
+.timer-fill.low{animation:urgP .35s ease-in-out infinite;}
+@keyframes urgP{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ARENA */
+.arena-wrap{flex:1;width:100%;max-width:680px;padding:0 10px 6px;min-height:0;}
+#arena{width:100%;height:100%;position:relative;overflow:hidden;border-radius:16px;background:rgba(255,248,220,0.022);border:1px solid var(--border);}
+#gc{position:absolute;inset:0;width:100%;height:100%;}
+
+/* OVERLAYS */
+.ov{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:50;backdrop-filter:blur(6px);background:rgba(18,8,0,0.9);}
+.ov.hide{display:none;}
+.ov-title{font-weight:900;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold-lt);text-shadow:0 0 40px rgba(212,160,23,.7),3px 4px 0 var(--maroon);text-align:center;line-height:1.1;}
+.ov-sub{font-size:clamp(.76rem,2.2vw,.96rem);color:rgba(253,243,220,.65);text-align:center;line-height:1.65;max-width:360px;}
+.ov-big{font-family:'Yatra One',cursive;font-size:clamp(2.5rem,8vw,4.2rem);color:var(--gold-lt);text-shadow:0 0 30px rgba(212,160,23,.6);}
+.ov-btn{font-family:'Noto Serif Sinhala',serif;font-size:.93rem;font-weight:700;padding:12px 30px;border:none;border-radius:50px;cursor:pointer;background:linear-gradient(135deg,var(--gold-lt),var(--gold),#a07010);color:var(--dark);box-shadow:0 6px 28px rgba(212,160,23,.45),inset 0 1px 0 rgba(255,255,255,.3);transition:all .22s;position:relative;overflow:hidden;letter-spacing:1px;}
+.ov-btn:hover{transform:translateY(-3px);box-shadow:0 10px 38px rgba(212,160,23,.65);}
+.ov-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,transparent 60%);pointer-events:none;}
+.ov-btn.sec{background:transparent;color:var(--gold);border:1.5px solid var(--border);box-shadow:none;font-size:.82rem;padding:8px 20px;}
+.ov-btn.sec:hover{background:rgba(212,160,23,.1);box-shadow:none;transform:none;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+
+/* Leaderboard */
+.lb-tbl{width:100%;max-width:300px;border-collapse:collapse;}
+.lb-tbl th{font-size:.62rem;color:var(--gold);opacity:.7;padding:4px 8px;text-align:left;letter-spacing:1px;border-bottom:1px solid var(--border);}
+.lb-tbl td{font-size:.82rem;color:rgba(253,243,220,.7);padding:4px 8px;}
+.lb-tbl tr:nth-child(2) td{color:var(--gold-lt);font-weight:700;}
+.lb-rank{font-family:'Yatra One',cursive;color:var(--gold);font-size:1rem;}
+
+/* Sound btn */
+.snd{position:fixed;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:rgba(255,248,220,.06);color:var(--gold);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:200;backdrop-filter:blur(6px);}
+.snd:hover{background:rgba(212,160,23,.15);}
+.snd.muted{opacity:.35;}
+
+/* VFX */
+.vfx{position:absolute;pointer-events:none;z-index:45;font-size:1.3rem;animation:vfxFly 1s ease-out forwards;}
+@keyframes vfxFly{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-75px) scale(0);opacity:0}}
+
+/* Touch zone */
+#tz{position:absolute;inset:0;z-index:30;}
+#tz.playing{cursor:none;}
+
+/* Settings btn */
+.cfg-btn{position:fixed;top:10px;left:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:rgba(255,248,220,.06);color:var(--gold);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:200;backdrop-filter:blur(6px);}
+.cfg-btn:hover{background:rgba(212,160,23,.15);}
+
+/* Control mode selector */
+.ctrl-tabs{display:flex;gap:8px;margin:4px 0;}
+.ctrl-tab{flex:1;padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:transparent;cursor:pointer;color:rgba(253,243,220,.45);font-family:'Noto Serif Sinhala',serif;font-size:.8rem;font-weight:700;transition:all .22s;text-align:center;line-height:1.3;}
+.ctrl-tab:hover{color:var(--cream);border-color:rgba(212,160,23,.5);}
+.ctrl-tab.on{background:rgba(212,160,23,.18);border-color:var(--gold);color:var(--gold-lt);}
+
+/* D-pad (keyboard visual / touch pad) */
+#dpad{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  display:none;
+  width:150px;height:150px;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  gap:4px;z-index:60;
+}
+#dpad.hide{display:none!important;}
+.dp{background:rgba(212,160,23,.14);border:1px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  cursor:pointer;transition:background .1s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.dp:active,.dp.pressed{background:rgba(212,160,23,.45);}
+.dp-mid{background:rgba(255,248,220,.03);pointer-events:none;}
+
+/* Name input */
+.name-in{font-family:'Noto Serif Sinhala',serif;font-size:1rem;padding:10px 18px;border-radius:30px;border:1.5px solid var(--gold);background:rgba(255,248,220,0.08);color:var(--cream);text-align:center;outline:none;width:220px;}
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Mobile Responsive (Canvas Games) ── */
+@media(max-width:600px){
+  canvas { touch-action: none; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+<button class="snd" id="sndBtn" onclick="toggleSnd()">🔊</button>
+<button class="cfg-btn" id="cfgBtn" onclick="openSettings()">⚙️</button>
+
+<!-- D-PAD (shown in arrow/dpad mode) -->
+<div id="dpad" class="hide">
+  <div></div>
+  <div class="dp" id="dpU">▲</div>
+  <div></div>
+  <div class="dp" id="dpL">◀</div>
+  <div class="dp-mid"></div>
+  <div class="dp" id="dpR">▶</div>
+  <div></div>
+  <div class="dp" id="dpD">▼</div>
+  <div></div>
+</div>
+
+<div class="top-bar">
+  <div class="hdr-line"></div>
+  <div class="game-title">කනා මුට්ටිය 🙈</div>
+  <div class="game-sub">BLIND TAG GAME · SRI LANKA</div>
+  <div class="kolam">⁕ ☸ ⁕</div>
+</div>
+
+<div class="hud">
+  <div class="hb"><div class="hl">ලකුණු</div><div class="hv" id="hScore">0</div></div>
+  <div class="hb"><div class="hl">මට්ටම</div><div class="hv" id="hLevel">1</div></div>
+  <div class="hb"><div class="hl">ජීව</div><div class="hv lives" id="hLives">❤❤❤</div></div>
+  <div class="hb"><div class="hl">Catch</div><div class="hv sm" id="hTarget">0/3</div></div>
+  <div class="hb"><div class="hl">ඉහළම</div><div class="hv sm" id="hHi">0</div></div>
+</div>
+
+<div class="timer-wrap">
+  <div class="timer-track"><div class="timer-fill" id="tFill"></div></div>
+</div>
+
+<div class="arena-wrap">
+  <div id="arena">
+    <canvas id="gc"></canvas>
+    <div id="tz"></div>
+
+    <!-- START -->
+    <div class="ov" id="ovS">
+      <div class="ov-title">කනා මුට්ටිය 🙈</div>
+      <div class="ov-sub">
+        ඔබ <b style="color:var(--gold-lt)">🙈 අන්ධ ධාවකයා!</b><br>
+        Mouse / finger move කරලා <b style="color:var(--gold-lt)">🏃 ධාවකයන්</b> catch කරන්න!<br>
+        Level ජය ගන්න නියම ගණනක් catch කරන්න ඕනෙ.<br><br>
+        <b style="color:var(--gold-lt)">⚡</b> Speed &nbsp; <b style="color:#3498db">🔵</b> Big Reach &nbsp; <b style="color:#a8d8ea">❄️</b> Freeze &nbsp; <b style="color:#9b59b6">💎</b> +5 Bonus
+      </div>
+      <div class="btn-row">
+        <button class="ov-btn" onclick="startGame()">🎮 ක්‍රීඩා ආරම්භ</button>
+        <button class="ov-btn sec" onclick="showLB()">🏆 Leaderboard</button>
+      </div>
+    </div>
+
+    <!-- NAME -->
+    <div class="ov hide" id="ovN">
+      <div class="ov-title">🏆 නව වාර්තාවක්!</div>
+      <div class="ov-sub">ඔබේ නම ඇතුළත් කරන්න:</div>
+      <input class="name-in" id="nIn" type="text" maxlength="14" placeholder="ඔබේ නම...">
+      <button class="ov-btn" onclick="saveName()">✔ සුරකින්න</button>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="ov hide" id="ovLB">
+      <div class="ov-title">🏆 ශ්‍රේෂ්ඨ ලකුණු</div>
+      <table class="lb-tbl" id="lbT"></table>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="ov-btn" onclick="startGame()">🎮 ක්‍රීඩා</button>
+        <button class="ov-btn sec" onclick="showOv('ovS')">↩ ආපසු</button>
+      </div>
+    </div>
+
+    <!-- LEVEL UP -->
+    <div class="ov hide" id="ovLv">
+      <div class="ov-title" id="ovLvT">මට්ටම ✅</div>
+      <div class="ov-sub" id="ovLvS"></div>
+      <button class="ov-btn" onclick="nextLevel()">▶ ඉදිරියට</button>
+    </div>
+
+    <!-- LIFE LOST -->
+    <div class="ov hide" id="ovLL">
+      <div class="ov-title">⏰ කාලය ඉකුත් විය!</div>
+      <div class="ov-sub" id="ovLLS"></div>
+      <button class="ov-btn" onclick="continueGame()">▶ ඉදිරියට</button>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="ov hide" id="ovO">
+      <div class="ov-title">ක්‍රීඩාව අවසන් 😔</div>
+      <div class="ov-sub">ජීව නිමා විය!</div>
+      <div class="ov-big" id="ovFS">0</div>
+      <div class="ov-sub" id="ovHM" style="color:var(--gold-lt);"></div>
+      <div class="btn-row">
+        <button class="ov-btn" onclick="startGame()">🔄 නැවත</button>
+        <button class="ov-btn sec" onclick="showLB()">🏆 Leaderboard</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="ov hide" id="ovCfg">
+      <div class="ov-title" style="font-size:clamp(1.4rem,4vw,2rem)">⚙️ සැකසුම්</div>
+      <div class="ov-sub" style="margin-bottom:2px;">පාලන ක්‍රමය තෝරන්න</div>
+      <div class="ctrl-tabs">
+        <div class="ctrl-tab on" id="tabMouse" onclick="setCtrl('mouse')">🖱️<br>Mouse</div>
+        <div class="ctrl-tab" id="tabArrow" onclick="setCtrl('arrow')">⌨️<br>Arrow Keys</div>
+        <div class="ctrl-tab" id="tabDpad" onclick="setCtrl('dpad')">🕹️<br>D-Pad</div>
+      </div>
+      <div class="ov-sub" id="ctrlDesc" style="font-size:.78rem;min-height:36px;margin-top:2px;"></div>
+      <div class="btn-row" style="margin-top:4px;">
+        <button class="ov-btn" onclick="closeSettings()">✔ හරි</button>
+        <button class="ov-btn sec" onclick="showOv('ovS')">↩ Menu</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ══ AUDIO ══ */
+let aC,sOn=true;
+const gA=()=>{if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();return aC;};
+function tone(f,t,d,v=0.24,dl=0){if(!sOn)return;try{const c=gA(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;const T=c.currentTime+dl;g.gain.setValueAtTime(0,T);g.gain.linearRampToValueAtTime(v,T+.012);g.gain.exponentialRampToValueAtTime(.001,T+d);o.start(T);o.stop(T+d+.05);}catch(e){}}
+function nz(d=.07,v=.08){if(!sOn)return;try{const c=gA(),b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),dt=b.getChannelData(0);for(let i=0;i<dt.length;i++)dt[i]=Math.random()*2-1;const s=c.createBufferSource(),g=c.createGain();g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);s.buffer=b;s.connect(g);g.connect(c.destination);s.start();}catch(e){}}
+const SFX={
+  start:()=>{tone(440,'sine',.14,.22);tone(550,'sine',.18,.18,.08);},
+  catch:()=>{[523,659,784].forEach((f,i)=>tone(f,'sine',.2,.28,i*.07));nz(.05,.06);},
+  miss: ()=>{tone(220,'sawtooth',.12,.25);tone(180,'sawtooth',.2,.2,.09);},
+  pu:   (n)=>{const f=[880,660,1047,1180][n%4];tone(f,'sine',.18,.3);},
+  lvl:  ()=>{[523,659,784,1047,1319].forEach((f,i)=>tone(f,'sine',.22,.3,i*.09));},
+  tick: ()=>tone(880,'square',.04,.07),
+  low:  ()=>tone(1100,'square',.05,.12),
+  step: ()=>nz(.022,.032),
+};
+function toggleSnd(){sOn=!sOn;const b=document.getElementById('sndBtn');b.textContent=sOn?'🔊':'🔇';b.classList.toggle('muted',!sOn);}
+
+/* ══ LEADERBOARD ══ */
+const LBK='km_lb2';
+function getLB(){try{return JSON.parse(localStorage.getItem(LBK))||[];}catch{return[];}}
+function saveLB(lb){localStorage.setItem(LBK,JSON.stringify(lb));}
+function addScore(name,score,level){
+  const lb=getLB();lb.push({name,score,level});
+  lb.sort((a,b)=>b.score-a.score);saveLB(lb.slice(0,10));
+}
+function renderLB(){
+  const lb=getLB();const med=['🥇','🥈','🥉'];
+  let h=`<tr><th>#</th><th>නම</th><th>ලකුණු</th><th>Lv</th></tr>`;
+  if(!lb.length)h+=`<tr><td colspan="4" style="text-align:center;padding:16px;color:rgba(253,243,220,.35)">ලකුණු නැත</td></tr>`;
+  lb.forEach((e,i)=>h+=`<tr><td class="lb-rank">${med[i]||i+1}</td><td>${e.name}</td><td style="color:var(--gold-lt);font-family:'Yatra One',cursive">${e.score}</td><td>${e.level}</td></tr>`);
+  document.getElementById('lbT').innerHTML=h;
+}
+
+/* ══ CANVAS SETUP ══ */
+const canvas=document.getElementById('gc');
+const CTX=canvas.getContext('2d');
+const arena=document.getElementById('arena');
+
+/* ══ LEVEL CONFIGS ══ */
+const LVLS=[
+  {runners:3,spd:1.9,time:32,need:3,lbl:'ආරම්භය 🌱'},
+  {runners:4,spd:2.3,time:30,need:4,lbl:'ශ්‍රේෂ්ඨ ⭐'},
+  {runners:5,spd:2.7,time:27,need:5,lbl:'දක්ෂ 🔥'},
+  {runners:6,spd:3.1,time:24,need:6,lbl:'ශූරයා 🏆'},
+  {runners:7,spd:3.6,time:21,need:7,lbl:'ප්‍රභූ 👑'},
+  {runners:8,spd:4.2,time:18,need:8,lbl:'අජිත ⚡'},
+];
+const lvlCfg=lv=>LVLS[Math.min(lv-1,LVLS.length-1)];
+
+/* ══ STATE ══ */
+let G={running:false,score:0,hi:0,lives:3,level:1,caught:0,phase:'start',tLeft:0,tMax:30,tInt:null};
+let P={x:0,y:0,tx:0,ty:0,r:24,trail:[]};
+let runners=[],pups=[],puTimer=0;
+let EFX={spd:0,bigR:0,frz:0};
+
+/* ══ RESIZE ══ */
+function resize(){
+  // Use offsetWidth/offsetHeight (integer CSS pixels) to avoid sub-pixel drift
+  canvas.width=arena.offsetWidth;
+  canvas.height=arena.offsetHeight;
+  P.tx=P.x=canvas.width/2;P.ty=P.y=canvas.height/2;
+}
+window.addEventListener('resize',resize);
+
+/* ══ RUNNER FACTORY ══ */
+function mkRunner(cfg){
+  const W=canvas.width,H=canvas.height,s=Math.floor(Math.random()*4);
+  let x,y;
+  if(s===0){x=Math.random()*W;y=22;}
+  else if(s===1){x=W-22;y=Math.random()*H;}
+  else if(s===2){x=Math.random()*W;y=H-22;}
+  else{x=22;y=Math.random()*H;}
+  const hs=[30,50,195,280,155,340];const h=hs[Math.floor(Math.random()*hs.length)];
+  return{x,y,vx:0,vy:0,r:16,spd:cfg.spd*(0.8+Math.random()*.4),fearR:105+Math.random()*65,
+    wb:Math.random()*Math.PI*2,col:`hsl(${h},68%,50%)`,colD:`hsl(${h},68%,28%)`,
+    frozen:false,em:['🏃','👦','👧','🧒','🤸'][Math.floor(Math.random()*5)]};
+}
+function mkPup(){
+  const W=canvas.width,H=canvas.height;
+  const types=[
+    {type:'spd', icon:'⚡',col:'#f5c842',lbl:'Speed!'},
+    {type:'bigR',icon:'🔵',col:'#3498db',lbl:'Big Reach!'},
+    {type:'frz', icon:'❄️',col:'#a8d8ea',lbl:'Freeze!'},
+    {type:'bon', icon:'💎',col:'#9b59b6',lbl:'+5 Bonus!'},
+  ];
+  const t=types[Math.floor(Math.random()*types.length)];
+  return{...t,x:60+Math.random()*(W-120),y:60+Math.random()*(H-120),r:17,pulse:0};
+}
+
+/* ══ OVERLAY CONTROL ══ */
+function showOv(id){
+  ['ovS','ovN','ovLB','ovLv','ovLL','ovO','ovCfg'].forEach(x=>document.getElementById(x).classList.add('hide'));
+  if(id){
+    document.getElementById(id).classList.remove('hide');
+    document.getElementById('tz').classList.remove('playing');
+    // Pause game loop when any overlay shows (except mid-game resume handled by closeSettings)
+    if(G.running&&id!=='ovCfg'){G.running=false;cancelAnimationFrame(rAF);rAF=null;}
+  } else {
+    if(CTRL==='mouse') document.getElementById('tz').classList.add('playing');
+  }
+}
+function showLB(){renderLB();showOv('ovLB');}
+
+function startGame(){
+  resize();
+  if(rAF){cancelAnimationFrame(rAF);rAF=null;}
+  G={running:true,score:0,hi:getLB()[0]?.score||0,lives:3,level:1,caught:0,phase:'play',tLeft:0,tMax:30,tInt:null};
+  EFX={spd:0,bigR:0,frz:0};
+  showOv(null);initLevel();SFX.start();updateHUD();startLoop();
+}
+function initLevel(){
+  const cfg=lvlCfg(G.level);
+  G.caught=0;G.tMax=cfg.time;G.tLeft=cfg.time;
+  P.x=canvas.width/2;P.y=canvas.height/2;P.tx=P.x;P.ty=P.y;P.trail=[];
+  runners=[];for(let i=0;i<cfg.runners;i++)runners.push(mkRunner(cfg));
+  pups=[];puTimer=140;EFX={spd:0,bigR:0,frz:0};
+  startTimer();updateHUD();
+}
+function startTimer(){
+  clearInterval(G.tInt);
+  G.tInt=setInterval(()=>{
+    if(!G.running||G.phase!=='play')return;
+    G.tLeft-=.1;updateTimerBar();
+    if(G.tLeft<=5)SFX.low();else if(G.tLeft%1<.12)SFX.tick();
+    if(G.tLeft<=0){clearInterval(G.tInt);onTimeout();}
+  },100);
+}
+function onTimeout(){
+  G.lives--;SFX.miss();updateHUD();
+  if(G.lives<=0){gameOver();}
+  else{
+    G.running=false;G.phase='pause';
+    document.getElementById('ovLLS').textContent=`ජීව ${G.lives}ක් ඉතිරියි! ${lvlCfg(G.level).need}ෙන් ${G.caught}ක් catch කළා.`;
+    showOv('ovLL');
+  }
+}
+function continueGame(){G.running=true;G.phase='play';showOv(null);initLevel();startLoop();}
+function nextLevel(){G.level++;G.running=true;G.phase='play';showOv(null);initLevel();SFX.start();startLoop();}
+function gameOver(){
+  G.running=false;G.phase='over';clearInterval(G.tInt);
+  document.getElementById('ovFS').textContent=G.score;
+  const lb=getLB();const isHi=!lb.length||G.score>(lb[0]?.score||0);
+  if(isHi&&G.score>0){showOv('ovN');}
+  else{document.getElementById('ovHM').textContent=lb.length?`ඉහළම: ${lb[0].score} (${lb[0].name})`:'';showOv('ovO');}
+}
+function saveName(){
+  const nm=document.getElementById('nIn').value.trim()||'නිර්නාමික';
+  addScore(nm,G.score,G.level);
+  document.getElementById('nIn').value='';
+  document.getElementById('ovHM').textContent='🏆 නව වාර්තාවක්!';
+  showOv('ovO');
+}
+
+/* ══ HUD ══ */
+function updateHUD(){
+  const cfg=lvlCfg(G.level);
+  document.getElementById('hScore').textContent=G.score;
+  document.getElementById('hLevel').textContent=G.level;
+  document.getElementById('hLives').textContent='❤'.repeat(G.lives)+'🖤'.repeat(Math.max(0,3-G.lives));
+  document.getElementById('hTarget').textContent=`${G.caught}/${cfg.need}`;
+  document.getElementById('hHi').textContent=Math.max(G.hi,G.score);
+}
+function updateTimerBar(){
+  const f=document.getElementById('tFill');
+  f.style.width=Math.max(0,G.tLeft/G.tMax*100)+'%';
+  f.classList.toggle('low',G.tLeft<=5);
+}
+
+/* ══ CONTROL MODE ══ */
+let CTRL='mouse'; // 'mouse' | 'arrow' | 'dpad'
+const CTRL_DESC={
+  mouse:'Mouse / finger ගෙනියන දිශාවට ධාවකයා යයි.',
+  arrow:'↑↓←→ Arrow keys හෝ WASD ගෙන් ගෙනයන්න.',
+  dpad:'තිර මත D-pad buttons ගෙන් ගෙනයන්න.',
+};
+
+function setCtrl(mode){
+  CTRL=mode;
+  ['mouse','arrow','dpad'].forEach(m=>document.getElementById('tab'+m.charAt(0).toUpperCase()+m.slice(1)).classList.toggle('on',m===mode));
+  document.getElementById('ctrlDesc').textContent=CTRL_DESC[mode];
+  // show/hide dpad
+  document.getElementById('dpad').classList.toggle('hide', mode!=='dpad');
+  // cursor:none only relevant in mouse mode
+  if(mode!=='mouse') document.getElementById('tz').classList.remove('playing');
+}
+function openSettings(){
+  document.getElementById('ctrlDesc').textContent=CTRL_DESC[CTRL];
+  showOv('ovCfg');
+}
+function closeSettings(){
+  // If game was running before settings, resume; else show start screen
+  if(G.phase==='play'||G.phase==='pause'){showOv(null);if(G.phase==='play'){G.running=true;startLoop();}}
+  else showOv('ovS');
+}
+
+/* ══ KEYBOARD STATE ══ */
+const KEYS={};
+document.addEventListener('keydown',e=>{
+  KEYS[e.key]=true;
+  // Prevent page scroll on arrow keys only during gameplay
+  if(G.running&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();
+});
+document.addEventListener('keyup',e=>{ KEYS[e.key]=false; });
+
+/* ══ D-PAD WIRING ══ */
+function wireDpad(){
+  const map={dpU:['ArrowUp','w'],dpD:['ArrowDown','s'],dpL:['ArrowLeft','a'],dpR:['ArrowRight','d']};
+  Object.entries(map).forEach(([id,keys])=>{
+    const el=document.getElementById(id);
+    const press=e=>{keys.forEach(k=>KEYS[k]=true);el.classList.add('pressed');e.preventDefault();};
+    const rel  =e=>{keys.forEach(k=>KEYS[k]=false);el.classList.remove('pressed');};
+    el.addEventListener('touchstart',press,{passive:false});
+    el.addEventListener('touchend',  rel,  {passive:false});
+    el.addEventListener('touchcancel',rel, {passive:false});
+    el.addEventListener('mousedown', press);
+    el.addEventListener('mouseup',   rel);
+    el.addEventListener('mouseleave',rel);
+  });
+}
+wireDpad();
+
+/* ══ MOUSE / TOUCH TARGET ══ */
+function setTgt(e){
+  const r=arena.getBoundingClientRect();
+  const src=e.touches?e.touches[0]:e;
+  P.tx=src.clientX-r.left;
+  P.ty=src.clientY-r.top;
+}
+const tz=document.getElementById('tz');
+[tz,arena].forEach(el=>{
+  el.addEventListener('mousemove',e=>{if(G.running&&CTRL==='mouse')setTgt(e);});
+  el.addEventListener('touchmove',e=>{if(G.running&&CTRL==='mouse'){setTgt(e);e.preventDefault();}},{passive:false});
+  el.addEventListener('touchstart',e=>{if(G.running&&CTRL==='mouse'){setTgt(e);e.preventDefault();}},{passive:false});
+});
+
+/* ══ LOOP ══ */
+let rAF=null;
+function loop(){if(!G.running){rAF=null;return;}update();draw();rAF=requestAnimationFrame(loop);}
+function startLoop(){if(rAF){cancelAnimationFrame(rAF);rAF=null;}loop();}
+
+/* ══ UPDATE ══ */
+function update(){
+  const W=canvas.width,H=canvas.height,cfg=lvlCfg(G.level);
+
+  /* Player movement */
+  const bSpd=4.6+G.level*.3;
+  const spd=EFX.spd>0?bSpd*1.85:bSpd;
+
+  if(CTRL==='mouse'){
+    // Smooth follow mouse target
+    const dx=P.tx-P.x,dy=P.ty-P.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist>2){P.x+=dx/dist*Math.min(dist,spd);P.y+=dy/dist*Math.min(dist,spd);if(Math.random()<.1)SFX.step();}
+  } else {
+    // Arrow / D-pad: 8-directional keyboard movement
+    let mx=0,my=0;
+    if(KEYS['ArrowLeft'] ||KEYS['a']||KEYS['A'])mx-=1;
+    if(KEYS['ArrowRight']||KEYS['d']||KEYS['D'])mx+=1;
+    if(KEYS['ArrowUp']   ||KEYS['w']||KEYS['W'])my-=1;
+    if(KEYS['ArrowDown'] ||KEYS['s']||KEYS['S'])my+=1;
+    if(mx||my){
+      const mag=Math.sqrt(mx*mx+my*my);
+      P.x+=mx/mag*spd; P.y+=my/mag*spd;
+      if(Math.random()<.1)SFX.step();
+    }
+    // Keep tx/ty in sync so switching modes isn't jarring
+    P.tx=P.x; P.ty=P.y;
+  }
+  P.x=Math.max(P.r,Math.min(W-P.r,P.x));P.y=Math.max(P.r,Math.min(H-P.r,P.y));
+  P.trail.push({x:P.x,y:P.y,a:1});if(P.trail.length>14)P.trail.shift();P.trail.forEach(t=>t.a-=.072);
+
+  /* Effects decay */
+  if(EFX.spd>0)EFX.spd--;
+  if(EFX.bigR>0)EFX.bigR--;
+  if(EFX.frz>0){EFX.frz--;if(EFX.frz===0)runners.forEach(r=>r.frozen=false);}
+
+  /* Power-up spawn */
+  puTimer--;if(puTimer<=0&&pups.length<3){pups.push(mkPup());puTimer=190+Math.random()*130;}
+  pups.forEach(p=>p.pulse+=.08);
+
+  /* Collect power-ups */
+  const cR=EFX.bigR>0?P.r*2.2:P.r;
+  pups=pups.filter(pu=>{
+    const dx2=P.x-pu.x,dy2=P.y-pu.y;
+    if(Math.sqrt(dx2*dx2+dy2*dy2)<cR+pu.r){applyPup(pu);burst(pu.x,pu.y,['⚡','✨','💫'],4);return false;}
+    return true;
+  });
+
+  /* Runners - collect catches first to avoid mutation during iteration */
+  const toCatch=[];
+  runners.forEach(rn=>{
+    if(rn.frozen)return;rn.wb+=.05;
+    const fdx=rn.x-P.x,fdy=rn.y-P.y,fd=Math.sqrt(fdx*fdx+fdy*fdy);
+    if(fd<rn.fearR&&fd>0.01){const fl=rn.fearR/fd;rn.vx+=(fdx/fd)*.38*fl;rn.vy+=(fdy/fd)*.38*fl;}
+    else if(fd<=0.01){rn.vx+=(Math.random()-.5)*0.5;rn.vy+=(Math.random()-.5)*0.5;}
+    else{rn.vx+=Math.sin(rn.wb*.9)*.12;rn.vy+=Math.cos(rn.wb)*.12;}
+    runners.forEach(o=>{if(o===rn)return;const ax=rn.x-o.x,ay=rn.y-o.y,ad=Math.sqrt(ax*ax+ay*ay);if(ad<rn.r*2.5&&ad>0){rn.vx+=ax/ad*.18;rn.vy+=ay/ad*.18;}});
+    const rs=Math.sqrt(rn.vx*rn.vx+rn.vy*rn.vy);if(rs>rn.spd){rn.vx=rn.vx/rs*rn.spd;rn.vy=rn.vy/rs*rn.spd;}
+    rn.x+=rn.vx;rn.y+=rn.vy;
+    if(rn.x<rn.r){rn.x=rn.r;rn.vx*=-.7;}if(rn.x>W-rn.r){rn.x=W-rn.r;rn.vx*=-.7;}
+    if(rn.y<rn.r){rn.y=rn.r;rn.vy*=-.7;}if(rn.y>H-rn.r){rn.y=H-rn.r;rn.vy*=-.7;}
+    const pd=Math.sqrt((P.x-rn.x)**2+(P.y-rn.y)**2);
+    if(pd<cR+rn.r-4&&!rn._caught){rn._caught=true;toCatch.push(rn);}
+  });
+  // Process catches outside the loop to avoid array mutation mid-iteration
+  toCatch.forEach(rn=>onCatch(rn));
+}
+
+function applyPup(pu){
+  const idx=['spd','bigR','frz','bon'].indexOf(pu.type);SFX.pu(idx);
+  if(pu.type==='spd')EFX.spd=190;
+  if(pu.type==='bigR')EFX.bigR=210;
+  if(pu.type==='frz'){EFX.frz=190;runners.forEach(r=>r.frozen=true);}
+  if(pu.type==='bon'){G.score+=5;updateHUD();}
+  floatTxt(pu.x,pu.y,pu.lbl,pu.col);
+}
+
+function onCatch(rn){
+  const idx=runners.indexOf(rn);if(idx<0)return; // already removed guard
+  runners.splice(idx,1);G.caught++;
+  const pts=G.level+(EFX.spd>0?2:0)+(EFX.bigR>0?1:0);
+  G.score+=pts;if(G.score>G.hi)G.hi=G.score;
+  SFX.catch();burst(rn.x,rn.y,['🎉','⭐','💛','✨'],6);
+  floatTxt(rn.x,rn.y,`+${pts}`,`#f5c842`);updateHUD();
+  const cfg=lvlCfg(G.level);
+  if(G.caught<cfg.need){
+    setTimeout(()=>{if(G.running)runners.push(mkRunner(cfg));},1100);
+  } else {
+    G.running=false;clearInterval(G.tInt);SFX.lvl();
+    const nextCfg=lvlCfg(G.level+1); // safe - clamps at last level
+    const isLast=G.level>=LVLS.length;
+    setTimeout(()=>{
+      document.getElementById('ovLvT').textContent=`මට්ටම ${G.level} ✅`;
+      document.getElementById('ovLvS').textContent=isLast
+        ?`🏆 සියලු මට්ටම් ජය ගත්තා! ලකුණු: ${G.score}`
+        :`ලකුණු: ${G.score} · ${cfg.need} දෙනා catch! → ${nextCfg.lbl}`;
+      showOv('ovLv');
+    },550);
+  }
+}
+
+/* ══ COLOR HELPERS ══ */
+// Safely convert any CSS color to rgba with alpha - avoids hsl()+'55' crashes
+function hexAlpha(hex,a){
+  // hex colours like #f5c842
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function hslAlpha(hsl,a){
+  // hsl(h,s%,l%) → rgba via canvas trick
+  const m=hsl.match(/hsl\((\d+),(\d+)%,(\d+)%\)/);
+  if(!m)return `rgba(128,128,128,${a})`;
+  const h=+m[1]/360,s=+m[2]/100,l=+m[3]/100;
+  let r,g,b;
+  if(s===0){r=g=b=l;}else{
+    const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+    const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;};
+    r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3);
+  }
+  return `rgba(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)},${a})`;
+}
+
+/* ══ DRAW ══ */
+function draw(){
+  const W=canvas.width,H=canvas.height;
+  CTX.clearRect(0,0,W,H);
+
+  /* Kolam grid */
+  CTX.save();CTX.globalAlpha=.042;CTX.fillStyle='#D4A017';
+  for(let gx=24;gx<W;gx+=48)for(let gy=24;gy<H;gy+=48){CTX.beginPath();CTX.arc(gx,gy,1.7,0,Math.PI*2);CTX.fill();}
+  CTX.restore();
+
+  /* Effect overlays */
+  if(EFX.spd>0){CTX.save();CTX.globalAlpha=.06+Math.sin(Date.now()*.01)*.025;CTX.fillStyle='#F5C842';CTX.fillRect(0,0,W,H);CTX.restore();}
+  if(EFX.frz>0){CTX.save();CTX.globalAlpha=.07+Math.sin(Date.now()*.008)*.025;CTX.fillStyle='#a8d8ea';CTX.fillRect(0,0,W,H);CTX.restore();}
+  if(EFX.bigR>0){CTX.save();CTX.globalAlpha=.05;CTX.fillStyle='#3498db';CTX.fillRect(0,0,W,H);CTX.restore();}
+
+  /* Power-ups */
+  pups.forEach(pu=>{
+    CTX.save();CTX.globalAlpha=.85+Math.sin(pu.pulse)*.15;
+    const grd=CTX.createRadialGradient(pu.x,pu.y,0,pu.x,pu.y,pu.r*2.2);
+    grd.addColorStop(0,hexAlpha(pu.col,0.35));grd.addColorStop(1,'rgba(0,0,0,0)');
+    CTX.beginPath();CTX.arc(pu.x,pu.y,pu.r*2.2,0,Math.PI*2);CTX.fillStyle=grd;CTX.fill();
+    CTX.font=`${Math.round(pu.r*1.5)}px serif`;CTX.textAlign='center';CTX.textBaseline='middle';
+    CTX.fillText(pu.icon,pu.x,pu.y);CTX.restore();
+  });
+
+  /* Trail */
+  P.trail.forEach((pt,i)=>{
+    CTX.save();CTX.globalAlpha=Math.max(0,pt.a)*.28;
+    CTX.beginPath();CTX.arc(pt.x,pt.y,P.r*(i/P.trail.length),0,Math.PI*2);
+    CTX.fillStyle='#F5C842';CTX.fill();CTX.restore();
+  });
+
+  runners.forEach(r=>drawRunner(r));
+  drawPlayer();
+}
+
+function drawPlayer(){
+  const x=P.x,y=P.y,r=P.r;
+  const cR=EFX.bigR>0?r*2.2:r;
+  CTX.save();
+
+  /* Glow */
+  const grd=CTX.createRadialGradient(x,y,0,x,y,r*2.8);
+  grd.addColorStop(0,'rgba(245,200,66,0.2)');grd.addColorStop(1,'rgba(245,200,66,0)');
+  CTX.beginPath();CTX.arc(x,y,r*2.8,0,Math.PI*2);CTX.fillStyle=grd;CTX.fill();
+
+  /* Big reach ring */
+  if(EFX.bigR>0){
+    CTX.beginPath();CTX.arc(x,y,cR,0,Math.PI*2);
+    CTX.strokeStyle='rgba(52,152,219,0.45)';CTX.lineWidth=2;CTX.setLineDash([6,4]);CTX.stroke();CTX.setLineDash([]);
+  }
+
+  /* Body */
+  CTX.beginPath();CTX.arc(x,y,r,0,Math.PI*2);
+  const bg=CTX.createRadialGradient(x-r*.3,y-r*.3,0,x,y,r);
+  bg.addColorStop(0,'#e8a040');bg.addColorStop(.6,'#c47020');bg.addColorStop(1,'#7a3800');
+  CTX.fillStyle=bg;CTX.fill();
+  CTX.strokeStyle=EFX.spd>0?'#F5C842':'rgba(212,160,23,.75)';CTX.lineWidth=1.8;CTX.stroke();
+
+  /* Face */
+  CTX.fillStyle='#f5d090';CTX.beginPath();CTX.arc(x,y-r*.2,r*.52,0,Math.PI*2);CTX.fill();
+
+  /* Blindfold */
+  CTX.fillStyle='#111';CTX.fillRect(x-r*.55,y-r*.44,r*1.1,r*.22);
+  CTX.fillStyle='#1e1e1e';CTX.beginPath();CTX.arc(x,y-r*.33,r*.11,0,Math.PI*2);CTX.fill();
+  /* Shine on blindfold */
+  CTX.globalAlpha=.15;CTX.fillStyle='white';CTX.fillRect(x-r*.5,y-r*.44,r*1,r*.08);CTX.globalAlpha=1;
+
+  /* Reaching arms */
+  const w=Math.sin(Date.now()*.0045)*.28*(EFX.spd>0?1.9:1);
+  CTX.strokeStyle='rgba(196,112,32,0.9)';CTX.lineWidth=3.5;CTX.lineCap='round';
+  CTX.beginPath();CTX.moveTo(x-r*.72,y);CTX.lineTo(x-r*1.55,y-r*.5+w*15);CTX.stroke();
+  CTX.beginPath();CTX.moveTo(x+r*.72,y);CTX.lineTo(x+r*1.55,y-r*.5-w*15);CTX.stroke();
+
+  /* Effect badges */
+  let bx=x-r;
+  if(EFX.spd>0){badge('⚡',bx,y-r-14);bx+=20;}
+  if(EFX.bigR>0){badge('🔵',bx,y-r-14);bx+=20;}
+  if(EFX.frz>0){badge('❄️',bx,y-r-14);}
+
+  /* Label */
+  CTX.fillStyle='rgba(245,200,66,.9)';CTX.font=`bold ${Math.round(r*.4)}px 'Noto Serif Sinhala',serif`;
+  CTX.textAlign='center';CTX.textBaseline='middle';CTX.fillText('🙈 ඔබ',x,y+r+12);
+  CTX.restore();
+}
+
+function badge(icon,x,y){const t=Date.now()*.003;CTX.save();CTX.font='13px serif';CTX.textAlign='center';CTX.textBaseline='middle';CTX.fillText(icon,x,y+Math.sin(t)*2);CTX.restore();}
+
+function drawRunner(rn){
+  const x=rn.x,y=rn.y,r=rn.r;CTX.save();
+  if(rn.frozen)CTX.globalAlpha=.6;
+
+  /* Glow */
+  const grd=CTX.createRadialGradient(x,y,0,x,y,r*2);
+  grd.addColorStop(0,hslAlpha(rn.col,0.35));grd.addColorStop(1,'rgba(0,0,0,0)');
+  CTX.beginPath();CTX.arc(x,y,r*2,0,Math.PI*2);CTX.fillStyle=grd;CTX.fill();
+
+  /* Body */
+  CTX.beginPath();CTX.arc(x,y,r,0,Math.PI*2);
+  const bg=CTX.createRadialGradient(x-r*.3,y-r*.3,0,x,y,r);
+  bg.addColorStop(0,rn.col);bg.addColorStop(1,rn.colD);CTX.fillStyle=bg;CTX.fill();
+  CTX.strokeStyle=rn.frozen?'rgba(168,216,234,.8)':'rgba(255,255,255,.2)';CTX.lineWidth=1.5;CTX.stroke();
+
+  /* Face */
+  CTX.fillStyle='#f5d090';CTX.beginPath();CTX.arc(x,y-r*.2,r*.5,0,Math.PI*2);CTX.fill();
+
+  /* Scared eyes */
+  CTX.fillStyle='#1a0a00';CTX.beginPath();CTX.arc(x-r*.18,y-r*.28,r*.1,0,Math.PI*2);CTX.fill();
+  CTX.beginPath();CTX.arc(x+r*.18,y-r*.28,r*.1,0,Math.PI*2);CTX.fill();
+  CTX.fillStyle='white';CTX.beginPath();CTX.arc(x-r*.15,y-r*.3,r*.04,0,Math.PI*2);CTX.fill();
+  CTX.beginPath();CTX.arc(x+r*.21,y-r*.3,r*.04,0,Math.PI*2);CTX.fill();
+
+  /* Open mouth */
+  CTX.fillStyle='#3a0800';CTX.beginPath();CTX.arc(x,y-r*.08,r*.12,0,Math.PI);CTX.fill();
+
+  /* Sweat drop if close */
+  const fd=Math.sqrt((x-P.x)**2+(y-P.y)**2);
+  if(fd<rn.fearR*.6){CTX.font=`${Math.round(r*.65)}px serif`;CTX.textAlign='center';CTX.textBaseline='middle';CTX.fillText('💦',x+r*.75,y-r*.75);}
+  if(rn.frozen){CTX.font=`${Math.round(r*.85)}px serif`;CTX.textAlign='center';CTX.textBaseline='middle';CTX.fillText('❄️',x,y-r*.15);}
+
+  /* Emoji label */
+  CTX.restore();CTX.save();CTX.font=`bold ${Math.round(r*.42)}px 'Noto Serif Sinhala',serif`;
+  CTX.textAlign='center';CTX.textBaseline='middle';CTX.fillStyle='rgba(253,243,220,.85)';
+  CTX.fillText(rn.em,x,y+r+10);CTX.restore();
+}
+
+/* ══ VFX ══ */
+function burst(ax,ay,ems,n){
+  for(let i=0;i<n;i++){setTimeout(()=>{
+    const p=document.createElement('div');p.className='vfx';
+    p.textContent=ems[Math.floor(Math.random()*ems.length)];
+    p.style.left=(ax+(Math.random()-.5)*55)+'px';p.style.top=(ay+(Math.random()-.5)*38)+'px';
+    p.style.animationDelay=(Math.random()*.18)+'s';
+    arena.appendChild(p);setTimeout(()=>p.remove(),1200);
+  },i*48);}
+}
+function floatTxt(x,y,txt,col){
+  const d=document.createElement('div');
+  d.style.cssText=`position:absolute;left:${x}px;top:${y-10}px;transform:translate(-50%,-50%);
+    font-family:'Yatra One',cursive;font-size:1.25rem;color:${col};pointer-events:none;z-index:46;
+    animation:vfxFly .9s ease-out forwards;`;
+  d.textContent=txt;arena.appendChild(d);setTimeout(()=>d.remove(),1000);
+}
+
+/* ══ BOOT ══ */
+resize();showOv('ovS');
+const _lb=getLB();if(_lb.length)document.getElementById('hHi').textContent=_lb[0].score;
+</script>
+</body>
+</html>

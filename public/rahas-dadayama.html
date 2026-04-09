@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icon-512.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>රහස් දඩයම | AwruduFest 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap');
+  :root { --gold:#FFD700; --deep-gold:#B8860B; --bg:#1a1200; }
+  * { margin:0;padding:0;box-sizing:border-box; }
+  body { background:var(--bg); font-family:'Noto Sans Sinhala',sans-serif; overflow:hidden; height:100vh; width:100vw; }
+  #bg-canvas,#particle-canvas { position:fixed;inset:0;z-index:0; }
+  #particle-canvas { z-index:50;pointer-events:none; }
+  #game-canvas { display:block;position:relative;z-index:10;cursor:pointer;touch-action:none; }
+  .back-btn { position:fixed;top:16px;left:16px;z-index:100;background:rgba(0,0,0,0.6);border:2px solid var(--gold);color:var(--gold);padding:8px 16px;border-radius:30px;font-family:'Noto Sans Sinhala',sans-serif;font-size:13px;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;transition:all 0.2s; }
+  .back-btn:hover { background:var(--gold);color:#000; }
+  #ui { position:fixed;top:0;left:0;right:0;z-index:20;display:flex;flex-direction:column;align-items:center;padding-top:12px;pointer-events:none; }
+  .game-title { font-family:'Yatra One',cursive;font-size:clamp(20px,4vw,36px);color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.6),2px 2px 0 #000;letter-spacing:2px; }
+  .hud { display:flex;gap:16px;margin-top:6px;background:rgba(0,0,0,0.6);border:2px solid var(--gold);border-radius:30px;padding:5px 20px;pointer-events:all; }
+  .hud-item { display:flex;flex-direction:column;align-items:center; }
+  .hud-label { font-size:11px;color:#aaa; }
+  .hud-val { font-size:18px;font-weight:900;color:var(--gold); }
+  .clue-box { margin-top:6px;background:rgba(0,0,0,0.7);border:2px solid rgba(255,215,0,0.5);border-radius:12px;padding:8px 20px;max-width:min(460px,90vw);text-align:center;pointer-events:all; }
+  .clue-label { font-size:11px;color:#aaa;margin-bottom:2px; }
+  .clue-text { font-size:14px;color:#FFE57F;line-height:1.5; }
+  .overlay { position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);text-align:center;padding:20px; }
+  .overlay.hidden { display:none; }
+  .overlay-title { font-family:'Yatra One',cursive;font-size:clamp(26px,6vw,52px);color:var(--gold);text-shadow:0 0 30px rgba(255,215,0,0.8);margin-bottom:12px; }
+  .overlay-sub { font-size:clamp(14px,2.5vw,18px);color:#ccc;margin-bottom:24px;line-height:1.7; }
+  .overlay-btn { background:linear-gradient(135deg,var(--gold),var(--deep-gold));border:none;color:#000;font-family:'Noto Sans Sinhala',sans-serif;font-size:17px;font-weight:700;padding:13px 42px;border-radius:50px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(255,215,0,0.4);margin:6px; }
+  .overlay-btn:hover { transform:translateY(-2px); }
+  .overlay-btn.sec { background:transparent;border:2px solid var(--gold);color:var(--gold); }
+  .emoji-big { font-size:60px;margin-bottom:16px; }
+  #hint-btn { position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(0,0,0,0.7);border:2px solid var(--gold);color:var(--gold);padding:10px 28px;border-radius:30px;font-family:'Noto Sans Sinhala',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s; }
+  #hint-btn:hover { background:var(--gold);color:#000; }
+
+/* ── AwruduFest Back Button ── */
+.awrudu-back {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(10,5,0,0.82);
+  border: 1.5px solid #F5C842;
+  color: #F5C842;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'Noto Serif Sinhala', 'Noto Sans Sinhala', serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+.awrudu-back:hover {
+  background: #F5C842;
+  color: #0A0500;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 20px rgba(245,200,66,0.35);
+}
+.awrudu-back svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+@media(max-width:480px){
+  .awrudu-back { font-size:11px; padding:7px 12px; top:10px; left:10px; gap:5px; }
+}
+
+
+/* ── Mobile Responsive (Canvas Games) ── */
+@media(max-width:600px){
+  canvas { touch-action: none; }
+}
+
+</style>
+</head>
+<body>
+<a href="/index.html" class="awrudu-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  AwruduFest
+</a>
+<canvas id="bg-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
+<a href="/index.html" class="back-btn">← AwruduFest</a>
+<div id="ui">
+  <div class="game-title">🧗 රහස් දඩයම</div>
+  <div class="hud">
+    <div class="hud-item"><div class="hud-label">ලකුණු</div><div class="hud-val" id="score">0</div></div>
+    <div class="hud-item"><div class="hud-label">සොයා ගත්</div><div class="hud-val" id="found">0/5</div></div>
+    <div class="hud-item"><div class="hud-label">කාලය</div><div class="hud-val" id="timer">90</div></div>
+    <div class="hud-item"><div class="hud-label">ඉශාරා</div><div class="hud-val" id="hints">3</div></div>
+  </div>
+  <div class="clue-box">
+    <div class="clue-label">🔍 ඉඟිය</div>
+    <div class="clue-text" id="clue-text">ක්‍රීඩාව ආරම්භ කරන්න...</div>
+  </div>
+</div>
+<canvas id="game-canvas"></canvas>
+<button id="hint-btn" onclick="useHint()">💡 ඉශාරාව (-10 pts)</button>
+
+<!-- Start -->
+<div class="overlay" id="start-screen">
+  <div class="emoji-big">🧗</div>
+  <div class="overlay-title">රහස් දඩයම</div>
+  <div class="overlay-sub">ඉඟිය කියවා සැඟවුණු ධජය සොයා ගන්න!<br><strong style="color:var(--gold)">90 තත්පරය</strong> ඇතුළත ධජ 5ක් සොයා ගන්න 🏳️</div>
+  <button class="overlay-btn" onclick="startGame()">🎮 ආරම්භ කරන්න</button>
+</div>
+<!-- Final -->
+<div class="overlay hidden" id="final-screen">
+  <div class="emoji-big" id="final-emoji">🏆</div>
+  <div class="overlay-title" id="final-title">ජය!</div>
+  <div class="overlay-sub" id="final-sub"></div>
+  <button class="overlay-btn" onclick="restartGame()">🔄 නැවත</button>
+  <button class="overlay-btn sec" onclick="window.location.href='/index.html'">← ආපසු</button>
+</div>
+
+<script>
+// BG
+const bgC=document.getElementById('bg-canvas'),bgCtx=bgC.getContext('2d');
+let bgW,bgH;
+const bgStars=[];
+function resizeBg(){bgW=bgC.width=window.innerWidth;bgH=bgC.height=window.innerHeight;}
+resizeBg();
+window.addEventListener('resize',()=>{resizeBg();resizeGame();});
+for(let i=0;i<100;i++) bgStars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.3,t:Math.random()*Math.PI*2,s:Math.random()*0.02+0.005});
+function drawBg(){
+  bgCtx.fillStyle='#1a1200';bgCtx.fillRect(0,0,bgW,bgH);
+  const g=bgCtx.createRadialGradient(bgW*0.5,bgH*0.5,0,bgW*0.5,bgH*0.5,bgH);
+  g.addColorStop(0,'rgba(50,30,0,0.4)');g.addColorStop(1,'transparent');
+  bgCtx.fillStyle=g;bgCtx.fillRect(0,0,bgW,bgH);
+  bgStars.forEach(s=>{
+    s.t+=s.s;const a=0.2+Math.sin(s.t)*0.3;
+    bgCtx.fillStyle=`rgba(255,200,80,${a})`;
+    bgCtx.beginPath();bgCtx.arc(s.x*bgW,s.y*bgH,s.r,0,Math.PI*2);bgCtx.fill();
+  });
+}
+
+// Particles
+const pC=document.getElementById('particle-canvas'),pCtx=pC.getContext('2d');
+pC.width=window.innerWidth;pC.height=window.innerHeight;
+window.addEventListener('resize',()=>{pC.width=window.innerWidth;pC.height=window.innerHeight;});
+const parts=[];
+function spawnParts(x,y,colors,n=25,spd=8){
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=Math.random()*spd+1;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:Math.random()*5+2,color:colors[Math.floor(Math.random()*colors.length)],life:1,decay:Math.random()*0.025+0.015});}
+}
+function updateParts(){
+  pCtx.clearRect(0,0,pC.width,pC.height);
+  for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.25;p.life-=p.decay;if(p.life<=0){parts.splice(i,1);continue;}pCtx.globalAlpha=p.life;pCtx.fillStyle=p.color;pCtx.beginPath();pCtx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);pCtx.fill();}
+  pCtx.globalAlpha=1;
+}
+
+// Game
+const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d');
+let W,H;
+function resizeGame(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resizeGame();
+
+let score=0,foundCount=0,timeLeft=90,hintsLeft=3,gameActive=false,lastTime=0;
+let flags=[],hidingSpots=[],currentClueIdx=0;
+let timerInt=null,hintFlash=null;
+
+// Hiding spots with clues
+const spotDefs=[
+  {emoji:'🌳',label:'ගස',    clue:'🌳 ලොකු ගස ළඟ සඟවලා තිබේ!'},
+  {emoji:'🏠',label:'ගෙය',   clue:'🏠 ගෙදර දොරකඩ ළඟ බලන්න!'},
+  {emoji:'⛲',label:'ජල කඳ', clue:'⛲ ජල කඳ ළඟ සොයන්න!'},
+  {emoji:'🪨',label:'ගල',    clue:'🪨 ලොකු ගල ළඟ බලන්න!'},
+  {emoji:'🌺',label:'මල',    clue:'🌺 රතු මල් ගස ළඟ!'},
+  {emoji:'🎪',label:'කූඩාරම',clue:'🎪 කූඩාරම ළඟ සෙවිය යුතුයි!'},
+  {emoji:'🌙',label:'සඳ',    clue:'🌙 සඳ සංකේතය ළඟ!'},
+  {emoji:'💧',label:'ළිඳ',   clue:'💧 ළිඳ ළඟ ස‍ොයන්න!'},
+  {emoji:'🌲',label:'ශ්‍රී ගස',clue:'🌲 ශ්‍රී ගස ළඟ සඟවලා!'},
+  {emoji:'🪵',label:'දැව',   clue:'🪵 දැව ගොඩ ළඟ!'},
+];
+
+function generateLevel(){
+  hidingSpots=[];flags=[];
+  const margin=80;
+  const selected=spotDefs.sort(()=>Math.random()-0.5).slice(0,5);
+  selected.forEach((s,i)=>{
+    const spot={
+      ...s,
+      x:margin+Math.random()*(W-margin*2),
+      y:H*0.25+Math.random()*(H*0.55),
+      found:false,
+      pulse:0,
+      visible:true,
+      hinted:false,
+    };
+    hidingSpots.push(spot);
+    flags.push({
+      spotIdx:i,
+      hidden:true,
+    });
+  });
+  currentClueIdx=0;
+  updateClue();
+}
+
+function updateClue(){
+  if(currentClueIdx<hidingSpots.length){
+    const spot=hidingSpots[currentClueIdx];
+    const el=document.getElementById('clue-text');
+    el.innerHTML=`${spot.clue}`;
+  }
+}
+
+function drawSpots(){
+  hidingSpots.forEach((s,i)=>{
+    if(s.found) return;
+    s.pulse=(s.pulse||0)+0.04;
+    ctx.save();
+    ctx.translate(s.x,s.y);
+
+    // Glow if hinted
+    if(s.hinted){
+      const pulseMag = s.hintPulse>0 ? s.hintPulse : 1;
+      ctx.globalAlpha=0.25+Math.sin(s.pulse*3)*0.25+pulseMag*0.15;
+      ctx.fillStyle='#FFD700';
+      ctx.beginPath();ctx.arc(0,0,55*pulseMag,0,Math.PI*2);ctx.fill();
+      // Hint rings
+      ctx.globalAlpha=0.15;
+      ctx.strokeStyle='#FFD700';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(0,0,65,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,80,0,Math.PI*2);ctx.stroke();
+      if(s.hintPulse>0) s.hintPulse=Math.max(0,s.hintPulse-0.1);
+    }
+    ctx.globalAlpha=1;
+
+    // Spot decoration
+    ctx.font='36px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(s.emoji,0,0);
+
+    // Label
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.beginPath();ctx.roundRect(-20,20,40,16,4);ctx.fill();
+    ctx.fillStyle='#ccc';ctx.font='11px sans-serif';
+    ctx.fillText(s.label,0,29);
+
+    // Current target indicator
+    if(i===currentClueIdx && !s.found){
+      ctx.globalAlpha=0.5+Math.sin(s.pulse)*0.3;
+      ctx.strokeStyle='#FFD700';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.stroke();
+      // Arrow pointing down
+      ctx.fillStyle='#FFD700';
+      ctx.globalAlpha=0.7+Math.sin(s.pulse)*0.3;
+      ctx.beginPath();ctx.moveTo(0,-50);ctx.lineTo(8,-38);ctx.lineTo(-8,-38);ctx.closePath();ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    ctx.restore();
+  });
+}
+
+function drawFoundFlags(){
+  hidingSpots.forEach(s=>{
+    if(!s.found) return;
+    ctx.save();ctx.translate(s.x,s.y);
+    ctx.font='28px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('✅',0,0);
+    ctx.restore();
+  });
+}
+
+function drawFloor(){
+  // Decorative ground
+  ctx.fillStyle='rgba(50,30,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(W/2,H*0.85,W*0.6,40,0,0,Math.PI*2);
+  ctx.fill();
+}
+
+function handleClick(cx,cy){
+  if(!gameActive) return;
+  const rect=canvas.getBoundingClientRect();
+  const x=cx-rect.left,y=cy-rect.top;
+  const target=hidingSpots[currentClueIdx];
+  if(!target||target.found) return;
+  const dist=Math.hypot(x-target.x,y-target.y);
+  if(dist<50){
+    target.found=true;
+    foundCount++;
+    const pts=target.hinted?30:50;
+    score+=pts;
+    document.getElementById('score').textContent=score;
+    document.getElementById('found').textContent=foundCount+'/5';
+    spawnParts(target.x,target.y,['#FFD700','#FF6B00','#fff'],50,12);
+    currentClueIdx++;
+    if(foundCount>=5) endGame(true);
+    else updateClue();
+  } else {
+    // Wrong spot ripple
+    spawnParts(x,y,['rgba(255,100,100,0.5)'],6,3);
+    score=Math.max(0,score-2);
+    document.getElementById('score').textContent=score;
+  }
+}
+
+canvas.addEventListener('click',e=>handleClick(e.clientX,e.clientY));
+canvas.addEventListener('touchstart',e=>{e.preventDefault();handleClick(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+
+function useHint(){
+  if(!gameActive||hintsLeft<=0) return;
+  hintsLeft--;
+  score=Math.max(0,score-10);
+  document.getElementById('hints').textContent=hintsLeft;
+  document.getElementById('score').textContent=score;
+  const target=hidingSpots[currentClueIdx];
+  if(!target) return;
+  target.hinted=true;
+  target.hintPulse=3;
+  // Show WHICH spot to click — player must still click it themselves
+  document.getElementById('clue-text').innerHTML=
+    `<span style="font-size:1.6em">${target.emoji}</span> <strong style="color:#FFD700;font-size:1.1em">${target.label}</strong> ළඟ click කරන්න!`;
+  // Flash glow on target for 3s
+  let fl=0;
+  const fi=setInterval(()=>{
+    target.hintPulse=(fl%2===0)?4:1;
+    fl++;
+    if(fl>20){ clearInterval(fi); target.hintPulse=1; }
+  },150);
+}
+
+function startGame(){
+  document.getElementById('start-screen').classList.add('hidden');
+  score=0;foundCount=0;timeLeft=90;hintsLeft=3;gameActive=true;
+  document.getElementById('score').textContent='0';
+  document.getElementById('found').textContent='0/5';
+  document.getElementById('timer').textContent='90';
+  document.getElementById('hints').textContent='3';
+  generateLevel();
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer').textContent=timeLeft;
+    if(timeLeft<=0) endGame(false);
+  },1000);
+}
+
+function endGame(won){
+  clearInterval(timerInt);gameActive=false;
+  const emoji=won&&score>=200?'🏆':won?'🎉':'⏰';
+  document.getElementById('final-emoji').textContent=emoji;
+  document.getElementById('final-title').textContent=won?'සොයා ගත්තා! 🎊':'කාලය ඉවරයි! ⏰';
+  document.getElementById('final-sub').innerHTML=`
+    ලකුණු: <strong style="color:var(--gold);font-size:24px">${score}</strong><br>
+    සොයා ගත්: ${foundCount}/5 | කාලය: ${90-timeLeft}s
+  `;
+  setTimeout(()=>{
+    document.getElementById('final-screen').classList.remove('hidden');
+    if(won) for(let i=0;i<8;i++) setTimeout(()=>spawnParts(Math.random()*window.innerWidth,Math.random()*window.innerHeight*0.5,['#FFD700','#CC2200','#2E7D32'],30,10),i*150);
+  },500);
+}
+
+function restartGame(){document.getElementById('final-screen').classList.add('hidden');startGame();}
+
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min((ts-lastTime)/1000,0.05);lastTime=ts;
+  drawBg();updateParts();
+  ctx.clearRect(0,0,W,H);
+  drawFloor();
+  drawSpots();
+  drawFoundFlags();
+}
+requestAnimationFrame(ts=>{lastTime=ts;loop(ts);});
+
+// Browser back button → AwruduFest main site
+window.addEventListener('popstate', function(e){
+  window.location.href = '/index.html';
+});
+// Push a state so back button works
+if(window.history && window.history.pushState){
+  window.history.pushState({page:'game'}, '', window.location.href);
+}
+
+</script>
+</body>
+</html>
