@@ -238,31 +238,57 @@ nav.solid{
 /* ═══════════════════════════════════════
    COUNTDOWN
 ═══════════════════════════════════════ */
-.countdown-wrap{
+.awurudu-live-wrap{
   position:relative;z-index:2;
-  background:linear-gradient(135deg,rgba(92,10,10,.35),rgba(14,7,0,.85),rgba(92,10,10,.2));
+  background:linear-gradient(135deg,rgba(92,10,10,.35),rgba(14,7,0,.88),rgba(92,10,10,.2));
   border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:56px 24px;text-align:center;
+  padding:48px 24px;text-align:center;overflow:hidden;
 }
-.cd-label{
-  font-family:'Yatra One',cursive;font-size:1rem;color:var(--gold);
-  letter-spacing:3px;margin-bottom:32px;opacity:.75;
+.awurudu-live-wrap::before,.awurudu-live-wrap::after{
+  content:'';position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--maroon) 15%,var(--gold) 40%,var(--gold-lt) 50%,var(--gold) 60%,var(--maroon) 85%,transparent);
 }
-.cd-grid{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;}
-.cd-box{
-  background:rgba(255,248,220,.04);border:1px solid var(--border);
-  border-radius:18px;padding:22px 32px;min-width:100px;
-  position:relative;overflow:hidden;
+.awurudu-live-wrap::before{top:0;}.awurudu-live-wrap::after{bottom:0;}
+.ayl-badge{
+  display:inline-block;font-family:'Gemunu Libre',cursive;
+  font-size:.65rem;letter-spacing:3px;color:var(--dark);
+  background:var(--gold);padding:4px 14px;border-radius:50px;
+  margin-bottom:18px;font-weight:700;
 }
-.cd-box::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.cd-n{font-family:'Yatra One',cursive;font-size:3rem;color:var(--gold-lt);line-height:1;display:block;}
-.cd-u{font-family:'Gemunu Libre',cursive;font-size:.58rem;letter-spacing:3px;color:rgba(253,243,220,.4);margin-top:5px;}
-.cd-sep{font-family:'Yatra One',cursive;font-size:2.2rem;color:var(--gold);opacity:.4;}
-/* After Avurudu banner */
-.avurudu-live{
-  padding:20px;background:rgba(212,160,23,.1);border:1px solid var(--border2);
-  border-radius:16px;max-width:500px;margin:0 auto;display:none;
+.ayl-title{
+  font-family:'Yatra One',cursive;
+  font-size:clamp(1.8rem,5vw,3rem);
+  color:var(--gold-lt);text-shadow:0 0 40px rgba(212,160,23,.5);
+  margin-bottom:8px;line-height:1.2;
 }
+.ayl-sub{
+  font-family:'Gemunu Libre',cursive;font-size:.9rem;
+  letter-spacing:2px;color:rgba(253,243,220,.55);margin-bottom:28px;
+}
+.ayl-date{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);
+  border-radius:50px;padding:10px 24px;margin-bottom:28px;
+  font-family:'Gemunu Libre',cursive;font-size:.82rem;
+  color:var(--gold-lt);letter-spacing:1px;
+}
+.ayl-emojis{font-size:2rem;letter-spacing:8px;display:block;margin-bottom:20px;
+  animation:emojiPop 2s ease-in-out infinite alternate;}
+@keyframes emojiPop{from{transform:scale(1);}to{transform:scale(1.08);}}
+.ayl-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.ayl-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Gemunu Libre',cursive;font-size:.8rem;letter-spacing:1px;
+  padding:11px 24px;border-radius:50px;cursor:pointer;text-decoration:none;
+  transition:all .22s;font-weight:700;border:none;
+}
+.ayl-btn.primary{background:linear-gradient(135deg,var(--gold),#c8860a);color:var(--dark);}
+.ayl-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,160,23,.5);}
+.ayl-btn.sec{background:rgba(212,160,23,.1);border:1.5px solid rgba(212,160,23,.4);color:var(--gold-lt);}
+.ayl-btn.sec:hover{background:rgba(212,160,23,.2);border-color:var(--gold);}
+/* Floating kolam particles */
+.kolam-float{position:absolute;font-size:1.2rem;opacity:.12;pointer-events:none;animation:floatKolam 8s ease-in-out infinite;}
+@keyframes floatKolam{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(180deg);}}
 
 /* ═══════════════════════════════════════
    SECTION COMMONS
@@ -788,9 +814,7 @@ footer{
   .hero-stats>div{min-width:80px;}
   .footer-grid{grid-template-columns:1fr;}
   .cd-grid{gap:8px;}
-  .cd-box{padding:12px 14px;min-width:64px;}
-  .cd-n{font-size:2rem;}
-  .cd-l{font-size:.55rem;}
+  .ayl-sub{font-size:.55rem;}
   section,.section{padding:52px 14px;}
   nav{padding:10px 14px;}
   .nl-box{padding:28px 18px;}
@@ -932,17 +956,26 @@ footer{
   <div class="hero-deco"></div>
 </section>
 
-<!-- ═══ COUNTDOWN ═══ -->
-<div class="countdown-wrap">
-  <div class="cd-label" id="cdLabel">⏳ ඊළඟ සිංහල අවුරුදු දක්වා</div>
-  <div class="cd-grid" id="cdGrid">
-    <div class="cd-box"><span class="cd-n" id="cdD">--</span><span class="cd-u">DAYS</span></div>
-    <span class="cd-sep">:</span>
-    <div class="cd-box"><span class="cd-n" id="cdH">--</span><span class="cd-u">HOURS</span></div>
-    <span class="cd-sep">:</span>
-    <div class="cd-box"><span class="cd-n" id="cdM">--</span><span class="cd-u">MINUTES</span></div>
-    <span class="cd-sep">:</span>
-    <div class="cd-box"><span class="cd-n" id="cdS">--</span><span class="cd-u">SECONDS</span></div>
+<!-- ═══ AWURUDU LIVE BANNER ═══ -->
+<div class="awurudu-live-wrap">
+  <span class="kolam-float" style="left:5%;top:20%;animation-delay:0s">☸</span>
+  <span class="kolam-float" style="left:12%;top:60%;animation-delay:1.5s">🌸</span>
+  <span class="kolam-float" style="right:8%;top:25%;animation-delay:0.8s">☸</span>
+  <span class="kolam-float" style="right:15%;top:65%;animation-delay:2.2s">🌺</span>
+
+  <div class="ayl-badge">☸ LIVE NOW · 2026</div>
+  <div class="ayl-title">🎊 සිංහල & දෙමළ<br>අලුත් අවුරුද්ද 2026!</div>
+  <div class="ayl-sub">SINHALA & TAMIL NEW YEAR · April 14, 2026</div>
+  <span class="ayl-emojis">🌸 ☸ 🎉 ☸ 🌸</span>
+  <div class="ayl-date">
+    <span>☸</span>
+    <span>අලුත් අවුරුද්ද — April 14, 2026 · 9:32 AM</span>
+    <span>🇱🇰</span>
+  </div>
+  <div class="ayl-actions">
+    <a href="#games" class="ayl-btn primary">🎮 ක්‍රීඩා ආරම්භ කරන්න</a>
+    <a href="greetings.html" class="ayl-btn sec">💌 සුබ පැතුම් Share</a>
+    <a href="nakath.html" class="ayl-btn sec">☸ නැකත් Sheet</a>
   </div>
 </div>
 
@@ -1390,22 +1423,7 @@ function closeMob(){document.getElementById('mobMenu').classList.remove('open');
 
 /* ═══════════ COUNTDOWN ═══════════ */
 // 2026 Sinhala New Year: April 14, 2026 at 07:23:00 Sri Lanka Time (UTC+5:30)
-const NAKATH_TARGET = new Date('2026-04-14T09:32:00+05:30');
-
-function runCd(){
-  const now = new Date();
-  const diff = NAKATH_TARGET - now;
-  if(diff <= 0){
-    document.getElementById('cdLabel').textContent = '🎊 සිංහල අවුරුදු 2026 ශුභ! Happy New Year!';
-    ['D','H','M','S'].forEach(k => { document.getElementById('cd'+k).textContent='00'; });
-    // Trigger popup when countdown reaches zero
-    triggerNewYearPopup();
-    return;
-  }
-  const d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);
-  ['D','H','M','S'].forEach((k,i)=>{document.getElementById('cd'+k).textContent=String([d,h,m,s][i]).padStart(2,'0');});
-}
-runCd();setInterval(runCd,1000);
+// Countdown removed — Avurudu 2026 is already here! 🎊
 
 /* ═══════════ SCROLL REVEAL ═══════════ */
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}}),{threshold:.1});
